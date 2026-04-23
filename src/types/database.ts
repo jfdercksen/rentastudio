@@ -75,6 +75,7 @@ export type Database = {
           notes?: string | null;
         };
         Update: Partial<Database["public"]["Tables"]["bookings"]["Insert"]>;
+        Relationships: [];
       };
       pricing: {
         Row: {
@@ -92,6 +93,7 @@ export type Database = {
           price_rands: number;
         };
         Update: Partial<Database["public"]["Tables"]["pricing"]["Insert"]>;
+        Relationships: [];
       };
       add_ons: {
         Row: {
@@ -113,6 +115,7 @@ export type Database = {
           display_order?: number;
         };
         Update: Partial<Database["public"]["Tables"]["add_ons"]["Insert"]>;
+        Relationships: [];
       };
       blocked_dates: {
         Row: {
@@ -130,6 +133,7 @@ export type Database = {
           reason?: string | null;
         };
         Update: Partial<Database["public"]["Tables"]["blocked_dates"]["Insert"]>;
+        Relationships: [];
       };
       site_content: {
         Row: {
@@ -145,6 +149,7 @@ export type Database = {
           updated_at?: string;
         };
         Update: Partial<Database["public"]["Tables"]["site_content"]["Insert"]>;
+        Relationships: [];
       };
       gallery_images: {
         Row: {
@@ -162,6 +167,7 @@ export type Database = {
           alt_text: string;
         };
         Update: Partial<Database["public"]["Tables"]["gallery_images"]["Insert"]>;
+        Relationships: [];
       };
     };
     Views: Record<string, never>;
