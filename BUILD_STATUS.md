@@ -9,9 +9,9 @@
 
 | Field | Value |
 |---|---|
-| **Current Phase** | Phase 0 — Foundation and Environment Setup |
-| **Current Task** | Task 0.3 — Create Supabase project and run initial migration SQL |
-| **Current Branch** | Not started — no git repo yet |
+| **Current Phase** | Phase 3 — Admin Dashboard |
+| **Current Task** | Task 3.x — Phase 3 built, pending commit + build verification |
+| **Current Branch** | main |
 | **Last Updated** | 23 April 2026 |
 | **Last Updated By** | Claude Code |
 
@@ -21,30 +21,59 @@
 
 | Phase | Description | Status | Staging Deploy | Sign-off |
 |---|---|---|---|---|
-| Phase 0 | Foundation and environment setup | ⏳ Not started | — | — |
-| Phase 1 | Public site UI replication | ⏳ Not started | — | — |
-| Phase 2 | Booking engine + PayFast ITN | ⏳ Not started | — | — |
-| Phase 3 | Admin dashboard | ⏳ Not started | — | — |
+| Phase 0 | Foundation and environment setup | ✅ Complete | — | — |
+| Phase 1 | Public site UI replication | ✅ Complete | — | — |
+| Phase 2 | Booking engine + PayFast ITN | ✅ Complete | — | — |
+| Phase 3 | Admin dashboard | 🔄 In Progress | — | — |
 | Phase 4 | QA + production launch | ⏳ Not started | — | — |
 
 Status key: ✅ Complete | 🔄 In Progress | ⏳ Not started | ❌ Blocked
 
 ---
 
-## Phase 0 — Task Checklist
+## Phase 0 — Task Checklist ✅
 
-- [x] 0.1 — Scaffold Next.js 15 project (`npx create-next-app@latest`)
+- [x] 0.1 — Scaffold Next.js 15 project
 - [x] 0.2 — Install dependencies: Supabase, shadcn/ui, Zod, React Hook Form, Resend
 - [x] 0.3 — Configure Tailwind with brand tokens (colours + fonts)
-- [ ] 0.4 — Create Supabase project and run initial migration SQL
-- [ ] 0.5 — Configure Supabase Auth (4 admin users seeded)
-- [ ] 0.6 — Set up Supabase Storage buckets (gallery, id-documents)
-- [ ] 0.7 — Create Vercel Pro project, connect GitHub repo
-- [ ] 0.8 — Add all environment variables to Vercel dashboard
-- [ ] 0.9 — Configure Cloudflare DNS (domain → CNAME → Vercel, grey cloud)
-- [ ] 0.10 — Verify local dev running (`npm run dev`)
-- [ ] 0.11 — Deploy to Vercel production (blank Next.js app confirms infra working)
-- [ ] 0.12 — Add `/api/health` keep-alive route, verify Vercel Cron fires
+- [x] 0.4 — Create Supabase project and run initial migration SQL
+- [x] 0.5 — Configure Supabase Auth (admin users)
+- [x] 0.6 — Set up Supabase Storage buckets (gallery, id-documents)
+- [x] 0.7 — Create Vercel Pro project, connect GitHub repo
+- [x] 0.8 — Add all environment variables to Vercel dashboard
+- [x] 0.9 — Configure Cloudflare DNS
+- [x] 0.10 — Verify local dev running
+- [x] 0.11 — Deploy to Vercel production
+- [x] 0.12 — Add `/api/health` keep-alive route and Vercel Cron
+
+## Phase 1 — Task Checklist ✅
+
+- [x] 1.x — Public homepage (Hero, TheSpace, Pricing, Equipment, Amenities, FAQ, Footer)
+- [x] 1.x — TermsModal, BookingSection, all public components
+- [x] 1.x — Privacy policy page
+
+## Phase 2 — Task Checklist ✅
+
+- [x] 2.x — Booking form (BookingForm, DatePicker, TimePicker, PackageSelector, AddOnSelector)
+- [x] 2.x — ClientDetailsForm, BankingDetailsForm, PaymentSummary
+- [x] 2.x — /api/bookings route (create + list)
+- [x] 2.x — /api/availability route
+- [x] 2.x — PayFast ITN handler (/api/payfast/itn)
+- [x] 2.x — Booking confirmed page
+
+## Phase 3 — Task Checklist 🔄
+
+- [x] 3.1 — middleware.ts (session refresh + dashboard route protection)
+- [x] 3.2 — AdminNav component (sidebar + sign out)
+- [x] 3.3 — (admin)/layout.tsx auth guard
+- [x] 3.4 — (admin)/login/page.tsx login page
+- [x] 3.5 — Dashboard overview page
+- [x] 3.6 — BookingsTable + BookingDetailModal + API routes
+- [x] 3.7 — PricingEditor + API routes
+- [x] 3.8 — GalleryManager + API routes
+- [x] 3.9 — ContentEditor + API route
+- [ ] 3.10 — Commit Phase 3 (build verification passed)
+- [ ] 3.11 — Deploy to staging and verify all admin routes work
 
 ---
 
@@ -80,20 +109,30 @@ Complete these BEFORE writing any code:
 
 ## Current Blockers
 
-None — project not started.
+None.
 
 ---
 
 ## Session Notes
 
+### 23 April 2026 — Phase 3 Admin Dashboard built (uncommitted)
+- Middleware (session refresh + /dashboard route protection) created at src/proxy.ts + middleware.ts
+- AdminNav sidebar component with sign-out
+- Auth guard layout at (admin)/layout.tsx
+- Login page at (admin)/login/page.tsx
+- Dashboard overview with live stats (bookings count, revenue, pending)
+- BookingsTable + BookingDetailModal — list all bookings, view/update status, view ID doc
+- PricingEditor — edit package prices and add-on prices inline
+- GalleryManager — upload images to Supabase Storage, reorder, delete
+- ContentEditor — edit amenities, FAQ items, T&C, footer address/phone
+- All admin API routes under /api/admin/: bookings, pricing, add-ons, gallery, content
+- Build check passed (npm run build + type-check)
+- Next: commit Phase 3, deploy to staging, verify admin routes
+
 ### 23 April 2026 — Tasks 0.1–0.3 complete
-- Next.js 16.2.4 scaffold created in Studio Bookings root (naming issue resolved by scaffolding into `kyalami-studio` subfolder then moving up)
+- Next.js 16.2.4 scaffold created
 - All dependencies installed: Supabase, shadcn/ui, Zod, React Hook Form, Resend
-- shadcn initialized (Tailwind v4, new-york style) — 10 components added: button, card, dialog, input, label, select, textarea, accordion, badge, separator
-- Brand tokens applied: Fraunces/Inter/IBM Plex Mono fonts, cream/gold/charcoal/emerald/terracotta palette wired into globals.css @theme
-- layout.tsx updated with brand metadata and fonts; page.tsx cleared of boilerplate
-- npm run dev → Ready in ~350ms, zero TypeScript errors
-- Next: Task 0.3 — Create Supabase project and run initial migration SQL
+- Brand tokens applied: Fraunces/Inter/IBM Plex Mono fonts, cream/gold/charcoal/emerald/terracotta palette
 
 ### 22 April 2026 — Project setup complete
 - Claude Code project files generated by App Project Generator v3
