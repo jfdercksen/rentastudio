@@ -169,7 +169,7 @@ export async function POST(request: Request): Promise<NextResponse> {
     notify_url: `${siteUrl}/api/payfast/itn`,
     m_payment_id: paymentId,
     amount: totalAmount.toFixed(2),
-    item_name: `Kyalami Studio — ${data.packageType} ${data.date}`,
+    item_name: `Kyalami Studio - ${data.packageType} ${data.date}`,
     email_address: data.clientEmail,
     name_first: data.clientName.split(" ")[0] ?? data.clientName,
     name_last: data.clientName.split(" ").slice(1).join(" ") || "",
@@ -177,7 +177,7 @@ export async function POST(request: Request): Promise<NextResponse> {
 
   const signature = buildPayFastSignature(
     payfastParams,
-    process.env.PAYFAST_PASSPHRASE
+    process.env.PAYFAST_PASSPHRASE?.trim()
   );
   const payfastPayload = buildPayFastPayload(
     {
