@@ -19,6 +19,7 @@ export function buildPayFastSignature(
     ? `${queryString}&passphrase=${pfEncode(passphrase)}`
     : queryString;
 
+  console.error("[PayFast] signature string:", toHash);
   return crypto.createHash("md5").update(toHash).digest("hex");
 }
 
