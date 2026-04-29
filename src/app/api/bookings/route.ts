@@ -167,12 +167,12 @@ export async function POST(request: Request): Promise<NextResponse> {
     return_url: `${siteUrl}/booking/confirmed`,
     cancel_url: `${siteUrl}/booking`,
     notify_url: `${siteUrl}/api/payfast/itn`,
-    m_payment_id: paymentId,
-    amount: totalAmount.toFixed(2),
-    item_name: `Kyalami Studio - ${data.packageType} ${data.date}`,
     name_first: data.clientName.split(" ")[0] ?? data.clientName,
     name_last: data.clientName.split(" ").slice(1).join(" ") || "",
     email_address: data.clientEmail,
+    m_payment_id: paymentId,
+    amount: totalAmount.toFixed(2),
+    item_name: `Kyalami Studio - ${data.packageType} ${data.date}`,
   };
 
   const signature = buildPayFastSignature(
@@ -186,12 +186,12 @@ export async function POST(request: Request): Promise<NextResponse> {
       returnUrl: payfastParams.return_url,
       cancelUrl: payfastParams.cancel_url,
       notifyUrl: payfastParams.notify_url,
+      nameFirst: payfastParams.name_first,
+      nameLast: payfastParams.name_last,
+      emailAddress: payfastParams.email_address,
       mPaymentId: paymentId,
       amount: payfastParams.amount,
       itemName: payfastParams.item_name,
-      emailAddress: payfastParams.email_address,
-      nameFirst: payfastParams.name_first,
-      nameLast: payfastParams.name_last,
     },
     signature
   );

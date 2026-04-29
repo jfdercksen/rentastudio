@@ -38,10 +38,10 @@ export function buildPayFastPayload(
     item_name: input.itemName,
   };
 
-  if (input.itemDescription) payload.item_description = input.itemDescription;
   if (input.nameFirst) payload.name_first = input.nameFirst;
   if (input.nameLast) payload.name_last = input.nameLast;
   if (input.emailAddress) payload.email_address = input.emailAddress;
+  if (input.itemDescription) payload.item_description = input.itemDescription;
 
   payload.signature = signature;
   return payload;
