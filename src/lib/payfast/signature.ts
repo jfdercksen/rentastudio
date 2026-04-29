@@ -12,7 +12,6 @@ export function buildPayFastSignature(
 ): string {
   const queryString = Object.entries(params)
     .filter(([key, value]) => key !== "signature" && value !== "" && value != null)
-    .sort(([a], [b]) => a.localeCompare(b))
     .map(([key, value]) => `${key}=${pfEncode(value)}`)
     .join("&");
 
@@ -39,9 +38,9 @@ export function buildPayFastPayload(
   };
 
   if (input.itemDescription) payload.item_description = input.itemDescription;
-  if (input.emailAddress) payload.email_address = input.emailAddress;
   if (input.nameFirst) payload.name_first = input.nameFirst;
   if (input.nameLast) payload.name_last = input.nameLast;
+  if (input.emailAddress) payload.email_address = input.emailAddress;
 
   payload.signature = signature;
   return payload;

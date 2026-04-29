@@ -170,9 +170,9 @@ export async function POST(request: Request): Promise<NextResponse> {
     m_payment_id: paymentId,
     amount: totalAmount.toFixed(2),
     item_name: `Kyalami Studio - ${data.packageType} ${data.date}`,
-    email_address: data.clientEmail,
     name_first: data.clientName.split(" ")[0] ?? data.clientName,
     name_last: data.clientName.split(" ").slice(1).join(" ") || "",
+    email_address: data.clientEmail,
   };
 
   const signature = buildPayFastSignature(
