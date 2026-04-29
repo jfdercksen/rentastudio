@@ -1,5 +1,6 @@
 import Nav from "@/components/public/Nav";
 import Hero from "@/components/public/Hero";
+import VideoReel from "@/components/public/VideoReel";
 import TheSpace from "@/components/public/TheSpace";
 import Pricing from "@/components/public/Pricing";
 import Equipment from "@/components/public/Equipment";
@@ -13,6 +14,7 @@ export default function Home() {
       <Nav />
       <main>
         <Hero />
+        <VideoReel />
         <TheSpace />
         <Pricing />
         <Equipment />
