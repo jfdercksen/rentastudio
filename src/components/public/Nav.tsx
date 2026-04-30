@@ -54,7 +54,6 @@ export default function Nav() {
       {/* Desktop nav */}
       <div
         style={{
-          display: "flex",
           gap: 36,
           alignItems: "center",
         }}
