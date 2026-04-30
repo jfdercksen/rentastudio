@@ -138,6 +138,7 @@ export default async function TheSpace() {
 
         {/* Image grid */}
         <div
+          className="space-mosaic"
           style={{
             display: "grid",
             gridTemplateColumns: "repeat(12, 1fr)",

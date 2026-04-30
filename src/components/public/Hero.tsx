@@ -4,7 +4,7 @@ export default function Hero() {
   return (
     <section
       style={{
-        padding: "140px 32px 80px",
+        padding: "clamp(96px, 14vw, 140px) clamp(20px, 4vw, 32px) clamp(56px, 8vw, 80px)",
         maxWidth: 1240,
         margin: "0 auto",
       }}
@@ -121,6 +121,7 @@ export default function Hero() {
 
         {/* Right — studio video */}
         <div
+          className="hero-video-panel"
           style={{
             position: "relative",
             borderRadius: 16,
