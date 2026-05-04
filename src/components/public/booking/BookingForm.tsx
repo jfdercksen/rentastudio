@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 import DatePicker from "./DatePicker";
 import TimePicker from "./TimePicker";
 import PackageSelector from "./PackageSelector";
@@ -49,10 +49,8 @@ const EMPTY_STATE: BookingFormState = {
 
 export default function BookingForm({ pricing, addOns }: BookingFormProps) {
   const [step, setStep] = useState(1);
-  function goToStep(n: number) {
-    window.scrollTo({ top: 0, behavior: "smooth" });
-    setStep(n);
-  }
+  useEffect(() => { window.scrollTo(0, 0); }, [step]);
+  function goToStep(n: number) { setStep(n); }
   const [form, setForm] = useState<BookingFormState>(EMPTY_STATE);
   const [slots, setSlots] = useState<TimeSlot[]>([]);
   const [loadingSlots, setLoadingSlots] = useState(false);
