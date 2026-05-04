@@ -7,7 +7,7 @@ interface DatePickerProps {
   onChange: (date: string) => void;
 }
 
-const DAYS = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+const DAYS = ["Su", "Mo", "Tu", "We", "Th", "Fr", "Sa"];
 const MONTHS = [
   "January", "February", "March", "April", "May", "June",
   "July", "August", "September", "October", "November", "December",
@@ -141,7 +141,7 @@ export default function DatePicker({ value, onChange }: DatePickerProps) {
               textAlign: "center",
               fontFamily: "var(--font-ibm-plex-mono), monospace",
               fontSize: 10,
-              letterSpacing: "0.1em",
+              letterSpacing: "0.02em",
               textTransform: "uppercase",
               color: "#8a857a",
               padding: "4px 0",

@@ -216,6 +216,19 @@
   }
 }
 
+/* ─── Booking form — mobile overrides (≤ 640px) ─── */
+@media (max-width: 640px) {
+  /* Stack two-column field pairs to single column */
+  .booking-two-col {
+    grid-template-columns: 1fr !important;
+  }
+
+  /* Duration cards: tighten padding so all three fit */
+  .duration-card {
+    padding: 12px 6px !important;
+  }
+}
+
 /* Hover states for price cards */
 .price-card:hover {
   transform: translateY(-4px);

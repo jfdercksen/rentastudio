@@ -130,7 +130,7 @@ export default function PackageSelector({
         >
           Duration
         </p>
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 12 }}>
+        <div className="duration-grid" style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 12 }}>
           {DURATIONS.map((dur) => {
             const price =
               packageType ? getPrice(packageType, dur.value) : null;
@@ -139,6 +139,7 @@ export default function PackageSelector({
               <button
                 key={dur.value}
                 onClick={() => onDurationChange(dur.value)}
+                className="duration-card"
                 style={{
                   padding: "16px 12px",
                   borderRadius: 8,
