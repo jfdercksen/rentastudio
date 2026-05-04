@@ -218,6 +218,11 @@
 
 /* ─── Booking form — mobile overrides (≤ 640px) ─── */
 @media (max-width: 640px) {
+  /* Step 1: calendar + time picker stack vertically */
+  .booking-step1-grid {
+    grid-template-columns: 1fr !important;
+  }
+
   /* Stack two-column field pairs to single column */
   .booking-two-col {
     grid-template-columns: 1fr !important;

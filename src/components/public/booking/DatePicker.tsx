@@ -141,7 +141,7 @@ export default function DatePicker({ value, onChange }: DatePickerProps) {
               textAlign: "center",
               fontFamily: "var(--font-ibm-plex-mono), monospace",
               fontSize: 10,
-              letterSpacing: "0.02em",
+              letterSpacing: "0.08em",
               textTransform: "uppercase",
               color: "#8a857a",
               padding: "4px 0",
