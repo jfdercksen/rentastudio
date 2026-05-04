@@ -1,10 +1,7 @@
 import { NextResponse } from "next/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { BookingSchema } from "@/lib/validations/booking";
-import {
-  buildPayFastSignature,
-  buildPayFastPayload,
-} from "@/lib/payfast/signature";
+import { buildPayFastSignature } from "@/lib/payfast/signature";
 
 const DEPOSIT_AMOUNT = 750;
 
@@ -161,14 +158,20 @@ export async function POST(request: Request): Promise<NextResponse> {
     ? "https://sandbox.payfast.co.za/eng/process"
     : "https://www.payfast.co.za/eng/process";
 
+  const nameParts = data.clientName.split(" ");
+  const nameFirst = nameParts[0] ?? data.clientName;
+  const nameLast = nameParts.slice(1).join(" ");
+
+  // Build params in PayFast's expected order, omitting empty fields so the
+  // signature string matches exactly what PayFast recomputes from the POST body.
   const payfastParams: Record<string, string> = {
     merchant_id: process.env.PAYFAST_MERCHANT_ID ?? "",
     merchant_key: process.env.PAYFAST_MERCHANT_KEY ?? "",
     return_url: `${siteUrl}/booking/confirmed`,
     cancel_url: `${siteUrl}/booking`,
     notify_url: `${siteUrl}/api/payfast/itn`,
-    name_first: data.clientName.split(" ")[0] ?? data.clientName,
-    name_last: data.clientName.split(" ").slice(1).join(" ") || "",
+    name_first: nameFirst,
+    ...(nameLast ? { name_last: nameLast } : {}),
     email_address: data.clientEmail,
     m_payment_id: paymentId,
     amount: totalAmount.toFixed(2),
@@ -179,22 +182,10 @@ export async function POST(request: Request): Promise<NextResponse> {
     payfastParams,
     process.env.PAYFAST_PASSPHRASE?.trim()
   );
-  const payfastPayload = buildPayFastPayload(
-    {
-      merchantId: payfastParams.merchant_id,
-      merchantKey: payfastParams.merchant_key,
-      returnUrl: payfastParams.return_url,
-      cancelUrl: payfastParams.cancel_url,
-      notifyUrl: payfastParams.notify_url,
-      nameFirst: payfastParams.name_first,
-      nameLast: payfastParams.name_last,
-      emailAddress: payfastParams.email_address,
-      mPaymentId: paymentId,
-      amount: payfastParams.amount,
-      itemName: payfastParams.item_name,
-    },
-    signature
-  );
+
+  // Use the same params object (same field order) as the submitted payload.
+  // Rebuilding it in a different order causes signature mismatches on PayFast's side.
+  const payfastPayload = { ...payfastParams, signature };
 
   return NextResponse.json(
     { bookingId: booking.id, payfastUrl, payfastPayload },
