@@ -3,7 +3,7 @@
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import type { ClientDetails } from "@/types/booking";
 
 const ClientSchema = z.object({
@@ -61,10 +61,13 @@ const errorStyle: React.CSSProperties = {
   marginTop: 4,
 };
 
+const MAX_FILE_BYTES = 2 * 1024 * 1024; // 2MB — base64 overhead keeps total under Vercel's 4.5MB body limit
+
 export default function ClientDetailsForm({
   value,
   onChange,
 }: ClientDetailsFormProps) {
+  const [fileError, setFileError] = useState<string | null>(null);
   const {
     register,
     watch,
@@ -149,17 +152,25 @@ export default function ClientDetailsForm({
       <div>
         <FieldLabel required>Passport or ID Document</FieldLabel>
         <p style={{ fontSize: 12, color: "#8a857a", marginBottom: 8, lineHeight: 1.5 }}>
-          Required for identity verification. Securely stored, used only for booking confirmation. Max 10MB.
+          Required for identity verification. Securely stored, used only for booking confirmation. Max 2MB.
         </p>
         <input
           type="file"
           accept="image/*,.pdf"
           onChange={(e) => {
             const file = e.target.files?.[0] ?? null;
+            if (file && file.size > MAX_FILE_BYTES) {
+              setFileError("File is too large. Please upload an image or PDF under 2MB.");
+              e.target.value = "";
+              onChange({ ...value, idDocumentFile: null });
+              return;
+            }
+            setFileError(null);
             onChange({ ...value, idDocumentFile: file });
           }}
           style={{ ...fieldStyle, padding: "10px 16px", fontSize: 13, cursor: "pointer" }}
         />
+        {fileError && <p style={errorStyle}>{fileError}</p>}
       </div>
     </div>
   );
