@@ -178,10 +178,23 @@ export async function POST(request: Request): Promise<NextResponse> {
     item_name: `Kyalami Studio - ${data.packageType} ${data.date}`,
   };
 
-  const signature = buildPayFastSignature(
-    payfastParams,
-    process.env.PAYFAST_PASSPHRASE?.trim()
-  );
+  const passphrase = process.env.PAYFAST_PASSPHRASE?.trim();
+  const signature = buildPayFastSignature(payfastParams, passphrase);
+
+  // --- TEMPORARY DIAGNOSTIC LOGGING — remove once signature mismatch is resolved ---
+  const queryParts = Object.entries(payfastParams)
+    .filter(([, v]) => v !== "" && v != null)
+    .map(([k, v]) => `${k}=${v}`)
+    .join("&");
+  const passphraseLog = passphrase
+    ? `[SET — ${passphrase.length} chars, starts: ${passphrase.slice(0, 3)}...]`
+    : "[NOT SET]";
+  console.error("[PayFast] passphrase:", passphraseLog);
+  console.error("[PayFast] merchant_id:", process.env.PAYFAST_MERCHANT_ID?.slice(0, 4) + "...");
+  console.error("[PayFast] field order:", Object.keys(payfastParams).join(", "));
+  console.error("[PayFast] pre-encode query string:", queryParts);
+  console.error("[PayFast] generated signature:", signature);
+  // --- END TEMPORARY DIAGNOSTIC LOGGING ---
 
   // Use the same params object (same field order) as the submitted payload.
   // Rebuilding it in a different order causes signature mismatches on PayFast's side.

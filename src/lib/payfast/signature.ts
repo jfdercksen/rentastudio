@@ -1,9 +1,15 @@
 import crypto from "crypto";
 import type { BookingPayfastInput } from "@/types/payfast";
 
-// PayFast requires PHP urlencode() format: spaces become +, not %20
+// Match PHP urlencode() exactly:
+//   - spaces → +
+//   - ! ~ * ' ( ) are encoded by PHP urlencode but NOT by encodeURIComponent
+// Any mismatch here causes a signature failure if a field value contains those chars
+// (e.g. a client name with an apostrophe like "D'Angelo").
 function pfEncode(value: string): string {
-  return encodeURIComponent(value).replace(/%20/g, "+");
+  return encodeURIComponent(value)
+    .replace(/%20/g, "+")
+    .replace(/[!'()*~]/g, (c) => `%${c.charCodeAt(0).toString(16).toUpperCase()}`);
 }
 
 export function buildPayFastSignature(
