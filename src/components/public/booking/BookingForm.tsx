@@ -49,6 +49,10 @@ const EMPTY_STATE: BookingFormState = {
 
 export default function BookingForm({ pricing, addOns }: BookingFormProps) {
   const [step, setStep] = useState(1);
+  function goToStep(n: number) {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+    setStep(n);
+  }
   const [form, setForm] = useState<BookingFormState>(EMPTY_STATE);
   const [slots, setSlots] = useState<TimeSlot[]>([]);
   const [loadingSlots, setLoadingSlots] = useState(false);
@@ -330,7 +334,7 @@ export default function BookingForm({ pricing, addOns }: BookingFormProps) {
             </div>
           </div>
           <button
-            onClick={() => setStep(2)}
+            onClick={() => goToStep(2)}
             disabled={!canAdvanceStep1()}
             style={nextBtnStyle(!canAdvanceStep1())}
           >
@@ -352,11 +356,11 @@ export default function BookingForm({ pricing, addOns }: BookingFormProps) {
             onDurationChange={(dur) => setForm((f) => ({ ...f, durationType: dur }))}
           />
           <div style={{ display: "flex", gap: 12, marginTop: 32 }}>
-            <button onClick={() => setStep(1)} style={backBtnStyle}>
+            <button onClick={() => goToStep(1)} style={backBtnStyle}>
               ← Back
             </button>
             <button
-              onClick={() => setStep(3)}
+              onClick={() => goToStep(3)}
               disabled={!canAdvanceStep2()}
               style={nextBtnStyle(!canAdvanceStep2())}
             >
@@ -413,11 +417,11 @@ export default function BookingForm({ pricing, addOns }: BookingFormProps) {
           </div>
 
           <div style={{ display: "flex", gap: 12 }}>
-            <button onClick={() => setStep(2)} style={backBtnStyle}>
+            <button onClick={() => goToStep(2)} style={backBtnStyle}>
               ← Back
             </button>
             <button
-              onClick={() => setStep(4)}
+              onClick={() => goToStep(4)}
               disabled={!canAdvanceStep3()}
               style={nextBtnStyle(!canAdvanceStep3())}
             >
@@ -497,7 +501,7 @@ export default function BookingForm({ pricing, addOns }: BookingFormProps) {
             isSubmitting={isSubmitting}
           />
 
-          <button onClick={() => setStep(3)} style={{ ...backBtnStyle, marginTop: 16 }}>
+          <button onClick={() => goToStep(3)} style={{ ...backBtnStyle, marginTop: 16 }}>
             ← Back
           </button>
         </div>
