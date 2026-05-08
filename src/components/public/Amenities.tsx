@@ -1,7 +1,7 @@
 const AMENITIES = [
   {
     title: "Coffee Machine",
-    desc: "Freshly brewed espresso, cappuccino or filter — help yourself, on us.",
+    desc: "Filter coffee available — help yourself, on us.",
     icon: (
       <svg
         viewBox="0 0 24 24"
