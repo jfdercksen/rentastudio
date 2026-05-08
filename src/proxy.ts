@@ -32,8 +32,8 @@ export async function proxy(request: NextRequest) {
     data: { user },
   } = await supabase.auth.getUser();
 
-  // Protect all /dashboard routes — redirect to /login if not authenticated
-  if (request.nextUrl.pathname.startsWith("/dashboard") && !user) {
+  // Protect all /admin routes — redirect to /login if not authenticated
+  if (request.nextUrl.pathname.startsWith("/admin") && !user) {
     const loginUrl = request.nextUrl.clone();
     loginUrl.pathname = "/login";
     return NextResponse.redirect(loginUrl);

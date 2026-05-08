@@ -39,4 +39,16 @@ When you find a bug or bad pattern, add it immediately:
 
 ---
 
-*Add new patterns below as they are discovered during the build.*
+### pfEncode does not match PHP urlencode for special characters
+**Found in:** `src/lib/payfast/signature.ts`
+**What went wrong:** `encodeURIComponent` does not encode `!`, `~`, `*`, `'`, `(`, `)`. PHP `urlencode()` encodes all six. If any field value (e.g. a client name with an apostrophe) contains these chars, our signature string differs from PayFast's recomputed one, producing a 400 "signature mismatch" error.
+**Correct pattern:** After `encodeURIComponent`, apply `.replace(/[!'()*~]/g, (c) => \`%\${c.charCodeAt(0).toString(16).toUpperCase()}\`)` so the output matches PHP `urlencode()` exactly.
+**Date added:** May 2026
+
+---
+
+### PayFast passphrase mismatch between env and merchant account
+**Found in:** `src/app/api/bookings/route.ts` (operational, not code)
+**What went wrong:** `PAYFAST_PASSPHRASE` set in Vercel env but the PayFast merchant account has a different passphrase (or no passphrase at all), or vice versa. Both sides hash a different string, so signatures never match. This produces an identical 400 error to every other signature bug, making it hard to distinguish.
+**Correct pattern:** Log into PayFast merchant dashboard → Settings → Merchant Account Information and verify the passphrase matches the Vercel env var exactly (case-sensitive, no trailing whitespace). If PayFast has no passphrase configured, `PAYFAST_PASSPHRASE` must be absent or empty in Vercel.
+**Date added:** May 2026

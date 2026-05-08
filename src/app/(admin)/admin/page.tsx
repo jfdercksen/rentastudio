@@ -37,10 +37,10 @@ function formatPackage(p: string): string {
 }
 
 const QUICK_LINKS = [
-  { href: "/dashboard/bookings", label: "Bookings", desc: "View and manage all bookings" },
-  { href: "/dashboard/pricing", label: "Pricing", desc: "Edit package and add-on prices" },
-  { href: "/dashboard/gallery", label: "Gallery", desc: "Upload and manage gallery images" },
-  { href: "/dashboard/content", label: "Content", desc: "Edit FAQ, T&C, and footer" },
+  { href: "/admin/bookings", label: "Bookings", desc: "View and manage all bookings" },
+  { href: "/admin/pricing", label: "Pricing", desc: "Edit package and add-on prices" },
+  { href: "/admin/gallery", label: "Gallery", desc: "Upload and manage gallery images" },
+  { href: "/admin/content", label: "Content", desc: "Edit FAQ, T&C, and footer" },
 ];
 
 export default async function DashboardPage() {
@@ -173,7 +173,7 @@ export default async function DashboardPage() {
             Upcoming Bookings (next 7 days)
           </h2>
           <Link
-            href="/dashboard/bookings"
+            href="/admin/bookings"
             style={{ fontSize: 13, color: "#a87d36", textDecoration: "none" }}
           >
             View all →

@@ -1,0 +1,2450 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Rent a Studio — Kyalami Estates | Fully Equipped Content Studio</title>
+<meta name="description" content="Rent a fully equipped content studio in Kyalami Estates. Camera, lighting, green screen, microphones & teleprompter included. Perfect for YouTubers, content creators & corporate videos." />
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,400;9..144,500;9..144,600;9..144,700&family=IBM+Plex+Mono:wght@400;500&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+<style>
+  :root {
+    /* Core palette */
+    --bg: #faf7f2;
+    --bg-alt: #f5f0e8;
+    --ink: #0e0d0b;
+    --ink-soft: #3a3a34;
+    --line: #e8e2d6;
+    --line-strong: #d4cbb8;
+    --muted: #8a857a;
+    --card: #ffffff;
+
+    /* Accent colours — warm, editorial */
+    --gold: #c8984a;
+    --gold-dark: #a87d36;
+    --gold-soft: #f3e6cb;
+    --emerald: #2f5f3f;
+    --emerald-soft: #e8efea;
+    --terracotta: #c75a3c;
+    --cream: #f7ecd7;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'Inter', sans-serif;
+    background: var(--bg);
+    color: var(--ink);
+    font-weight: 400;
+    line-height: 1.55;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .container { max-width: 1240px; margin: 0 auto; padding: 0 32px; }
+
+  /* NAV */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0;
+    padding: 20px 32px;
+    display: flex; justify-content: space-between; align-items: center;
+    z-index: 100;
+    background: rgba(250,247,242,0.88);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid transparent;
+    transition: border-color .3s;
+  }
+  nav.scrolled { border-bottom-color: var(--line); }
+  .logo {
+    font-family: 'Fraunces', serif;
+    font-size: 22px; font-weight: 500;
+    letter-spacing: -0.02em;
+  }
+  .logo span { font-style: italic; font-weight: 300; color: var(--gold); }
+  .nav-links { display: flex; gap: 36px; align-items: center; }
+  .nav-links a {
+    color: var(--ink); text-decoration: none;
+    font-size: 14px; font-weight: 400;
+    transition: color .2s;
+  }
+  .nav-links a:hover { color: var(--gold-dark); }
+  .nav-cta {
+    padding: 10px 20px;
+    background: var(--ink); color: var(--bg) !important;
+    border-radius: 100px;
+    font-size: 13px !important; font-weight: 500 !important;
+    letter-spacing: 0.02em;
+    transition: background .2s !important;
+  }
+  .nav-cta:hover { background: var(--gold) !important; color: var(--ink) !important; }
+  .mobile-toggle { display: none; background: none; border: none; cursor: pointer; }
+
+  /* HERO */
+  .hero {
+    padding: 180px 32px 120px;
+    max-width: 1240px; margin: 0 auto;
+    position: relative;
+  }
+  .hero-bg {
+    position: absolute;
+    top: 0; right: -40px;
+    width: 55%; height: 100%;
+    background:
+      radial-gradient(ellipse at 30% 40%, rgba(47,95,63,0.18) 0%, transparent 55%),
+      radial-gradient(ellipse at 70% 70%, rgba(200,152,74,0.22) 0%, transparent 60%),
+      linear-gradient(135deg, #1a2620 0%, #0e0d0b 100%);
+    opacity: 0.35;
+    z-index: -2;
+    pointer-events: none;
+    mask-image: linear-gradient(to left, black 30%, transparent 95%);
+    -webkit-mask-image: linear-gradient(to left, black 30%, transparent 95%);
+  }
+  .hero::before {
+    content: '';
+    position: absolute;
+    top: 120px; right: 0;
+    width: 520px; height: 520px;
+    background: radial-gradient(circle at center, var(--gold-soft) 0%, transparent 70%);
+    opacity: 0.55; z-index: -1;
+    pointer-events: none;
+  }
+  .eyebrow {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 12px; letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--gold-dark);
+    margin-bottom: 28px;
+    display: flex; align-items: center; gap: 12px;
+    font-weight: 500;
+  }
+  .eyebrow::before {
+    content: ''; width: 28px; height: 1px; background: var(--gold);
+  }
+  h1 {
+    font-family: 'Fraunces', serif;
+    font-size: clamp(44px, 8vw, 104px);
+    font-weight: 300;
+    line-height: 0.98;
+    letter-spacing: -0.035em;
+    margin-bottom: 40px;
+    max-width: 900px;
+  }
+  h1 em {
+    font-style: italic;
+    font-weight: 300;
+    color: var(--gold-dark);
+    position: relative;
+  }
+  .hero-sub {
+    font-size: 18px; color: var(--ink-soft);
+    max-width: 580px;
+    margin-bottom: 48px;
+    line-height: 1.6;
+  }
+  .hero-actions { display: flex; gap: 16px; flex-wrap: wrap; }
+  .btn {
+    padding: 16px 32px;
+    border-radius: 100px;
+    font-size: 14px; font-weight: 500;
+    letter-spacing: 0.02em;
+    cursor: pointer; border: none;
+    text-decoration: none;
+    display: inline-flex; align-items: center; gap: 10px;
+    transition: all .25s;
+    font-family: inherit;
+  }
+  .btn-primary { background: var(--ink); color: var(--bg); }
+  .btn-primary:hover {
+    background: var(--gold); color: var(--ink);
+    transform: translateY(-2px); box-shadow: 0 10px 30px rgba(200,152,74,0.35);
+  }
+  .btn-ghost {
+    background: transparent; color: var(--ink);
+    border: 1px solid var(--ink);
+  }
+  .btn-ghost:hover {
+    background: var(--ink); color: var(--bg);
+    border-color: var(--ink);
+  }
+
+  .hero-meta {
+    display: flex; gap: 48px; margin-top: 72px;
+    padding-top: 32px; border-top: 1px solid var(--line-strong);
+    flex-wrap: wrap;
+  }
+  .meta-item .meta-label {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px; letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--muted); margin-bottom: 6px;
+  }
+  .meta-item .meta-value {
+    font-family: 'Fraunces', serif;
+    font-size: 20px; font-weight: 400;
+  }
+  .meta-item .meta-value.accent { color: var(--gold-dark); }
+
+  /* SECTION */
+  section { padding: 120px 0; }
+  .section-head { margin-bottom: 72px; max-width: 780px; }
+  .section-head .eyebrow { margin-bottom: 20px; }
+  .section-head h2 {
+    font-family: 'Fraunces', serif;
+    font-size: clamp(36px, 5vw, 60px);
+    font-weight: 300; letter-spacing: -0.02em;
+    line-height: 1.05;
+  }
+  .section-head h2 em {
+    font-style: italic;
+    color: var(--gold-dark);
+  }
+  .section-head p {
+    margin-top: 20px;
+    font-size: 17px; color: var(--ink-soft);
+    line-height: 1.6;
+  }
+
+  /* SPACE */
+  .space {
+    background: #fff;
+    border-top: 1px solid var(--line);
+    border-bottom: 1px solid var(--line);
+  }
+  .space-grid {
+    display: grid; grid-template-columns: repeat(12, 1fr);
+    gap: 4px;
+  }
+  .space-card {
+    background: #ededea;
+    aspect-ratio: 1/1;
+    position: relative; overflow: hidden;
+    display: flex; align-items: flex-end;
+    padding: 24px;
+    transition: all .4s;
+  }
+  .space-card:nth-child(1) { grid-column: span 7; aspect-ratio: 16/10; }
+  .space-card:nth-child(2) { grid-column: span 5; aspect-ratio: 16/10; }
+  .space-card:nth-child(3) { grid-column: span 4; }
+  .space-card:nth-child(4) { grid-column: span 4; }
+  .space-card:nth-child(5) { grid-column: span 4; }
+
+  .space-card::before {
+    content: ''; position: absolute; inset: 0;
+    background: linear-gradient(180deg, transparent 55%, rgba(14,13,11,0.75));
+    z-index: 2;
+  }
+  .space-card .ph {
+    position: absolute; inset: 0;
+    background-size: cover; background-position: center;
+  }
+  .space-card .ph-photo {
+    position: absolute; inset: 0;
+    width: 100%; height: 100%;
+    object-fit: cover;
+    z-index: 1;
+    transition: transform .6s ease;
+  }
+  /* When a photo successfully loads, hide the icon circle */
+  .space-card:hover .ph-photo { transform: scale(1.04); }
+  .space-card .ph-icon {
+    position: absolute;
+    top: 24px; right: 24px;
+    width: 44px; height: 44px;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    z-index: 3;
+    pointer-events: none;
+    background: rgba(255,255,255,0.1);
+    border: 1px solid rgba(255,255,255,0.25);
+    backdrop-filter: blur(10px);
+    box-shadow: 0 4px 20px rgba(0,0,0,0.25);
+  }
+  .space-card .ph-icon svg {
+    width: 20px; height: 20px;
+    stroke: var(--gold);
+    stroke-width: 1.6;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    fill: none;
+    filter: drop-shadow(0 1px 4px rgba(0,0,0,0.5));
+  }
+  .space-card.ph-greenscreen {
+    background:
+      radial-gradient(ellipse at 50% 40%, rgba(47,95,63,0.4) 0%, transparent 60%),
+      radial-gradient(ellipse at 20% 80%, rgba(200,152,74,0.18) 0%, transparent 50%),
+      linear-gradient(135deg, #1f3a2b 0%, #0a1812 100%);
+  }
+  .space-card.ph-camera {
+    background:
+      radial-gradient(ellipse at 30% 50%, rgba(200,152,74,0.3) 0%, transparent 55%),
+      linear-gradient(135deg, #2a2520 0%, #0e0b08 100%);
+  }
+  .space-card.ph-audio {
+    background:
+      radial-gradient(ellipse at 60% 50%, rgba(199,90,60,0.25) 0%, transparent 55%),
+      linear-gradient(135deg, #2a1f1b 0%, #150e0a 100%);
+  }
+  .space-card.ph-lighting {
+    background:
+      radial-gradient(ellipse at 50% 30%, rgba(243,230,203,0.35) 0%, transparent 55%),
+      radial-gradient(ellipse at 50% 80%, rgba(200,152,74,0.2) 0%, transparent 50%),
+      linear-gradient(180deg, #3a2f1c 0%, #1a1308 100%);
+  }
+  .space-card.ph-teleprompter {
+    background:
+      radial-gradient(ellipse at 50% 50%, rgba(47,95,63,0.25) 0%, transparent 55%),
+      linear-gradient(135deg, #1a1f22 0%, #0a0e10 100%);
+  }
+  .space-card .label {
+    position: relative; z-index: 4;
+    color: #fff;
+    font-family: 'Fraunces', serif;
+    font-size: 22px; font-weight: 400;
+    letter-spacing: -0.01em;
+  }
+  .space-card .label small {
+    display: block;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px; letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 6px;
+    font-weight: 500;
+  }
+  .space-card:hover .ph { transform: scale(1.04); }
+  .space-card .ph { transition: transform .6s ease; }
+
+  /* PRICING */
+  .pricing {
+    background: var(--bg-alt);
+    position: relative;
+  }
+  .pricing::before {
+    content: '';
+    position: absolute;
+    top: 15%; left: -100px;
+    width: 300px; height: 300px;
+    background: radial-gradient(circle, var(--emerald-soft) 0%, transparent 70%);
+    opacity: 0.8; pointer-events: none;
+  }
+  .tier-toggle {
+    display: inline-flex;
+    background: #fff;
+    border: 1px solid var(--line);
+    border-radius: 100px;
+    padding: 4px;
+    margin-bottom: 48px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.04);
+  }
+  .tier-toggle button {
+    padding: 12px 24px;
+    background: transparent;
+    border: none; cursor: pointer;
+    font-family: inherit;
+    font-size: 13px; font-weight: 500;
+    letter-spacing: 0.02em;
+    border-radius: 100px;
+    color: var(--ink-soft);
+    transition: all .25s;
+  }
+  .tier-toggle button.active {
+    background: var(--ink); color: var(--bg);
+  }
+
+  .rate-block { display: none; }
+  .rate-block.active { display: block; }
+
+  .rate-group { margin-bottom: 48px; }
+  .rate-group-title {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 12px; letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--gold-dark);
+    margin-bottom: 20px;
+    display: flex; align-items: center; gap: 12px;
+    font-weight: 500;
+  }
+  .rate-group-title::after {
+    content: ''; flex: 1; height: 1px; background: var(--line-strong);
+  }
+
+  .pricing-grid {
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px;
+  }
+  .price-card {
+    background: var(--card);
+    border: 1px solid var(--line);
+    padding: 36px 32px;
+    border-radius: 8px;
+    display: flex; flex-direction: column;
+    transition: all .3s;
+    position: relative;
+    overflow: hidden;
+  }
+  .price-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+    background: var(--line);
+    transition: background .3s;
+  }
+  .price-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 20px 50px rgba(0,0,0,0.06);
+  }
+  .price-card:hover::before { background: var(--gold); }
+
+  .price-card.featured {
+    background: var(--ink); color: var(--bg);
+    border-color: var(--ink);
+  }
+  .price-card.featured::before { background: var(--gold); }
+  .price-card.featured .price-label { color: var(--gold); }
+  .price-card.featured .price-feature { border-top-color: rgba(255,255,255,0.12); }
+  .price-card.featured .price-feature::before { background: var(--gold); }
+  .price-card.featured:hover::before { background: var(--gold); }
+
+  .price-badge {
+    position: absolute; top: 24px; right: 24px;
+    background: var(--gold);
+    color: var(--ink);
+    padding: 6px 12px; border-radius: 100px;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px; letter-spacing: 0.12em;
+    text-transform: uppercase;
+    font-weight: 500;
+  }
+  .price-label {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px; letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--gold-dark);
+    margin-bottom: 16px;
+    font-weight: 500;
+  }
+  .price-title {
+    font-family: 'Fraunces', serif;
+    font-size: 28px; font-weight: 400;
+    letter-spacing: -0.02em;
+    margin-bottom: 6px;
+  }
+  .price-duration {
+    font-size: 13px; opacity: 0.7;
+    margin-bottom: 28px;
+  }
+  .price-amount {
+    font-family: 'Fraunces', serif;
+    font-size: 48px; font-weight: 300;
+    letter-spacing: -0.03em;
+    line-height: 1;
+    margin-bottom: 6px;
+  }
+  .price-amount small {
+    font-size: 14px; opacity: 0.6;
+    font-family: 'Inter', sans-serif;
+    font-weight: 400;
+  }
+  .price-per {
+    font-size: 13px; opacity: 0.6;
+    margin-bottom: 28px;
+  }
+  .price-features {
+    list-style: none;
+    margin-bottom: 28px;
+    flex-grow: 1;
+  }
+  .price-feature {
+    padding: 12px 0 12px 22px;
+    font-size: 13px;
+    border-top: 1px solid var(--line);
+    position: relative;
+  }
+  .price-feature:last-child { border-bottom: 1px solid var(--line); }
+  .price-feature::before {
+    content: ''; position: absolute;
+    left: 0; top: 50%;
+    width: 12px; height: 1px;
+    background: var(--gold);
+  }
+  .price-card.featured .price-feature:last-child { border-bottom-color: rgba(255,255,255,0.12); }
+  .btn-book {
+    padding: 14px 24px;
+    background: var(--ink); color: var(--bg);
+    border-radius: 100px;
+    font-size: 13px; font-weight: 500; letter-spacing: 0.02em;
+    border: none; cursor: pointer;
+    text-align: center;
+    transition: all .2s;
+    font-family: inherit;
+  }
+  .price-card.featured .btn-book {
+    background: var(--gold); color: var(--ink);
+  }
+  .price-card.featured .btn-book:hover { background: var(--bg); }
+  .btn-book:hover { background: var(--gold); color: var(--ink); }
+
+  /* EQUIPMENT */
+  .equipment {
+    background: #fff;
+    border-top: 1px solid var(--line);
+    position: relative;
+  }
+  .equipment::before {
+    content: '';
+    position: absolute;
+    top: 20%; right: -150px;
+    width: 400px; height: 400px;
+    background: radial-gradient(circle, var(--gold-soft) 0%, transparent 70%);
+    opacity: 0.5; pointer-events: none;
+  }
+  .equipment-grid {
+    display: grid; grid-template-columns: repeat(2, 1fr); gap: 0;
+    border-top: 1px solid var(--line);
+  }
+  .equipment-item {
+    padding: 32px 0;
+    border-bottom: 1px solid var(--line);
+    display: grid; grid-template-columns: 56px 1fr auto; gap: 20px;
+    align-items: center;
+  }
+  .equipment-item:nth-child(odd) { padding-right: 28px; border-right: 1px solid var(--line); }
+  .equipment-item:nth-child(even) { padding-left: 28px; }
+  .equipment-icon {
+    width: 48px; height: 48px;
+    border: 1px solid var(--gold);
+    background: var(--gold-soft);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 20px;
+  }
+  .equipment-title {
+    font-family: 'Fraunces', serif;
+    font-size: 18px; font-weight: 500;
+    letter-spacing: -0.01em;
+    margin-bottom: 4px;
+    line-height: 1.3;
+  }
+  .equipment-desc {
+    font-size: 12px; color: var(--muted);
+    font-family: 'IBM Plex Mono', monospace;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    line-height: 1.5;
+  }
+  .equipment-price {
+    font-family: 'Fraunces', serif;
+    font-size: 22px; font-weight: 500;
+    color: var(--gold-dark);
+    white-space: nowrap;
+  }
+  .equipment-price small {
+    font-family: 'Inter', sans-serif;
+    font-size: 11px;
+    color: var(--muted);
+    display: block;
+    margin-top: 2px;
+    letter-spacing: 0.05em;
+  }
+  .equipment-note {
+    margin-top: 40px;
+    padding: 28px;
+    background: var(--emerald-soft);
+    border-left: 3px solid var(--emerald);
+    font-size: 14px; color: var(--ink-soft);
+    line-height: 1.6;
+    border-radius: 4px;
+  }
+  .equipment-note strong { color: var(--emerald); }
+
+  /* AMENITIES */
+  .amenities {
+    background: #fff;
+    border-top: 1px solid var(--line);
+    position: relative;
+  }
+  .amenities::before {
+    content: '';
+    position: absolute;
+    top: 30%; left: -120px;
+    width: 300px; height: 300px;
+    background: radial-gradient(circle, var(--emerald-soft) 0%, transparent 70%);
+    opacity: 0.8; pointer-events: none;
+  }
+  .amenity-grid {
+    display: grid; grid-template-columns: repeat(3, 1fr);
+    gap: 32px 28px;
+  }
+  .amenity {
+    padding: 28px;
+    background: var(--bg);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    transition: all .3s;
+  }
+  .amenity:hover {
+    transform: translateY(-3px);
+    border-color: var(--gold);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+  }
+  .amenity-icon {
+    width: 52px; height: 52px;
+    background: var(--gold-soft);
+    color: var(--gold-dark);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    margin-bottom: 20px;
+  }
+  .amenity-icon svg { width: 24px; height: 24px; }
+  .amenity-title {
+    font-family: 'Fraunces', serif;
+    font-size: 20px; font-weight: 500;
+    letter-spacing: -0.01em;
+    margin-bottom: 8px;
+  }
+  .amenity-desc {
+    font-size: 14px;
+    color: var(--ink-soft);
+    line-height: 1.5;
+  }
+
+  /* BOOKING */
+  .booking {
+    background: var(--bg-alt);
+    position: relative;
+  }
+  .booking::before {
+    content: '';
+    position: absolute;
+    bottom: 10%; right: -80px;
+    width: 350px; height: 350px;
+    background: radial-gradient(circle, var(--gold-soft) 0%, transparent 70%);
+    opacity: 0.7; pointer-events: none;
+  }
+  .booking-wrap {
+    display: grid; grid-template-columns: 1fr 1.3fr; gap: 80px;
+    align-items: start;
+  }
+  .booking-info h2 {
+    font-family: 'Fraunces', serif;
+    font-size: clamp(36px, 5vw, 56px);
+    font-weight: 300;
+    letter-spacing: -0.02em;
+    line-height: 1.05;
+    margin-bottom: 24px;
+  }
+  .booking-info h2 em {
+    font-style: italic;
+    color: var(--gold-dark);
+  }
+  .booking-info p {
+    color: var(--ink-soft); font-size: 16px;
+    margin-bottom: 32px; line-height: 1.6;
+  }
+  .booking-terms {
+    border-top: 1px solid var(--line-strong);
+    padding-top: 24px;
+    margin-top: 24px;
+  }
+  .booking-terms li {
+    list-style: none;
+    padding: 10px 0;
+    font-size: 13px;
+    color: var(--ink-soft);
+    display: flex; gap: 12px;
+  }
+  .booking-terms li::before {
+    content: '—';
+    color: var(--gold);
+    font-weight: 500;
+  }
+
+  .booking-form {
+    background: #fff;
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 44px;
+    position: relative;
+    box-shadow: 0 4px 24px rgba(0,0,0,0.04);
+  }
+  .form-title {
+    font-family: 'Fraunces', serif;
+    font-size: 28px; font-weight: 400;
+    letter-spacing: -0.02em;
+    margin-bottom: 4px;
+  }
+  .form-sub {
+    font-size: 13px; color: var(--muted);
+    margin-bottom: 32px;
+  }
+
+  /* Form section headings */
+  .form-section {
+    margin-top: 32px;
+    padding-top: 28px;
+    border-top: 1px solid var(--line);
+  }
+  .form-section:first-of-type {
+    margin-top: 0;
+    padding-top: 0;
+    border-top: none;
+  }
+  .form-section-title {
+    font-family: 'Fraunces', serif;
+    font-size: 18px; font-weight: 500;
+    letter-spacing: -0.01em;
+    margin-bottom: 4px;
+    display: flex; align-items: center; gap: 10px;
+  }
+  .form-section-title .step {
+    display: inline-flex;
+    align-items: center; justify-content: center;
+    width: 28px; height: 28px;
+    background: var(--gold-soft);
+    color: var(--gold-dark);
+    border-radius: 50%;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 12px;
+    font-weight: 500;
+  }
+  .form-section-hint {
+    font-size: 13px;
+    color: var(--muted);
+    margin-bottom: 20px;
+    line-height: 1.5;
+    padding-left: 38px;
+  }
+
+  .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px; }
+  .form-field { margin-bottom: 16px; }
+  .form-field label {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 10px; letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 500;
+  }
+  .form-field label .req {
+    color: var(--terracotta);
+    margin-left: 2px;
+  }
+  .form-field input, .form-field select, .form-field textarea {
+    width: 100%; padding: 14px 16px;
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    background: var(--bg);
+    font-family: 'Inter', sans-serif;
+    font-size: 14px;
+    color: var(--ink);
+    transition: all .2s;
+  }
+  .form-field input:focus, .form-field select:focus, .form-field textarea:focus {
+    outline: none;
+    border-color: var(--gold);
+    background: #fff;
+    box-shadow: 0 0 0 3px rgba(200,152,74,0.12);
+  }
+  .form-field textarea { resize: vertical; min-height: 100px; }
+  .form-field input[type=file] {
+    padding: 12px 16px;
+    font-size: 13px;
+    cursor: pointer;
+  }
+  .form-field input[type=file]::file-selector-button {
+    padding: 8px 16px;
+    margin-right: 12px;
+    border: 1px solid var(--ink);
+    background: var(--ink);
+    color: var(--bg);
+    border-radius: 100px;
+    cursor: pointer;
+    font-family: inherit;
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 0.02em;
+    transition: all .2s;
+  }
+  .form-field input[type=file]::file-selector-button:hover {
+    background: var(--gold);
+    color: var(--ink);
+    border-color: var(--gold);
+  }
+
+  /* Equipment picker in form */
+  .equip-pick {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 14px 16px;
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    background: var(--bg);
+    margin-bottom: 8px;
+    cursor: pointer;
+    transition: all .2s;
+  }
+  .equip-pick:hover {
+    border-color: var(--gold);
+    background: var(--gold-soft);
+  }
+  .equip-pick input { width: auto; margin: 0; accent-color: var(--gold-dark); }
+  .equip-pick.checked {
+    background: #fff;
+    border-color: var(--gold-dark);
+    box-shadow: 0 0 0 2px var(--gold-soft);
+  }
+  .equip-pick-label {
+    display: flex; align-items: center; gap: 12px;
+    font-size: 13px;
+    flex: 1;
+    line-height: 1.4;
+  }
+  .equip-pick-price {
+    font-family: 'Fraunces', serif;
+    font-size: 16px; font-weight: 500;
+    color: var(--gold-dark);
+    white-space: nowrap;
+  }
+
+  /* Deposit box */
+  .deposit-box {
+    padding: 20px;
+    background: var(--emerald-soft);
+    border-radius: 6px;
+    border-left: 3px solid var(--emerald);
+    margin-bottom: 16px;
+  }
+  .deposit-title {
+    font-family: 'Fraunces', serif;
+    font-size: 16px; font-weight: 500;
+    color: var(--emerald);
+    margin-bottom: 8px;
+  }
+  .deposit-desc {
+    font-size: 13px;
+    color: var(--ink-soft);
+    line-height: 1.5;
+    margin-bottom: 12px;
+  }
+  .deposit-choice {
+    display: flex; align-items: center; gap: 10px;
+    padding: 12px 16px;
+    background: #fff;
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: 500;
+  }
+  .deposit-choice input { accent-color: var(--emerald); }
+  .deposit-choice .amt {
+    margin-left: auto;
+    color: var(--emerald);
+    font-family: 'Fraunces', serif;
+    font-size: 18px;
+    font-weight: 500;
+  }
+
+  /* Terms checkbox */
+  .terms-check {
+    display: flex; align-items: flex-start; gap: 12px;
+    padding: 18px;
+    background: var(--cream);
+    border-radius: 6px;
+    margin-top: 20px;
+    cursor: pointer;
+    border: 1px solid var(--line-strong);
+    transition: all .2s;
+  }
+  .terms-check:hover { border-color: var(--gold); }
+  .terms-check input {
+    margin-top: 3px;
+    accent-color: var(--gold-dark);
+    flex-shrink: 0;
+  }
+  .terms-check-text {
+    font-size: 13px;
+    line-height: 1.6;
+    color: var(--ink-soft);
+  }
+  .terms-check-text strong { color: var(--ink); }
+  .terms-check-text a { color: var(--gold-dark); font-weight: 500; text-decoration: underline; }
+
+  /* Summary */
+  .summary {
+    background: var(--ink);
+    color: var(--bg);
+    border-radius: 8px;
+    padding: 24px;
+    margin: 24px 0;
+    position: relative;
+    overflow: hidden;
+  }
+  .summary::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+    background: var(--gold);
+  }
+  .summary-row {
+    display: flex; justify-content: space-between;
+    padding: 6px 0; font-size: 14px;
+  }
+  .summary-row.addon-line {
+    font-size: 13px;
+    color: rgba(255,255,255,0.7);
+  }
+  .summary-row.deposit-line {
+    color: var(--gold);
+    font-size: 13px;
+  }
+  .summary-row.total {
+    border-top: 1px solid rgba(255,255,255,0.2);
+    margin-top: 10px; padding-top: 14px;
+    font-family: 'Fraunces', serif;
+    font-size: 24px; font-weight: 500;
+    color: var(--gold);
+  }
+  .btn-pay {
+    width: 100%; padding: 20px;
+    background: var(--gold); color: var(--ink);
+    border: none; border-radius: 100px;
+    font-size: 14px; font-weight: 600; letter-spacing: 0.02em;
+    cursor: pointer;
+    font-family: inherit;
+    display: flex; align-items: center; justify-content: center; gap: 10px;
+    transition: all .25s;
+  }
+  .btn-pay:hover {
+    background: var(--ink);
+    color: var(--gold);
+    transform: translateY(-2px);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+  }
+  .btn-pay:disabled {
+    opacity: 0.4; cursor: not-allowed;
+    transform: none; box-shadow: none;
+  }
+  .pay-note {
+    margin-top: 12px; text-align: center;
+    font-size: 11px; color: var(--muted);
+    font-family: 'IBM Plex Mono', monospace;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  /* FAQ */
+  .faq {
+    background: #fff;
+    border-top: 1px solid var(--line);
+  }
+  .faq-list { border-top: 1px solid var(--line); }
+  .faq-item {
+    border-bottom: 1px solid var(--line);
+    padding: 32px 0;
+    cursor: pointer;
+    display: grid; grid-template-columns: 60px 1fr auto;
+    gap: 24px; align-items: start;
+    transition: background .2s;
+  }
+  .faq-item:hover { background: var(--bg); margin: 0 -24px; padding: 32px 24px; }
+  .faq-num {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 12px;
+    color: var(--gold-dark);
+    letter-spacing: 0.12em;
+    font-weight: 500;
+  }
+  .faq-q {
+    font-family: 'Fraunces', serif;
+    font-size: 22px; font-weight: 400;
+    letter-spacing: -0.01em;
+  }
+  .faq-a {
+    grid-column: 2;
+    max-height: 0; overflow: hidden;
+    transition: max-height .4s ease, margin-top .3s;
+    color: var(--ink-soft);
+    font-size: 15px; line-height: 1.6;
+  }
+  .faq-item.open .faq-a { max-height: 400px; margin-top: 16px; }
+  .faq-toggle {
+    width: 36px; height: 36px;
+    border-radius: 50%;
+    border: 1px solid var(--line-strong);
+    display: flex; align-items: center; justify-content: center;
+    transition: all .3s;
+    font-size: 18px; color: var(--ink);
+    background: #fff;
+  }
+  .faq-item.open .faq-toggle {
+    background: var(--gold);
+    color: var(--ink);
+    border-color: var(--gold);
+    transform: rotate(45deg);
+  }
+
+  /* FOOTER */
+  footer {
+    background: var(--ink);
+    color: var(--bg);
+    padding: 80px 0 40px;
+    position: relative;
+  }
+  footer::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, var(--gold) 0%, var(--emerald) 50%, var(--terracotta) 100%);
+  }
+  .footer-top {
+    display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 48px;
+    padding-bottom: 60px;
+    border-bottom: 1px solid rgba(255,255,255,0.12);
+  }
+  .footer-brand h3 {
+    font-family: 'Fraunces', serif;
+    font-size: 36px; font-weight: 300;
+    letter-spacing: -0.02em;
+    margin-bottom: 16px;
+    line-height: 1.1;
+  }
+  .footer-brand h3 em {
+    font-style: italic;
+    color: var(--gold);
+  }
+  .footer-brand p {
+    font-size: 14px; color: rgba(255,255,255,0.55);
+    max-width: 300px; line-height: 1.6;
+  }
+  .footer-col h4 {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px; letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 20px;
+    font-weight: 500;
+  }
+  .footer-col ul { list-style: none; }
+  .footer-col li { margin-bottom: 12px; }
+  .footer-col a {
+    color: var(--bg); text-decoration: none;
+    font-size: 14px;
+    opacity: 0.85;
+    transition: all .2s;
+  }
+  .footer-col a:hover { opacity: 1; color: var(--gold); }
+  .footer-bottom {
+    margin-top: 40px;
+    display: flex; justify-content: space-between; align-items: center;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px; letter-spacing: 0.1em;
+    color: rgba(255,255,255,0.45);
+    text-transform: uppercase;
+  }
+
+  /* MODAL */
+  .modal-backdrop {
+    position: fixed; inset: 0;
+    background: rgba(14,13,11,0.65);
+    backdrop-filter: blur(6px);
+    z-index: 200;
+    display: none;
+    align-items: center; justify-content: center;
+    padding: 20px;
+  }
+  .modal-backdrop.active { display: flex; }
+  .modal {
+    background: #fff;
+    border-radius: 12px;
+    padding: 48px;
+    max-width: 520px; width: 100%;
+    position: relative;
+    text-align: center;
+    border-top: 4px solid var(--gold);
+  }
+  .modal-close {
+    position: absolute; top: 16px; right: 16px;
+    background: none; border: none; font-size: 24px;
+    cursor: pointer; color: var(--muted);
+    width: 36px; height: 36px;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .modal-close:hover { background: var(--line); }
+  .modal-icon {
+    width: 56px; height: 56px;
+    background: var(--gold); color: var(--ink);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 24px;
+    margin: 0 auto 24px;
+  }
+  .modal h3 {
+    font-family: 'Fraunces', serif;
+    font-size: 28px; font-weight: 400;
+    letter-spacing: -0.02em;
+    margin-bottom: 12px;
+  }
+  .modal p { color: var(--ink-soft); font-size: 15px; line-height: 1.6; }
+
+  /* T&Cs MODAL (large, scrollable) */
+  .modal.modal-terms {
+    max-width: 780px;
+    text-align: left;
+    padding: 0;
+    max-height: 90vh;
+    display: flex; flex-direction: column;
+  }
+  .modal-terms-header {
+    padding: 36px 48px 20px;
+    border-bottom: 1px solid var(--line);
+    position: sticky; top: 0;
+    background: #fff;
+    z-index: 2;
+    border-radius: 12px 12px 0 0;
+  }
+  .modal-terms-header .eyebrow {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px; letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--gold-dark);
+    margin-bottom: 8px;
+    display: flex; align-items: center; gap: 12px;
+    font-weight: 500;
+  }
+  .modal-terms-header .eyebrow::before {
+    content: ''; width: 24px; height: 1px; background: var(--gold);
+  }
+  .modal-terms-header h3 {
+    margin-bottom: 4px;
+    font-size: 32px;
+  }
+  .modal-terms-header p {
+    font-size: 13px;
+    color: var(--muted);
+  }
+  .modal-terms-body {
+    padding: 32px 48px;
+    overflow-y: auto;
+    flex: 1;
+  }
+  .modal-terms-body h4 {
+    font-family: 'Fraunces', serif;
+    font-size: 20px; font-weight: 500;
+    letter-spacing: -0.01em;
+    margin: 28px 0 12px;
+    color: var(--ink);
+    display: flex; align-items: center; gap: 10px;
+  }
+  .modal-terms-body h4:first-child { margin-top: 0; }
+  .modal-terms-body h4 .tnum {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 12px; color: var(--gold-dark);
+    font-weight: 500;
+    letter-spacing: 0.1em;
+  }
+  .modal-terms-body p {
+    font-size: 14px; line-height: 1.65;
+    margin-bottom: 12px;
+    color: var(--ink-soft);
+    text-align: left;
+  }
+  .modal-terms-body ul {
+    list-style: none;
+    margin: 8px 0 16px;
+    padding: 0;
+  }
+  .modal-terms-body ul li {
+    padding: 6px 0 6px 20px;
+    font-size: 14px;
+    line-height: 1.6;
+    color: var(--ink-soft);
+    position: relative;
+  }
+  .modal-terms-body ul li::before {
+    content: '—';
+    position: absolute; left: 0;
+    color: var(--gold);
+  }
+  .modal-terms-body strong {
+    color: var(--ink);
+    font-weight: 500;
+  }
+  .modal-terms-footer {
+    padding: 20px 48px 32px;
+    border-top: 1px solid var(--line);
+    background: var(--bg);
+    border-radius: 0 0 12px 12px;
+    display: flex; gap: 12px; align-items: center; justify-content: space-between;
+  }
+  .modal-terms-footer small {
+    font-size: 12px;
+    color: var(--muted);
+    font-family: 'IBM Plex Mono', monospace;
+    letter-spacing: 0.05em;
+  }
+  .modal-terms-footer .btn-accept {
+    padding: 12px 28px;
+    background: var(--ink);
+    color: var(--bg);
+    border: none;
+    border-radius: 100px;
+    font-family: inherit;
+    font-size: 13px; font-weight: 500;
+    letter-spacing: 0.02em;
+    cursor: pointer;
+    transition: all .25s;
+  }
+  .modal-terms-footer .btn-accept:hover {
+    background: var(--gold);
+    color: var(--ink);
+  }
+  .terms-callout {
+    padding: 16px 20px;
+    background: var(--emerald-soft);
+    border-left: 3px solid var(--emerald);
+    border-radius: 4px;
+    margin: 16px 0;
+    font-size: 13px;
+    line-height: 1.55;
+  }
+  .terms-callout strong { color: var(--emerald); }
+
+  /* RESPONSIVE */
+  @media (max-width: 900px) {
+    .container { padding: 0 20px; }
+    .hero { padding: 140px 20px 80px; }
+    .hero-bg { display: none; }
+    section { padding: 80px 0; }
+    .nav-links { display: none; }
+    .nav-links.open {
+      display: flex; position: absolute; top: 100%; left: 0; right: 0;
+      flex-direction: column; background: var(--bg);
+      padding: 24px; border-bottom: 1px solid var(--line);
+    }
+    .mobile-toggle { display: block; font-size: 22px; }
+    .space-grid .space-card { grid-column: span 12 !important; aspect-ratio: 4/3 !important; }
+    .pricing-grid { grid-template-columns: 1fr; }
+    .equipment-grid { grid-template-columns: 1fr; }
+    .equipment-item { padding: 24px 0 !important; border-right: none !important; padding-left: 0 !important; padding-right: 0 !important; }
+    .amenity-grid { grid-template-columns: 1fr; gap: 16px; }
+    .modal.modal-terms { max-height: 95vh; }
+    .modal-terms-header { padding: 28px 24px 16px; }
+    .modal-terms-header h3 { font-size: 24px; }
+    .modal-terms-body { padding: 20px 24px; }
+    .modal-terms-footer { padding: 16px 24px 24px; flex-direction: column-reverse; gap: 12px; align-items: stretch; }
+    .modal-terms-footer .btn-accept { width: 100%; }
+    .booking-wrap { grid-template-columns: 1fr; gap: 48px; }
+    .booking-form { padding: 28px; }
+    .form-row { grid-template-columns: 1fr; }
+    .footer-top { grid-template-columns: 1fr; gap: 32px; }
+    .footer-bottom { flex-direction: column; gap: 12px; text-align: center; }
+    .hero-meta { gap: 28px; }
+    .faq-item { grid-template-columns: 40px 1fr auto; gap: 12px; }
+    .faq-item:hover { margin: 0; padding: 32px 0; }
+    .tier-toggle { width: 100%; display: flex; }
+    .tier-toggle button { flex: 1; padding: 10px 12px; font-size: 12px; }
+    .form-section-hint { padding-left: 0; }
+  }
+</style>
+</head>
+<body>
+
+<nav id="nav">
+  <div class="logo">Rent <span>a</span> Studio</div>
+  <div class="nav-links" id="navLinks">
+    <a href="#space">The Space</a>
+    <a href="#pricing">Pricing</a>
+    <a href="#equipment">Equipment</a>
+    <a href="#faq">FAQ</a>
+    <a href="#book" class="nav-cta">Book Now</a>
+  </div>
+  <button class="mobile-toggle" onclick="document.getElementById('navLinks').classList.toggle('open')">☰</button>
+</nav>
+
+<section class="hero">
+  <div class="hero-bg"></div>
+  <div class="eyebrow">Kyalami Estates · Johannesburg</div>
+  <h1>A fully equipped studio. <em>Book & shoot on your own time.</em></h1>
+  <p class="hero-sub">
+    20 metres of green screen and black screen, camera, lighting, microphones and teleprompter — all ready to go. Perfect for YouTubers, content creators and corporate videos.
+  </p>
+  <div class="hero-actions">
+    <a href="#book" class="btn btn-primary">Book the studio →</a>
+    <a href="#pricing" class="btn btn-ghost">View pricing</a>
+  </div>
+
+  <div class="hero-meta">
+    <div class="meta-item">
+      <div class="meta-label">Location</div>
+      <div class="meta-value">Kyalami Estates</div>
+    </div>
+    <div class="meta-item">
+      <div class="meta-label">From</div>
+      <div class="meta-value accent">R550 / hour</div>
+    </div>
+    <div class="meta-item">
+      <div class="meta-label">Available</div>
+      <div class="meta-value">7 days a week</div>
+    </div>
+    <div class="meta-item">
+      <div class="meta-label">Call</div>
+      <div class="meta-value">082 990 2219</div>
+    </div>
+  </div>
+</section>
+
+<section id="space" class="space">
+  <div class="container">
+    <div class="section-head">
+      <div class="eyebrow">The Space</div>
+      <h2>20m of green & black screen. <em>Ready when you are.</em></h2>
+      <p>A properly kitted-out content studio — 20 metres of professional green and black screen, four-light setup, microphones, teleprompter, coffee machine and filtered water. Just show up and shoot.</p>
+    </div>
+    <div class="space-grid">
+      <div class="space-card ph-greenscreen">
+        <img class="ph-photo" src="images/studio-1.jpg" alt="Studio floor with 20m green screen, ring light, softboxes and camera" onerror="this.style.display='none'">
+        <div class="ph-icon">
+          <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <rect x="2" y="4" width="20" height="14" rx="1"/>
+            <path d="M2 18l20-14M22 18L2 4"/>
+          </svg>
+        </div>
+        <div class="label"><small>01 / Studio Floor</small>20m Green & Black Screen</div>
+      </div>
+      <div class="space-card ph-camera">
+        <img class="ph-photo" src="images/studio-2.jpg" alt="Studio set with camera, softbox and pro microphone" onerror="this.style.display='none'">
+        <div class="ph-icon">
+          <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path d="M23 19a2 2 0 01-2 2H3a2 2 0 01-2-2V8a2 2 0 012-2h4l2-3h6l2 3h4a2 2 0 012 2z"/>
+            <circle cx="12" cy="13" r="4"/>
+          </svg>
+        </div>
+        <div class="label"><small>02 / The Set</small>Ready to Shoot</div>
+      </div>
+      <div class="space-card ph-audio">
+        <img class="ph-photo" src="images/studio-3.jpg" alt="Rode pop filter — pro audio setup" onerror="this.style.display='none'">
+        <div class="ph-icon">
+          <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path d="M12 1a3 3 0 00-3 3v8a3 3 0 006 0V4a3 3 0 00-3-3z"/>
+            <path d="M19 10v2a7 7 0 01-14 0v-2M12 19v4M8 23h8"/>
+          </svg>
+        </div>
+        <div class="label"><small>03 / Audio</small>Rode Pro Mics</div>
+      </div>
+      <div class="space-card ph-lighting">
+        <img class="ph-photo" src="images/studio-4.jpg" alt="Ring light and softbox in front of green screen" onerror="this.style.display='none'">
+        <div class="ph-icon">
+          <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path d="M9 21h6M10 21v-4M14 21v-4M7 9a5 5 0 1110 0c0 2-1.5 3.5-2.5 4.5s-1.5 2-1.5 3.5h-2c0-1.5-.5-2.5-1.5-3.5S7 11 7 9z"/>
+            <path d="M12 2v1M3 9h1M20 9h1M5.2 4.2l.7.7M18.1 4.2l-.7.7"/>
+          </svg>
+        </div>
+        <div class="label"><small>04 / Lighting</small>Ring + 4-Light Kit</div>
+      </div>
+      <div class="space-card ph-teleprompter">
+        <img class="ph-photo" src="images/studio-5.jpg" alt="Pro condenser microphone on shock mount with softbox" onerror="this.style.display='none'">
+        <div class="ph-icon">
+          <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <rect x="2" y="3" width="20" height="14" rx="2"/>
+            <path d="M8 21h8M12 17v4"/>
+            <path d="M6 8h12M6 11h8M6 14h10"/>
+          </svg>
+        </div>
+        <div class="label"><small>05 / On Set</small>Pro Condenser</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="pricing" class="pricing">
+  <div class="container">
+    <div class="section-head">
+      <div class="eyebrow">Pricing</div>
+      <h2>Two ways to book. <em>Pick what works.</em></h2>
+      <p>Studio-only rates if you're bringing your own gear. All-inclusive rates if you want everything loaded and ready. Weekday and weekend pricing below.</p>
+    </div>
+
+    <div class="tier-toggle">
+      <button class="active" data-tier="studio" onclick="switchTier('studio')">Studio Only</button>
+      <button data-tier="inclusive" onclick="switchTier('inclusive')">All-Inclusive (with Gear)</button>
+    </div>
+
+    <div class="rate-block active" id="studio-rates">
+      <div class="rate-group">
+        <div class="rate-group-title">Weekday Rate · Monday – Thursday</div>
+        <div class="pricing-grid">
+          <div class="price-card">
+            <div class="price-label">— Flexible</div>
+            <div class="price-title">Hourly</div>
+            <div class="price-duration">Minimum 1 hour</div>
+            <div class="price-amount">R550<small>/hr</small></div>
+            <div class="price-per">Per hour, weekday</div>
+            <ul class="price-features">
+              <li class="price-feature">Full studio access</li>
+              <li class="price-feature">Use of green/black backdrop</li>
+              <li class="price-feature">Wi-Fi & power</li>
+              <li class="price-feature">Add equipment à la carte</li>
+            </ul>
+            <button class="btn-book" onclick="selectPackage('studio-wd-hr')">Book hourly →</button>
+          </div>
+
+          <div class="price-card featured">
+            <span class="price-badge">Most booked</span>
+            <div class="price-label">— Popular</div>
+            <div class="price-title">Half-Day</div>
+            <div class="price-duration">4 hours</div>
+            <div class="price-amount">R2,150<small>/4hr</small></div>
+            <div class="price-per">Save R50 vs hourly</div>
+            <ul class="price-features">
+              <li class="price-feature">Everything in hourly</li>
+              <li class="price-feature">4 uninterrupted hours</li>
+              <li class="price-feature">Priority time slots</li>
+              <li class="price-feature">Great for short shoots</li>
+            </ul>
+            <button class="btn-book" onclick="selectPackage('studio-wd-half')">Book half-day →</button>
+          </div>
+
+          <div class="price-card">
+            <div class="price-label">— Best Value</div>
+            <div class="price-title">Full Day</div>
+            <div class="price-duration">8 hours</div>
+            <div class="price-amount">R4,250<small>/8hr</small></div>
+            <div class="price-per">Save R150 vs half-day</div>
+            <ul class="price-features">
+              <li class="price-feature">Everything in half-day</li>
+              <li class="price-feature">8 full hours in studio</li>
+              <li class="price-feature">Flexible start time</li>
+              <li class="price-feature">Best for full productions</li>
+            </ul>
+            <button class="btn-book" onclick="selectPackage('studio-wd-full')">Book full day →</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="rate-group">
+        <div class="rate-group-title">Weekend Rate · Friday – Sunday</div>
+        <div class="pricing-grid">
+          <div class="price-card">
+            <div class="price-label">— Flexible</div>
+            <div class="price-title">Hourly</div>
+            <div class="price-duration">Minimum 1 hour</div>
+            <div class="price-amount">R750<small>/hr</small></div>
+            <div class="price-per">Per hour, weekend</div>
+            <ul class="price-features">
+              <li class="price-feature">Full studio access</li>
+              <li class="price-feature">Use of green/black backdrop</li>
+              <li class="price-feature">Wi-Fi & power</li>
+              <li class="price-feature">Add equipment à la carte</li>
+            </ul>
+            <button class="btn-book" onclick="selectPackage('studio-we-hr')">Book hourly →</button>
+          </div>
+
+          <div class="price-card">
+            <div class="price-label">— Half-Day</div>
+            <div class="price-title">Half-Day</div>
+            <div class="price-duration">4 hours</div>
+            <div class="price-amount">R2,250<small>/4hr</small></div>
+            <div class="price-per">Save R750 vs hourly</div>
+            <ul class="price-features">
+              <li class="price-feature">Everything in hourly</li>
+              <li class="price-feature">4 uninterrupted hours</li>
+              <li class="price-feature">Weekend availability</li>
+              <li class="price-feature">Great for short shoots</li>
+            </ul>
+            <button class="btn-book" onclick="selectPackage('studio-we-half')">Book half-day →</button>
+          </div>
+
+          <div class="price-card">
+            <div class="price-label">— Best Value</div>
+            <div class="price-title">Full Day</div>
+            <div class="price-duration">8 hours</div>
+            <div class="price-amount">R4,350<small>/8hr</small></div>
+            <div class="price-per">Save R1,650 vs hourly</div>
+            <ul class="price-features">
+              <li class="price-feature">Everything in half-day</li>
+              <li class="price-feature">8 full hours in studio</li>
+              <li class="price-feature">Flexible start time</li>
+              <li class="price-feature">Best for full productions</li>
+            </ul>
+            <button class="btn-book" onclick="selectPackage('studio-we-full')">Book full day →</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="rate-block" id="inclusive-rates">
+      <div class="rate-group">
+        <div class="rate-group-title">Weekday Rate · Monday – Thursday · All Gear Included</div>
+        <div class="pricing-grid">
+          <div class="price-card">
+            <div class="price-label">— All-Inclusive</div>
+            <div class="price-title">Hourly</div>
+            <div class="price-duration">Minimum 1 hour</div>
+            <div class="price-amount">R1,100<small>/hr</small></div>
+            <div class="price-per">All equipment included</div>
+            <ul class="price-features">
+              <li class="price-feature">Sony camera & lens kit</li>
+              <li class="price-feature">4-light studio setup</li>
+              <li class="price-feature">Pro microphones</li>
+              <li class="price-feature">Teleprompter & green screen</li>
+            </ul>
+            <button class="btn-book" onclick="selectPackage('inc-wd-hr')">Book hourly →</button>
+          </div>
+
+          <div class="price-card featured">
+            <span class="price-badge">Popular</span>
+            <div class="price-label">— All-Inclusive</div>
+            <div class="price-title">Half-Day</div>
+            <div class="price-duration">4 hours</div>
+            <div class="price-amount">R3,800<small>/4hr</small></div>
+            <div class="price-per">Save R600 vs hourly</div>
+            <ul class="price-features">
+              <li class="price-feature">Everything in hourly</li>
+              <li class="price-feature">4 uninterrupted hours</li>
+              <li class="price-feature">All pro gear loaded</li>
+              <li class="price-feature">Just bring your idea</li>
+            </ul>
+            <button class="btn-book" onclick="selectPackage('inc-wd-half')">Book half-day →</button>
+          </div>
+
+          <div class="price-card">
+            <div class="price-label">— Best Value</div>
+            <div class="price-title">Full Day</div>
+            <div class="price-duration">8 hours</div>
+            <div class="price-amount">R5,800<small>/8hr</small></div>
+            <div class="price-per">Save R3,000 vs hourly</div>
+            <ul class="price-features">
+              <li class="price-feature">Everything in half-day</li>
+              <li class="price-feature">8 full hours in studio</li>
+              <li class="price-feature">All premium gear included</li>
+              <li class="price-feature">Full production capable</li>
+            </ul>
+            <button class="btn-book" onclick="selectPackage('inc-wd-full')">Book full day →</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="rate-group">
+        <div class="rate-group-title">Weekend Rate · Friday – Sunday · All Gear Included</div>
+        <div class="pricing-grid">
+          <div class="price-card">
+            <div class="price-label">— All-Inclusive</div>
+            <div class="price-title">Hourly</div>
+            <div class="price-duration">Minimum 1 hour</div>
+            <div class="price-amount">R1,300<small>/hr</small></div>
+            <div class="price-per">All equipment included</div>
+            <ul class="price-features">
+              <li class="price-feature">Sony camera & lens kit</li>
+              <li class="price-feature">4-light studio setup</li>
+              <li class="price-feature">Pro microphones</li>
+              <li class="price-feature">Teleprompter & green screen</li>
+            </ul>
+            <button class="btn-book" onclick="selectPackage('inc-we-hr')">Book hourly →</button>
+          </div>
+
+          <div class="price-card">
+            <div class="price-label">— Half-Day</div>
+            <div class="price-title">Half-Day</div>
+            <div class="price-duration">4 hours</div>
+            <div class="price-amount">R4,200<small>/4hr</small></div>
+            <div class="price-per">Save R1,000 vs hourly</div>
+            <ul class="price-features">
+              <li class="price-feature">Everything in hourly</li>
+              <li class="price-feature">4 uninterrupted hours</li>
+              <li class="price-feature">All pro gear loaded</li>
+              <li class="price-feature">Weekend priority</li>
+            </ul>
+            <button class="btn-book" onclick="selectPackage('inc-we-half')">Book half-day →</button>
+          </div>
+
+          <div class="price-card">
+            <div class="price-label">— Best Value</div>
+            <div class="price-title">Full Day</div>
+            <div class="price-duration">8 hours</div>
+            <div class="price-amount">R6,200<small>/8hr</small></div>
+            <div class="price-per">Save R4,200 vs hourly</div>
+            <ul class="price-features">
+              <li class="price-feature">Everything in half-day</li>
+              <li class="price-feature">8 full hours in studio</li>
+              <li class="price-feature">All premium gear included</li>
+              <li class="price-feature">Best for big productions</li>
+            </ul>
+            <button class="btn-book" onclick="selectPackage('inc-we-full')">Book full day →</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="equipment" class="equipment">
+  <div class="container">
+    <div class="section-head">
+      <div class="eyebrow">Equipment Rental</div>
+      <h2>Add only what you need. <em>Per session pricing.</em></h2>
+      <p>Booked the studio-only rate? Pick and choose the gear that fits your shoot. All equipment stays on premises for studio use only.</p>
+    </div>
+    <div class="equipment-grid">
+      <div class="equipment-item">
+        <div class="equipment-icon">📷</div>
+        <div>
+          <div class="equipment-title">Sony a7sii Camera</div>
+          <div class="equipment-desc">Pro mirrorless body</div>
+        </div>
+        <div class="equipment-price">R547<small>per session</small></div>
+      </div>
+      <div class="equipment-item">
+        <div class="equipment-icon">🔍</div>
+        <div>
+          <div class="equipment-title">Sony Lens</div>
+          <div class="equipment-desc">50mm or 18-105mm</div>
+        </div>
+        <div class="equipment-price">R447<small>per session</small></div>
+      </div>
+      <div class="equipment-item">
+        <div class="equipment-icon">📝</div>
+        <div>
+          <div class="equipment-title">Teleprompter</div>
+          <div class="equipment-desc">With tablet</div>
+        </div>
+        <div class="equipment-price">R447<small>per session</small></div>
+      </div>
+      <div class="equipment-item">
+        <div class="equipment-icon">🎤</div>
+        <div>
+          <div class="equipment-title">Rode Wireless Pro</div>
+          <div class="equipment-desc">1 or 2-person clip-on lavs</div>
+        </div>
+        <div class="equipment-price">R347<small>per session</small></div>
+      </div>
+      <div class="equipment-item">
+        <div class="equipment-icon">📺</div>
+        <div>
+          <div class="equipment-title">Live Preview Monitor</div>
+          <div class="equipment-desc">Director's monitor</div>
+        </div>
+        <div class="equipment-price">R347<small>per session</small></div>
+      </div>
+      <div class="equipment-item">
+        <div class="equipment-icon">🟩</div>
+        <div>
+          <div class="equipment-title">Green Screen Chroma Keyer</div>
+          <div class="equipment-desc">Live virtual backgrounds</div>
+        </div>
+        <div class="equipment-price">R1,247<small>per session</small></div>
+      </div>
+      <div class="equipment-item">
+        <div class="equipment-icon">🎬</div>
+        <div>
+          <div class="equipment-title">Livestream Kit</div>
+          <div class="equipment-desc">Multi-cam switcher</div>
+        </div>
+        <div class="equipment-price">R947<small>per session</small></div>
+      </div>
+      <div class="equipment-item">
+        <div class="equipment-icon">💡</div>
+        <div>
+          <div class="equipment-title">4-Light Studio Kit</div>
+          <div class="equipment-desc">2 umbrella + 2 LED</div>
+        </div>
+        <div class="equipment-price">R250<small>per session</small></div>
+      </div>
+    </div>
+    <div class="equipment-note">
+      <strong>Important:</strong> This equipment is provided exclusively for use within our studio during your booked studio rental session. It is not available for external hire or removal from the premises.
+    </div>
+  </div>
+</section>
+
+<section id="amenities" class="amenities">
+  <div class="container">
+    <div class="section-head">
+      <div class="eyebrow">On the House</div>
+      <h2>Complimentary amenities. <em>Included in every booking.</em></h2>
+      <p>Because good work needs good coffee — and good water. Every studio booking includes the essentials to keep you and your crew comfortable.</p>
+    </div>
+    <div class="amenity-grid">
+      <div class="amenity">
+        <div class="amenity-icon">
+          <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M17 8h1a4 4 0 110 8h-1"/>
+            <path d="M3 8h14v9a4 4 0 01-4 4H7a4 4 0 01-4-4V8z"/>
+            <line x1="6" y1="1" x2="6" y2="4"/>
+            <line x1="10" y1="1" x2="10" y2="4"/>
+            <line x1="14" y1="1" x2="14" y2="4"/>
+          </svg>
+        </div>
+        <div class="amenity-title">Coffee Machine</div>
+        <div class="amenity-desc">Freshly brewed espresso, cappuccino or filter — help yourself, on us.</div>
+      </div>
+      <div class="amenity">
+        <div class="amenity-icon">
+          <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 2.69l5.66 5.66a8 8 0 11-11.31 0z"/>
+          </svg>
+        </div>
+        <div class="amenity-title">Filtered Water</div>
+        <div class="amenity-desc">Chilled, filtered water on tap — crystal clear and always ready.</div>
+      </div>
+      <div class="amenity">
+        <div class="amenity-icon">
+          <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M5 12.55a11 11 0 0114.08 0"/>
+            <path d="M1.42 9a16 16 0 0121.16 0"/>
+            <path d="M8.53 16.11a6 6 0 016.95 0"/>
+            <line x1="12" y1="20" x2="12.01" y2="20"/>
+          </svg>
+        </div>
+        <div class="amenity-title">High-Speed Wi-Fi</div>
+        <div class="amenity-desc">Stable fibre — upload rushes or livestream without a hiccup.</div>
+      </div>
+      <div class="amenity">
+        <div class="amenity-icon">
+          <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 2.69l5.66 5.66a8 8 0 11-11.31 0z"/>
+            <path d="M9 12l2 2 4-4"/>
+          </svg>
+        </div>
+        <div class="amenity-title">Secure Parking</div>
+        <div class="amenity-desc">Off-street parking inside the Kyalami Estates — safe & easy load-in.</div>
+      </div>
+      <div class="amenity">
+        <div class="amenity-icon">
+          <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>
+          </svg>
+        </div>
+        <div class="amenity-title">Backup Power</div>
+        <div class="amenity-desc">Inverter backup keeps your shoot running through load-shedding.</div>
+      </div>
+      <div class="amenity">
+        <div class="amenity-icon">
+          <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"/>
+            <polyline points="12 6 12 12 16 14"/>
+          </svg>
+        </div>
+        <div class="amenity-title">Flexible Hours</div>
+        <div class="amenity-desc">Weekends, evenings, early starts — we work around your schedule.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="book" class="booking">
+  <div class="container">
+    <div class="booking-wrap">
+      <div class="booking-info">
+        <div class="eyebrow" style="margin-bottom: 20px;">Book & Pay</div>
+        <h2>Reserve your <em>time in the studio.</em></h2>
+        <p>Fill in the form below to secure your slot. Pay securely via PayFast and receive booking confirmation within minutes.</p>
+        <ul class="booking-terms">
+          <li>Payment via PayFast — card, EFT, SnapScan & Zapper</li>
+          <li>Booking confirmed only once full payment reflects</li>
+          <li>Refundable R750 breakage deposit required</li>
+          <li>Deposit refunded 48–72hrs after your session</li>
+          <li>Original ID required on arrival</li>
+          <li>All equipment stays on premises</li>
+        </ul>
+      </div>
+
+      <div class="booking-form">
+        <div class="form-title">Make a booking</div>
+        <div class="form-sub">All fields marked with <span style="color: var(--terracotta)">*</span> are required</div>
+
+        <!-- SECTION 1: PACKAGE -->
+        <div class="form-section">
+          <div class="form-section-title"><span class="step">1</span>Pick your package</div>
+
+          <div class="form-field">
+            <label>Rate Type <span class="req">*</span></label>
+            <select id="rateType" onchange="rebuildPackages(); updateSummary();">
+              <option value="studio">Studio Only (bring your own gear)</option>
+              <option value="inclusive">All-Inclusive (gear included)</option>
+            </select>
+          </div>
+
+          <div class="form-field">
+            <label>Package <span class="req">*</span></label>
+            <select id="pkg" onchange="updateSummary()"></select>
+          </div>
+
+          <div class="form-field" id="hoursField" style="display:none;">
+            <label>Number of hours <span class="req">*</span></label>
+            <select id="hours" onchange="updateSummary()">
+              <option value="1">1 hour</option>
+              <option value="2">2 hours</option>
+              <option value="3">3 hours</option>
+              <option value="4">4 hours</option>
+            </select>
+          </div>
+
+          <div class="form-row">
+            <div class="form-field">
+              <label>Date <span class="req">*</span></label>
+              <input type="date" id="date" required onchange="updateSummary()" />
+            </div>
+            <div class="form-field">
+              <label>Start time <span class="req">*</span></label>
+              <input type="time" id="time" value="09:00" required />
+            </div>
+          </div>
+        </div>
+
+        <!-- SECTION 2: SHOOT DETAILS -->
+        <div class="form-section">
+          <div class="form-section-title"><span class="step">2</span>Tell us about your shoot</div>
+          <div class="form-section-hint">Please describe the type of shoot and setup you need (e.g. family photoshoot, birthday shoot, podcast recording, product photography, YouTube content, music video, etc.). This helps us prepare the studio for your session.</div>
+
+          <div class="form-field">
+            <label>Type of Shoot / Project Description <span class="req">*</span></label>
+            <textarea id="shootType" placeholder="e.g. YouTube interview series, corporate video, product photography..." required></textarea>
+          </div>
+        </div>
+
+        <!-- SECTION 3: CONTACT -->
+        <div class="form-section">
+          <div class="form-section-title"><span class="step">3</span>Your details</div>
+
+          <div class="form-field">
+            <label>Full name <span class="req">*</span></label>
+            <input type="text" id="name" placeholder="John Doe" required />
+          </div>
+
+          <div class="form-row">
+            <div class="form-field">
+              <label>Email <span class="req">*</span></label>
+              <input type="email" id="email" placeholder="you@example.com" required />
+            </div>
+            <div class="form-field">
+              <label>Phone <span class="req">*</span></label>
+              <input type="tel" id="phone" placeholder="082 000 0000" required />
+            </div>
+          </div>
+        </div>
+
+        <!-- SECTION 4: ID UPLOAD -->
+        <div class="form-section">
+          <div class="form-section-title"><span class="step">4</span>ID Verification</div>
+          <div class="form-section-hint">To secure your studio booking, please upload a valid ID or Passport for identity verification. All documents are securely stored and used solely for booking confirmation purposes. (Max file size 64MB)</div>
+
+          <div class="form-field">
+            <label>Passport or ID <span class="req">*</span></label>
+            <input type="file" id="idDoc" accept="image/*,application/pdf" required />
+          </div>
+        </div>
+
+        <!-- SECTION 5: EQUIPMENT -->
+        <div class="form-section" id="equipSection">
+          <div class="form-section-title"><span class="step">5</span>Equipment rental (optional)</div>
+          <div class="form-section-hint">This equipment is provided exclusively for use within our studio during your booked rental session. It is not available for external hire or removal from the premises.</div>
+
+          <div class="form-field">
+            <div id="equipList"></div>
+          </div>
+        </div>
+
+        <!-- SECTION 6: DEPOSIT -->
+        <div class="form-section">
+          <div class="form-section-title"><span class="step">6</span>Breakage / Damage Deposit <span class="req">*</span></div>
+          <div class="form-section-hint">A refundable breakage deposit of R750 is required for all bookings. It covers any damage to studio equipment, missing/broken items, excessive cleaning, or overtime use. Refunded within 24–48 hours after the studio has been inspected.</div>
+
+          <div class="deposit-box">
+            <div class="deposit-title">Refundable Deposit</div>
+            <div class="deposit-desc">Clients are responsible for any damages exceeding the deposit amount. Any deductions will be communicated with proof of damage.</div>
+            <label class="deposit-choice">
+              <input type="checkbox" id="deposit" checked onchange="updateSummary()" />
+              <span>Include R750 Breakage Deposit</span>
+              <span class="amt">+R750</span>
+            </label>
+          </div>
+        </div>
+
+        <!-- SECTION 7: BANKING -->
+        <div class="form-section">
+          <div class="form-section-title"><span class="step">7</span>Banking details for deposit refund <span class="req">*</span></div>
+          <div class="form-section-hint">Please provide your banking details so we can process your Breakage Deposit refund. The deposit will be refunded within 48–72 hours after your session, excluding weekends and public holidays.</div>
+
+          <div class="form-row">
+            <div class="form-field">
+              <label>Account Holder Name <span class="req">*</span></label>
+              <input type="text" id="bankName" placeholder="As per ID" required />
+            </div>
+            <div class="form-field">
+              <label>Bank Name <span class="req">*</span></label>
+              <input type="text" id="bankBank" placeholder="e.g. FNB, Standard Bank" required />
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-field">
+              <label>Account Number <span class="req">*</span></label>
+              <input type="text" id="bankAcc" placeholder="10-digit number" required />
+            </div>
+            <div class="form-field">
+              <label>Branch / Account Type</label>
+              <input type="text" id="bankBranch" placeholder="e.g. Cheque / 250655" />
+            </div>
+          </div>
+        </div>
+
+        <!-- SUMMARY -->
+        <div class="summary" id="summary"></div>
+
+        <!-- T&Cs -->
+        <label class="terms-check">
+          <input type="checkbox" id="terms" />
+          <div class="terms-check-text">
+            <strong>I agree to the Terms & Conditions <span style="color: var(--terracotta)">*</span></strong><br>
+            By checking this box, you confirm that you've read and accepted the studio's <a href="#" onclick="openTerms(); return false;">Terms & Conditions</a>, including the cancellation policy, equipment use rules, and breakage deposit terms.
+          </div>
+        </label>
+
+        <div style="margin-top: 24px;"></div>
+
+        <button type="button" class="btn-pay" onclick="submitBooking()">
+          Pay securely with PayFast →
+        </button>
+        <div class="pay-note">Secured · Encrypted · SA Payment Gateway</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="faq" class="faq">
+  <div class="container">
+    <div class="section-head">
+      <div class="eyebrow">FAQ</div>
+      <h2>Questions, <em>answered.</em></h2>
+    </div>
+    <div class="faq-list">
+      <div class="faq-item" onclick="this.classList.toggle('open')">
+        <div class="faq-num">01</div>
+        <div>
+          <div class="faq-q">Where is the studio located?</div>
+          <div class="faq-a">The studio is in Kyalami Estates, Johannesburg. Full address and directions are shared once your booking is confirmed. Secure parking available on site.</div>
+        </div>
+        <div class="faq-toggle">+</div>
+      </div>
+      <div class="faq-item" onclick="this.classList.toggle('open')">
+        <div class="faq-num">02</div>
+        <div>
+          <div class="faq-q">What's the difference between Studio Only and All-Inclusive?</div>
+          <div class="faq-a">Studio Only gives you the space — bring your own gear, or add items from the à la carte menu. All-Inclusive loads up the full kit (camera, lights, mics, teleprompter, green screen) so you just show up and shoot.</div>
+        </div>
+        <div class="faq-toggle">+</div>
+      </div>
+      <div class="faq-item" onclick="this.classList.toggle('open')">
+        <div class="faq-num">03</div>
+        <div>
+          <div class="faq-q">Why do I need to pay a breakage deposit?</div>
+          <div class="faq-a">The R750 refundable deposit protects the equipment in case of damage or excessive wear during your shoot. It's refunded to your bank account within 48–72 hours after the studio has been inspected (excluding weekends and public holidays).</div>
+        </div>
+        <div class="faq-toggle">+</div>
+      </div>
+      <div class="faq-item" onclick="this.classList.toggle('open')">
+        <div class="faq-num">04</div>
+        <div>
+          <div class="faq-q">Can I take equipment off-site?</div>
+          <div class="faq-a">No — all equipment is provided for use within the studio during your booking only. It's not available for external hire or removal from the premises.</div>
+        </div>
+        <div class="faq-toggle">+</div>
+      </div>
+      <div class="faq-item" onclick="this.classList.toggle('open')">
+        <div class="faq-num">05</div>
+        <div>
+          <div class="faq-q">What's the cancellation policy?</div>
+          <div class="faq-a">Free reschedule up to 48 hours before your slot. Within 48 hours a 50% fee applies. No-shows are non-refundable.</div>
+        </div>
+        <div class="faq-toggle">+</div>
+      </div>
+      <div class="faq-item" onclick="this.classList.toggle('open')">
+        <div class="faq-num">06</div>
+        <div>
+          <div class="faq-q">Is the studio open on weekends?</div>
+          <div class="faq-a">Yes — weekend rates apply Friday through Sunday. See the pricing section for weekend hourly, half-day, and full-day rates.</div>
+        </div>
+        <div class="faq-toggle">+</div>
+      </div>
+      <div class="faq-item" onclick="this.classList.toggle('open')">
+        <div class="faq-num">07</div>
+        <div>
+          <div class="faq-q">Can I see the space before booking?</div>
+          <div class="faq-a">Absolutely. Give us a call on 082 990 2219 to arrange a quick walk-through — especially if you've got a bigger production in mind.</div>
+        </div>
+        <div class="faq-toggle">+</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="container">
+    <div class="footer-top">
+      <div class="footer-brand">
+        <h3>Rent a studio. <em>Shoot on your own time.</em></h3>
+        <p>A fully equipped content studio in Kyalami Estates, Johannesburg. Perfect for YouTubers, content creators, and corporate video.</p>
+      </div>
+      <div class="footer-col">
+        <h4>Navigate</h4>
+        <ul>
+          <li><a href="#space">The Space</a></li>
+          <li><a href="#pricing">Pricing</a></li>
+          <li><a href="#equipment">Equipment</a></li>
+          <li><a href="#amenities">Amenities</a></li>
+          <li><a href="#faq">FAQ</a></li>
+          <li><a href="#" onclick="openTerms(); return false;">Terms & Conditions</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Contact</h4>
+        <ul>
+          <li><a href="tel:+27829902219">082 990 2219</a></li>
+          <li><a href="https://wa.me/27829902219" target="_blank">WhatsApp</a></li>
+          <li><a href="mailto:hello@rentastudio.co.za">Email us</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Location</h4>
+        <ul>
+          <li style="color:rgba(255,255,255,0.85); font-size:14px;">Kyalami Estates</li>
+          <li style="color:rgba(255,255,255,0.55); font-size:13px;">Johannesburg, GP</li>
+          <li style="color:rgba(255,255,255,0.55); font-size:13px;">By appointment only</li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <div>© 2026 Rent a Studio · Kyalami Estates</div>
+      <div>Book & Shoot On Your Own Time</div>
+    </div>
+  </div>
+</footer>
+
+<!-- TERMS & CONDITIONS MODAL -->
+<div class="modal-backdrop" id="termsModal">
+  <div class="modal modal-terms">
+    <button class="modal-close" onclick="closeTerms()">×</button>
+
+    <div class="modal-terms-header">
+      <div class="eyebrow">Legal</div>
+      <h3>Terms & Conditions</h3>
+      <p>Please read the following carefully before confirming your booking.</p>
+    </div>
+
+    <div class="modal-terms-body">
+      <p>These Terms & Conditions govern the use of the studio at Kyalami Estates, Johannesburg ("the Studio"). By booking and paying for a session, you confirm that you have read, understood and agreed to these terms.</p>
+
+      <h4><span class="tnum">01</span> Booking & Payment</h4>
+      <ul>
+        <li><strong>Confirmation:</strong> Bookings are only confirmed once full payment and the breakage deposit have been received and reflected.</li>
+        <li><strong>Payment methods:</strong> Payment is processed securely via PayFast — card, EFT, SnapScan and Zapper are accepted.</li>
+        <li><strong>Quoted prices:</strong> All prices listed are in South African Rand (ZAR) and include VAT where applicable.</li>
+        <li><strong>Weekend / after-hours:</strong> Weekend rates apply Friday to Sunday. A surcharge may apply to bookings outside standard operating hours — we will confirm this with you before your slot is locked in.</li>
+      </ul>
+
+      <h4><span class="tnum">02</span> Cancellation & Rescheduling</h4>
+      <ul>
+        <li><strong>More than 48 hours before:</strong> Free reschedule to any available future slot.</li>
+        <li><strong>Within 48 hours:</strong> A 50% cancellation fee applies. The remaining 50% may be credited towards a future booking within 60 days.</li>
+        <li><strong>No-shows:</strong> Non-refundable. The full amount is forfeited.</li>
+        <li><strong>Force majeure:</strong> In the rare case we need to cancel on our side (power, weather, emergency), you will receive a full refund or free reschedule.</li>
+      </ul>
+
+      <h4><span class="tnum">03</span> Breakage / Damage Deposit</h4>
+      <ul>
+        <li>A refundable deposit of <strong>R750</strong> is required with every booking.</li>
+        <li>The deposit covers: damage to studio equipment (lighting, stands, backdrops, cameras), missing or broken items, excessive cleaning, and any overtime beyond the booked hours.</li>
+        <li>Clients are responsible for any damage <em>exceeding</em> the deposit amount. Any deductions will be communicated with photographic proof.</li>
+        <li><strong>Refunds:</strong> Processed within 48–72 business hours after your session, once the studio has been inspected. Weekends and public holidays are excluded from this window.</li>
+      </ul>
+
+      <div class="terms-callout">
+        <strong>Important — Equipment use:</strong> All equipment (camera, lenses, lighting, microphones, teleprompter, green & black screen, chroma keyer, livestream kit) is provided exclusively for use within the studio during your booked session. It is <strong>not</strong> available for external hire or removal from the premises.
+      </div>
+
+      <h4><span class="tnum">04</span> Identification & Access</h4>
+      <ul>
+        <li>A valid ID or Passport is required at the time of booking and must be presented on arrival at the studio.</li>
+        <li>Uploaded ID documents are stored securely and used only for booking confirmation and access verification.</li>
+        <li>Access is granted only during your booked hours. Early arrival or late departure may incur additional fees deducted from your deposit.</li>
+      </ul>
+
+      <h4><span class="tnum">05</span> Studio Rules</h4>
+      <ul>
+        <li><strong>No food, drinks or alcohol</strong> inside the studio space unless pre-approved. Complimentary coffee and water are provided in the designated area.</li>
+        <li><strong>Children & minors:</strong> Must be supervised by a parent or guardian at all times. Studio staff are not permitted to hold, dress or directly supervise minors.</li>
+        <li><strong>Equipment handling:</strong> Clients and guests must not touch, move or operate studio equipment without permission. Studio equipment is not a prop — please do not lean on lights, stands, backdrops or cameras.</li>
+        <li><strong>Smoking:</strong> Strictly prohibited anywhere on the premises.</li>
+        <li><strong>Respect the space:</strong> The studio is part of a private home within Kyalami Estates. Please keep noise reasonable and respect neighbouring residents.</li>
+      </ul>
+
+      <h4><span class="tnum">06</span> Studio Availability</h4>
+      <ul>
+        <li>Bookings operate on a first-come, first-served basis.</li>
+        <li>We reserve the right to decline or cancel a booking that conflicts with our schedule, policies, or community rules — in which case a full refund will be issued.</li>
+      </ul>
+
+      <h4><span class="tnum">07</span> Photography, Content & Usage Rights</h4>
+      <ul>
+        <li>All content you produce during your session belongs to you — we claim no rights over your footage or imagery.</li>
+        <li>The studio space, interior design, décor and décor arrangement remain the intellectual property of the Studio and may not be replicated commercially without permission.</li>
+        <li>Use of the studio for content that is illegal, defamatory, or promotes hate, violence, or illegal activity is strictly prohibited and may result in immediate termination of the booking without refund.</li>
+      </ul>
+
+      <h4><span class="tnum">08</span> Liability</h4>
+      <ul>
+        <li>The studio and its owners accept no responsibility for personal belongings brought onto the premises. Lock your valuables in your vehicle or bring them onto set.</li>
+        <li>Clients use the studio at their own risk. The Studio is not liable for any injury, loss or damage to persons or property incurred during a booking, except where caused by gross negligence on our part.</li>
+        <li>Clients using additional crew, subjects or models are responsible for ensuring those parties have agreed to abide by these terms.</li>
+      </ul>
+
+      <h4><span class="tnum">09</span> Privacy & Data</h4>
+      <ul>
+        <li>Personal details provided during booking (name, email, phone, ID, banking info) are stored securely and used only for booking management, payment processing, and deposit refunds.</li>
+        <li>We do not sell, share or market your information to third parties.</li>
+        <li>All data is handled in accordance with the Protection of Personal Information Act (POPIA).</li>
+      </ul>
+
+      <h4><span class="tnum">10</span> Changes to These Terms</h4>
+      <p>We may update these Terms & Conditions from time to time. The version in effect on the date of your booking is the one that applies to your session.</p>
+
+      <h4><span class="tnum">11</span> Contact</h4>
+      <p>For any questions about these terms or your booking, get in touch: <strong>082 990 2219</strong> or via WhatsApp / email on the contact page.</p>
+    </div>
+
+    <div class="modal-terms-footer">
+      <small>Last updated April 2026</small>
+      <button class="btn-accept" onclick="acceptTerms()">I've read & agree →</button>
+    </div>
+  </div>
+</div>
+
+<!-- PAYMENT STATUS MODAL -->
+<div class="modal-backdrop" id="modal">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal()">×</button>
+    <div class="modal-icon">✓</div>
+    <h3 id="modalTitle">Redirecting to PayFast...</h3>
+    <p id="modalMsg">You'll be taken to the secure PayFast checkout to complete your booking.</p>
+  </div>
+</div>
+
+<script>
+  window.addEventListener('scroll', () => {
+    document.getElementById('nav').classList.toggle('scrolled', window.scrollY > 30);
+  });
+
+  const PACKAGES = {
+    'studio-wd-hr':   { label: 'Studio Only · Weekday · Hourly',    hours: 1, price: 550,   perHour: true,  tier: 'studio' },
+    'studio-wd-half': { label: 'Studio Only · Weekday · Half-Day',  hours: 4, price: 2150,  perHour: false, tier: 'studio' },
+    'studio-wd-full': { label: 'Studio Only · Weekday · Full Day',  hours: 8, price: 4250,  perHour: false, tier: 'studio' },
+    'studio-we-hr':   { label: 'Studio Only · Weekend · Hourly',    hours: 1, price: 750,   perHour: true,  tier: 'studio' },
+    'studio-we-half': { label: 'Studio Only · Weekend · Half-Day',  hours: 4, price: 2250,  perHour: false, tier: 'studio' },
+    'studio-we-full': { label: 'Studio Only · Weekend · Full Day',  hours: 8, price: 4350,  perHour: false, tier: 'studio' },
+    'inc-wd-hr':      { label: 'All-Inclusive · Weekday · Hourly',  hours: 1, price: 1100,  perHour: true,  tier: 'inclusive' },
+    'inc-wd-half':    { label: 'All-Inclusive · Weekday · Half-Day',hours: 4, price: 3800,  perHour: false, tier: 'inclusive' },
+    'inc-wd-full':    { label: 'All-Inclusive · Weekday · Full Day',hours: 8, price: 5800,  perHour: false, tier: 'inclusive' },
+    'inc-we-hr':      { label: 'All-Inclusive · Weekend · Hourly',  hours: 1, price: 1300,  perHour: true,  tier: 'inclusive' },
+    'inc-we-half':    { label: 'All-Inclusive · Weekend · Half-Day',hours: 4, price: 4200,  perHour: false, tier: 'inclusive' },
+    'inc-we-full':    { label: 'All-Inclusive · Weekend · Full Day',hours: 8, price: 6200,  perHour: false, tier: 'inclusive' },
+  };
+
+  const EQUIPMENT = [
+    { id: 'sony-camera', name: 'Sony a7sii Camera',                                   price: 547 },
+    { id: 'sony-lens',   name: 'Sony Lens (50mm or 18-105mm)',                        price: 447 },
+    { id: 'prompter',    name: 'Teleprompter',                                        price: 447 },
+    { id: 'rode-wl',     name: 'Rode Wireless Pro (1 or 2-person clip-on lavs)',      price: 347 },
+    { id: 'monitor',     name: 'Live Preview Monitor',                                price: 347 },
+    { id: 'chroma',      name: 'Green Screen Chroma Keyer (live virtual backgrounds)',price: 1247 },
+    { id: 'livestream',  name: 'Livestream Kit (multi-cam switcher)',                 price: 947 },
+    { id: 'lights',      name: '4-Light Studio Kit (2 umbrella + 2 LED)',             price: 250 },
+  ];
+
+  const DEPOSIT_AMOUNT = 750;
+
+  function switchTier(tier) {
+    document.querySelectorAll('.tier-toggle button').forEach(b => b.classList.toggle('active', b.dataset.tier === tier));
+    document.querySelectorAll('.rate-block').forEach(b => b.classList.remove('active'));
+    document.getElementById(tier + '-rates').classList.add('active');
+  }
+
+  function rebuildPackages() {
+    const tier = document.getElementById('rateType').value;
+    const select = document.getElementById('pkg');
+    select.innerHTML = '';
+    Object.entries(PACKAGES).filter(([k, v]) => v.tier === tier).forEach(([k, v]) => {
+      const opt = document.createElement('option');
+      opt.value = k;
+      opt.textContent = v.label + ' — R' + v.price.toLocaleString() + (v.perHour ? '/hr' : '');
+      select.appendChild(opt);
+    });
+    renderEquipment();
+  }
+
+  function renderEquipment() {
+    const tier = document.getElementById('rateType').value;
+    const equipList = document.getElementById('equipList');
+    const equipSection = document.getElementById('equipSection');
+
+    if (tier === 'inclusive') {
+      equipSection.style.display = 'none';
+      equipList.innerHTML = '';
+      return;
+    }
+
+    equipSection.style.display = 'block';
+    equipList.innerHTML = EQUIPMENT.map(a => `
+      <label class="equip-pick" onclick="toggleEquip(this)">
+        <div class="equip-pick-label">
+          <input type="checkbox" data-id="${a.id}" data-price="${a.price}" onchange="updateSummary()">
+          <span>${a.name}</span>
+        </div>
+        <div class="equip-pick-price">+R${a.price}</div>
+      </label>
+    `).join('');
+  }
+
+  function toggleEquip(el) {
+    setTimeout(() => {
+      const checked = el.querySelector('input').checked;
+      el.classList.toggle('checked', checked);
+    }, 0);
+  }
+
+  function selectPackage(pkgKey) {
+    const pkg = PACKAGES[pkgKey];
+    document.getElementById('rateType').value = pkg.tier;
+    rebuildPackages();
+    document.getElementById('pkg').value = pkgKey;
+    updateSummary();
+    document.getElementById('book').scrollIntoView({ behavior: 'smooth' });
+  }
+
+  function getSelectedEquipment() {
+    const checked = document.querySelectorAll('#equipList input:checked');
+    return Array.from(checked).map(c => ({
+      id: c.dataset.id,
+      name: EQUIPMENT.find(a => a.id === c.dataset.id).name,
+      price: parseInt(c.dataset.price)
+    }));
+  }
+
+  function updateSummary() {
+    const pkgKey = document.getElementById('pkg').value;
+    if (!pkgKey) return;
+    const pkg = PACKAGES[pkgKey];
+    const hoursField = document.getElementById('hoursField');
+
+    let hours = pkg.hours;
+    let basePrice = pkg.price;
+
+    if (pkg.perHour) {
+      hoursField.style.display = 'block';
+      hours = parseInt(document.getElementById('hours').value);
+      basePrice = pkg.price * hours;
+    } else {
+      hoursField.style.display = 'none';
+    }
+
+    const selectedEquip = getSelectedEquipment();
+    const equipTotal = selectedEquip.reduce((s, a) => s + a.price, 0);
+    const depositOn = document.getElementById('deposit').checked;
+    const depositAmt = depositOn ? DEPOSIT_AMOUNT : 0;
+    const grandTotal = basePrice + equipTotal + depositAmt;
+
+    let html = `
+      <div class="summary-row"><span>${pkg.label}</span><span>R${basePrice.toLocaleString()}</span></div>
+      <div class="summary-row"><span>Duration</span><span>${hours} ${hours === 1 ? 'hour' : 'hours'}</span></div>
+    `;
+    if (selectedEquip.length > 0) {
+      html += selectedEquip.map(a =>
+        `<div class="summary-row addon-line"><span>+ ${a.name}</span><span>R${a.price}</span></div>`
+      ).join('');
+    }
+    if (depositOn) {
+      html += `<div class="summary-row deposit-line"><span>+ Breakage Deposit (refundable)</span><span>R${DEPOSIT_AMOUNT}</span></div>`;
+    }
+    html += `<div class="summary-row total"><span>Total</span><span>R${grandTotal.toLocaleString()}</span></div>`;
+
+    document.getElementById('summary').innerHTML = html;
+  }
+
+  document.getElementById('date').min = new Date().toISOString().split('T')[0];
+  document.getElementById('date').value = new Date(Date.now() + 2*86400000).toISOString().split('T')[0];
+
+  rebuildPackages();
+  document.getElementById('pkg').value = 'studio-wd-half';
+  updateSummary();
+
+  function submitBooking() {
+    // Required field validation
+    const requiredIds = ['name', 'email', 'phone', 'date', 'time', 'shootType', 'bankName', 'bankBank', 'bankAcc'];
+    const missing = [];
+    requiredIds.forEach(id => {
+      const el = document.getElementById(id);
+      if (!el.value.trim()) missing.push(el);
+    });
+
+    const idDoc = document.getElementById('idDoc');
+    if (!idDoc.files || !idDoc.files[0]) missing.push(idDoc);
+
+    const terms = document.getElementById('terms');
+    if (!terms.checked) missing.push(terms);
+
+    if (missing.length > 0) {
+      alert('Please complete all required fields, upload your ID, and accept the Terms & Conditions.');
+      missing[0].focus();
+      missing[0].scrollIntoView({ behavior: 'smooth', block: 'center' });
+      return;
+    }
+
+    const name = document.getElementById('name').value.trim();
+    const email = document.getElementById('email').value.trim();
+    const phone = document.getElementById('phone').value.trim();
+    const date = document.getElementById('date').value;
+    const time = document.getElementById('time').value;
+    const shootType = document.getElementById('shootType').value.trim();
+
+    const bankName = document.getElementById('bankName').value.trim();
+    const bankBank = document.getElementById('bankBank').value.trim();
+    const bankAcc = document.getElementById('bankAcc').value.trim();
+    const bankBranch = document.getElementById('bankBranch').value.trim();
+
+    const pkgKey = document.getElementById('pkg').value;
+    const pkg = PACKAGES[pkgKey];
+    const hours = pkg.perHour ? parseInt(document.getElementById('hours').value) : pkg.hours;
+    const basePrice = pkg.perHour ? pkg.price * hours : pkg.price;
+    const selectedEquip = getSelectedEquipment();
+    const equipTotal = selectedEquip.reduce((s, a) => s + a.price, 0);
+    const depositOn = document.getElementById('deposit').checked;
+    const depositAmt = depositOn ? DEPOSIT_AMOUNT : 0;
+    const amount = basePrice + equipTotal + depositAmt;
+
+    // ===== PAYFAST CONFIG =====
+    const PAYFAST = {
+      merchant_id:  'YOUR_MERCHANT_ID',
+      merchant_key: 'YOUR_MERCHANT_KEY',
+      return_url:   window.location.origin + '/?status=success',
+      cancel_url:   window.location.origin + '/?status=cancel',
+      notify_url:   window.location.origin + '/notify',
+      action_url:   'https://www.payfast.co.za/eng/process'
+    };
+
+    const equipSummary = selectedEquip.length ? ' + ' + selectedEquip.map(a => a.name.split(' ').slice(0, 3).join(' ')).join(', ') : '';
+    const itemName = `Studio Booking · ${date} ${time} (${hours}h)${equipSummary}`;
+    const bookingRef = 'KYA-' + Date.now();
+    const [first, ...rest] = name.split(' ');
+
+    // NOTE: The ID file upload and banking details cannot go directly through PayFast.
+    // They should be emailed or saved to a backend. For now, we encode key booking details in item_description.
+    const bookingDetails = [
+      `Ref: ${bookingRef}`,
+      `Shoot: ${shootType.substring(0, 80)}`,
+      `Bank: ${bankBank} / ${bankName} / ${bankAcc}${bankBranch ? ' / ' + bankBranch : ''}`,
+      `Deposit: ${depositOn ? 'R750 incl' : 'Not incl'}`,
+    ].join(' | ');
+
+    const form = document.createElement('form');
+    form.method = 'POST';
+    form.action = PAYFAST.action_url;
+    form.style.display = 'none';
+
+    const fields = {
+      merchant_id:      PAYFAST.merchant_id,
+      merchant_key:     PAYFAST.merchant_key,
+      return_url:       PAYFAST.return_url,
+      cancel_url:       PAYFAST.cancel_url,
+      notify_url:       PAYFAST.notify_url,
+      name_first:       first,
+      name_last:        rest.join(' ') || first,
+      email_address:    email,
+      cell_number:      phone,
+      m_payment_id:     bookingRef,
+      amount:           amount.toFixed(2),
+      item_name:        itemName.substring(0, 100),
+      item_description: bookingDetails.substring(0, 250)
+    };
+
+    Object.entries(fields).forEach(([k, v]) => {
+      const inp = document.createElement('input');
+      inp.type = 'hidden'; inp.name = k; inp.value = v;
+      form.appendChild(inp);
+    });
+
+    document.body.appendChild(form);
+    document.getElementById('modal').classList.add('active');
+
+    setTimeout(() => {
+      if (PAYFAST.merchant_id === 'YOUR_MERCHANT_ID') {
+        document.getElementById('modalTitle').textContent = 'Almost there!';
+        document.getElementById('modalMsg').innerHTML =
+          'Add your PayFast <strong>Merchant ID</strong> and <strong>Merchant Key</strong> in the code to enable live checkout.<br><br>Booking ref: <strong>' + bookingRef + '</strong><br>Total: <strong>R' + amount.toLocaleString() + '</strong><br><br><small style="color: var(--muted);">Note: ID uploads and banking details need a backend endpoint — see README.</small>';
+      } else {
+        form.submit();
+      }
+    }, 1200);
+  }
+
+  function closeModal() {
+    document.getElementById('modal').classList.remove('active');
+  }
+
+  // Terms & Conditions modal
+  function openTerms() {
+    document.getElementById('termsModal').classList.add('active');
+    document.body.style.overflow = 'hidden';
+  }
+  function closeTerms() {
+    document.getElementById('termsModal').classList.remove('active');
+    document.body.style.overflow = '';
+  }
+  function acceptTerms() {
+    document.getElementById('terms').checked = true;
+    closeTerms();
+    // Visual confirmation — briefly highlight the terms box
+    const termsBox = document.querySelector('.terms-check');
+    if (termsBox) {
+      termsBox.style.transition = 'all .4s';
+      termsBox.style.borderColor = 'var(--gold-dark)';
+      termsBox.style.background = 'var(--gold-soft)';
+      setTimeout(() => {
+        termsBox.style.borderColor = '';
+        termsBox.style.background = '';
+      }, 1200);
+    }
+  }
+  // Close T&Cs on backdrop click or ESC
+  document.getElementById('termsModal').addEventListener('click', (e) => {
+    if (e.target.id === 'termsModal') closeTerms();
+  });
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+      closeTerms();
+      closeModal();
+    }
+  });
+
+  const params = new URLSearchParams(window.location.search);
+  if (params.get('status') === 'success') {
+    setTimeout(() => {
+      document.getElementById('modalTitle').textContent = 'Booking confirmed ✓';
+      document.getElementById('modalMsg').textContent = 'Thanks! Your payment went through. You\'ll receive a confirmation email shortly.';
+      document.getElementById('modal').classList.add('active');
+    }, 500);
+  } else if (params.get('status') === 'cancel') {
+    setTimeout(() => {
+      document.getElementById('modalTitle').textContent = 'Booking cancelled';
+      document.getElementById('modalMsg').textContent = 'No payment was taken. Feel free to try again when you\'re ready.';
+      document.getElementById('modal').classList.add('active');
+    }, 500);
+  }
+</script>
+
+</body>
+</html>

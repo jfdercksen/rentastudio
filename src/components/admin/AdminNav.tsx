@@ -5,11 +5,11 @@ import { usePathname, useRouter } from "next/navigation";
 import { createClient } from "@/lib/supabase/client";
 
 const NAV_LINKS = [
-  { href: "/dashboard", label: "Dashboard" },
-  { href: "/dashboard/bookings", label: "Bookings" },
-  { href: "/dashboard/pricing", label: "Pricing" },
-  { href: "/dashboard/gallery", label: "Gallery" },
-  { href: "/dashboard/content", label: "Content" },
+  { href: "/admin", label: "Dashboard" },
+  { href: "/admin/bookings", label: "Bookings" },
+  { href: "/admin/pricing", label: "Pricing" },
+  { href: "/admin/gallery", label: "Gallery" },
+  { href: "/admin/content", label: "Content" },
 ];
 
 interface AdminNavProps {
@@ -77,8 +77,8 @@ export default function AdminNav({ userEmail }: AdminNavProps) {
       <nav style={{ flex: 1, padding: "16px 12px" }}>
         {NAV_LINKS.map(({ href, label }) => {
           const isActive =
-            href === "/dashboard"
-              ? pathname === "/dashboard"
+            href === "/admin"
+              ? pathname === "/admin"
               : pathname.startsWith(href);
 
           return (
