@@ -5,6 +5,13 @@ const DEPOSIT = 750;
 interface PaymentSummaryProps {
   packagePrice: number;
   addOnsTotal: number;
+  promoCode: string;
+  promoApplied: boolean;
+  discountAmount: number;
+  promoError: string | null;
+  promoValidating: boolean;
+  onPromoCodeChange: (code: string) => void;
+  onPromoApply: () => void;
   termsAccepted: boolean;
   onTermsChange: (v: boolean) => void;
   onSubmit: () => void;
@@ -14,12 +21,21 @@ interface PaymentSummaryProps {
 export default function PaymentSummary({
   packagePrice,
   addOnsTotal,
+  promoCode,
+  promoApplied,
+  discountAmount,
+  promoError,
+  promoValidating,
+  onPromoCodeChange,
+  onPromoApply,
   termsAccepted,
   onTermsChange,
   onSubmit,
   isSubmitting,
 }: PaymentSummaryProps) {
-  const total = packagePrice + addOnsTotal + DEPOSIT;
+  const subtotal = packagePrice + addOnsTotal + DEPOSIT;
+  const finalTotal = subtotal - discountAmount;
+  const isFree = finalTotal === 0;
 
   return (
     <div>
@@ -83,6 +99,20 @@ export default function PaymentSummary({
           <span>Breakage deposit (refundable)</span>
           <span>+R{DEPOSIT.toFixed(2)}</span>
         </div>
+        {discountAmount > 0 && (
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "space-between",
+              padding: "6px 0",
+              fontSize: 13,
+              color: "#6fcf97",
+            }}
+          >
+            <span>Voucher discount</span>
+            <span>−R{discountAmount.toFixed(2)}</span>
+          </div>
+        )}
         <div
           style={{
             display: "flex",
@@ -97,8 +127,65 @@ export default function PaymentSummary({
           }}
         >
           <span>Total</span>
-          <span>R{total.toFixed(2)}</span>
+          <span>R{finalTotal.toFixed(2)}</span>
         </div>
+      </div>
+
+      {/* Promo code */}
+      <div style={{ marginBottom: 20 }}>
+        <div style={{ display: "flex", gap: 8 }}>
+          <input
+            type="text"
+            value={promoCode}
+            onChange={(e) => onPromoCodeChange(e.target.value.toUpperCase())}
+            onKeyDown={(e) => { if (e.key === "Enter") onPromoApply(); }}
+            placeholder="Voucher code"
+            disabled={promoApplied}
+            style={{
+              flex: 1,
+              padding: "12px 16px",
+              border: `1px solid ${promoApplied ? "#6fcf97" : promoError ? "#c75a3c" : "#e8e2d6"}`,
+              borderRadius: 6,
+              background: promoApplied ? "#f0faf4" : "#faf7f2",
+              fontFamily: "var(--font-ibm-plex-mono), monospace",
+              fontSize: 13,
+              letterSpacing: "0.08em",
+              color: "#0e0d0b",
+              outline: "none",
+              boxSizing: "border-box",
+            }}
+          />
+          <button
+            onClick={promoApplied ? () => { onPromoCodeChange(""); onPromoApply(); } : onPromoApply}
+            disabled={promoValidating || (!promoApplied && !promoCode.trim())}
+            style={{
+              padding: "12px 20px",
+              background: promoApplied ? "transparent" : "#0e0d0b",
+              color: promoApplied ? "#c75a3c" : "#faf7f2",
+              border: promoApplied ? "1px solid #c75a3c" : "none",
+              borderRadius: 6,
+              fontSize: 13,
+              fontWeight: 500,
+              cursor: promoValidating || (!promoApplied && !promoCode.trim()) ? "not-allowed" : "pointer",
+              opacity: promoValidating || (!promoApplied && !promoCode.trim()) ? 0.5 : 1,
+              whiteSpace: "nowrap",
+              fontFamily: "var(--font-inter), sans-serif",
+              transition: "all 0.2s",
+            }}
+          >
+            {promoValidating ? "Checking…" : promoApplied ? "Remove" : "Apply"}
+          </button>
+        </div>
+        {promoApplied && (
+          <p style={{ fontSize: 12, color: "#27ae60", marginTop: 6, fontWeight: 500 }}>
+            ✓ Voucher applied successfully
+          </p>
+        )}
+        {promoError && !promoApplied && (
+          <p style={{ fontSize: 12, color: "#c75a3c", marginTop: 6 }}>
+            {promoError}
+          </p>
+        )}
       </div>
 
       {/* T&C checkbox */}
@@ -157,7 +244,11 @@ export default function PaymentSummary({
           fontFamily: "var(--font-inter), sans-serif",
         }}
       >
-        {isSubmitting ? "Processing…" : "Pay securely with PayFast →"}
+        {isSubmitting
+          ? "Processing…"
+          : isFree
+          ? "Complete Booking →"
+          : "Pay securely with PayFast →"}
       </button>
       <p
         style={{
@@ -170,7 +261,7 @@ export default function PaymentSummary({
           textTransform: "uppercase",
         }}
       >
-        Secured · Encrypted · SA Payment Gateway
+        {isFree ? "Confirmed instantly · No payment required" : "Secured · Encrypted · SA Payment Gateway"}
       </p>
     </div>
   );

@@ -69,7 +69,7 @@ export async function handleITN(request: Request): Promise<Response> {
   const { data: booking } = await supabase
     .from("bookings")
     .select(
-      "id, client_name, client_email, booking_date, start_time, end_time, package_type, duration_type, add_ons, subtotal, deposit_amount, total_amount, status"
+      "id, client_name, client_email, booking_date, start_time, end_time, package_type, duration_type, add_ons, subtotal, deposit_amount, total_amount, final_total, status"
     )
     .eq("payfast_payment_id", payload.m_payment_id)
     .eq("status", "pending")
@@ -80,9 +80,11 @@ export async function handleITN(request: Request): Promise<Response> {
     return OK;
   }
 
-  // Step 8: Verify amount (string comparison to avoid float issues)
+  // Step 8: Verify amount — use final_total when a promo discount was applied,
+  // fall back to total_amount for bookings created before promo support.
   const receivedAmount = parseFloat(payload.amount_gross).toFixed(2);
-  const expectedAmount = (booking.total_amount as number).toFixed(2);
+  const chargedAmount = (booking.final_total ?? booking.total_amount) as number;
+  const expectedAmount = chargedAmount.toFixed(2);
   if (receivedAmount !== expectedAmount) {
     console.error(
       "ITN: amount mismatch — received",

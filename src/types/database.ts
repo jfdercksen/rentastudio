@@ -1,177 +1,400 @@
-// AUTO-GENERATED — do not edit by hand.
-// Regenerate after every migration:
-//   npx supabase gen types typescript --project-id ngqolupfxhlekuixyyxb > src/types/database.ts
-//
-// This is a placeholder until the migration has been run and types are generated.
-
 export type Json =
   | string
   | number
   | boolean
   | null
   | { [key: string]: Json | undefined }
-  | Json[];
+  | Json[]
 
 export type Database = {
+  // Allows to automatically instantiate createClient with right options
+  // instead of createClient<Database, { PostgrestVersion: 'XX' }>(URL, KEY)
+  __InternalSupabase: {
+    PostgrestVersion: "14.5"
+  }
   public: {
     Tables: {
-      bookings: {
-        Row: {
-          id: string;
-          created_at: string;
-          client_name: string;
-          client_email: string;
-          client_phone: string;
-          booking_date: string;
-          start_time: string;
-          end_time: string;
-          package_type: string;
-          duration_type: string;
-          is_weekday: boolean;
-          shoot_type: string | null;
-          add_ons: Json;
-          subtotal: number;
-          deposit_amount: number;
-          total_amount: number;
-          payfast_payment_id: string | null;
-          payfast_amount_gross: string | null;
-          status: "pending" | "confirmed" | "cancelled" | "no_show";
-          confirmed_at: string | null;
-          cancelled_at: string | null;
-          id_document_url: string | null;
-          bank_holder_name: string | null;
-          bank_name: string | null;
-          account_number: string | null;
-          branch_code: string | null;
-          notes: string | null;
-        };
-        Insert: {
-          id?: string;
-          created_at?: string;
-          client_name: string;
-          client_email: string;
-          client_phone: string;
-          booking_date: string;
-          start_time: string;
-          end_time: string;
-          package_type: string;
-          duration_type: string;
-          is_weekday: boolean;
-          shoot_type?: string | null;
-          add_ons?: Json;
-          subtotal: number;
-          deposit_amount?: number;
-          total_amount: number;
-          payfast_payment_id?: string | null;
-          payfast_amount_gross?: string | null;
-          status?: "pending" | "confirmed" | "cancelled" | "no_show";
-          confirmed_at?: string | null;
-          cancelled_at?: string | null;
-          id_document_url?: string | null;
-          bank_holder_name?: string | null;
-          bank_name?: string | null;
-          account_number?: string | null;
-          branch_code?: string | null;
-          notes?: string | null;
-        };
-        Update: Partial<Database["public"]["Tables"]["bookings"]["Insert"]>;
-        Relationships: [];
-      };
-      pricing: {
-        Row: {
-          id: string;
-          package_type: string;
-          duration_type: string;
-          is_weekday: boolean;
-          price_rands: number;
-        };
-        Insert: {
-          id?: string;
-          package_type: string;
-          duration_type: string;
-          is_weekday: boolean;
-          price_rands: number;
-        };
-        Update: Partial<Database["public"]["Tables"]["pricing"]["Insert"]>;
-        Relationships: [];
-      };
       add_ons: {
         Row: {
-          id: string;
-          created_at: string;
-          name: string;
-          description: string | null;
-          price_rands: number;
-          is_active: boolean;
-          display_order: number;
-        };
+          created_at: string
+          description: string | null
+          display_order: number
+          id: string
+          is_active: boolean
+          name: string
+          price_rands: number
+        }
         Insert: {
-          id?: string;
-          created_at?: string;
-          name: string;
-          description?: string | null;
-          price_rands: number;
-          is_active?: boolean;
-          display_order?: number;
-        };
-        Update: Partial<Database["public"]["Tables"]["add_ons"]["Insert"]>;
-        Relationships: [];
-      };
+          created_at?: string
+          description?: string | null
+          display_order?: number
+          id?: string
+          is_active?: boolean
+          name: string
+          price_rands: number
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          display_order?: number
+          id?: string
+          is_active?: boolean
+          name?: string
+          price_rands?: number
+        }
+        Relationships: []
+      }
       blocked_dates: {
         Row: {
-          id: string;
-          created_at: string;
-          start_date: string;
-          end_date: string;
-          reason: string | null;
-        };
+          created_at: string
+          end_date: string
+          id: string
+          reason: string | null
+          start_date: string
+        }
         Insert: {
-          id?: string;
-          created_at?: string;
-          start_date: string;
-          end_date: string;
-          reason?: string | null;
-        };
-        Update: Partial<Database["public"]["Tables"]["blocked_dates"]["Insert"]>;
-        Relationships: [];
-      };
-      site_content: {
+          created_at?: string
+          end_date: string
+          id?: string
+          reason?: string | null
+          start_date: string
+        }
+        Update: {
+          created_at?: string
+          end_date?: string
+          id?: string
+          reason?: string | null
+          start_date?: string
+        }
+        Relationships: []
+      }
+      bookings: {
         Row: {
-          id: string;
-          key: string;
-          value: string;
-          updated_at: string;
-        };
+          account_number: string | null
+          add_ons: Json
+          bank_holder_name: string | null
+          bank_name: string | null
+          booking_date: string
+          branch_code: string | null
+          cancelled_at: string | null
+          client_email: string
+          client_name: string
+          client_phone: string
+          confirmed_at: string | null
+          created_at: string
+          deposit_amount: number
+          discount_amount: number | null
+          discount_percentage: number | null
+          duration_type: string
+          end_time: string
+          final_total: number | null
+          id: string
+          id_document_url: string | null
+          is_weekday: boolean
+          notes: string | null
+          package_type: string
+          payfast_amount_gross: string | null
+          payfast_payment_id: string | null
+          promo_code: string | null
+          shoot_type: string | null
+          start_time: string
+          status: string
+          subtotal: number
+          total_amount: number
+        }
         Insert: {
-          id?: string;
-          key: string;
-          value: string;
-          updated_at?: string;
-        };
-        Update: Partial<Database["public"]["Tables"]["site_content"]["Insert"]>;
-        Relationships: [];
-      };
+          account_number?: string | null
+          add_ons?: Json
+          bank_holder_name?: string | null
+          bank_name?: string | null
+          booking_date: string
+          branch_code?: string | null
+          cancelled_at?: string | null
+          client_email: string
+          client_name: string
+          client_phone: string
+          confirmed_at?: string | null
+          created_at?: string
+          deposit_amount?: number
+          discount_amount?: number | null
+          discount_percentage?: number | null
+          duration_type: string
+          end_time: string
+          final_total?: number | null
+          id?: string
+          id_document_url?: string | null
+          is_weekday: boolean
+          notes?: string | null
+          package_type: string
+          payfast_amount_gross?: string | null
+          payfast_payment_id?: string | null
+          promo_code?: string | null
+          shoot_type?: string | null
+          start_time: string
+          status?: string
+          subtotal: number
+          total_amount: number
+        }
+        Update: {
+          account_number?: string | null
+          add_ons?: Json
+          bank_holder_name?: string | null
+          bank_name?: string | null
+          booking_date?: string
+          branch_code?: string | null
+          cancelled_at?: string | null
+          client_email?: string
+          client_name?: string
+          client_phone?: string
+          confirmed_at?: string | null
+          created_at?: string
+          deposit_amount?: number
+          discount_amount?: number | null
+          discount_percentage?: number | null
+          duration_type?: string
+          end_time?: string
+          final_total?: number | null
+          id?: string
+          id_document_url?: string | null
+          is_weekday?: boolean
+          notes?: string | null
+          package_type?: string
+          payfast_amount_gross?: string | null
+          payfast_payment_id?: string | null
+          promo_code?: string | null
+          shoot_type?: string | null
+          start_time?: string
+          status?: string
+          subtotal?: number
+          total_amount?: number
+        }
+        Relationships: []
+      }
       gallery_images: {
         Row: {
-          id: string;
-          created_at: string;
-          url: string;
-          display_order: number;
-          alt_text: string;
-        };
+          alt_text: string
+          created_at: string
+          display_order: number
+          id: string
+          url: string
+        }
         Insert: {
-          id?: string;
-          created_at?: string;
-          url: string;
-          display_order?: number;
-          alt_text: string;
-        };
-        Update: Partial<Database["public"]["Tables"]["gallery_images"]["Insert"]>;
-        Relationships: [];
-      };
-    };
-    Views: Record<string, never>;
-    Functions: Record<string, never>;
-    Enums: Record<string, never>;
-  };
-};
+          alt_text: string
+          created_at?: string
+          display_order?: number
+          id?: string
+          url: string
+        }
+        Update: {
+          alt_text?: string
+          created_at?: string
+          display_order?: number
+          id?: string
+          url?: string
+        }
+        Relationships: []
+      }
+      pricing: {
+        Row: {
+          duration_type: string
+          id: string
+          is_weekday: boolean
+          package_type: string
+          price_rands: number
+        }
+        Insert: {
+          duration_type: string
+          id?: string
+          is_weekday: boolean
+          package_type: string
+          price_rands: number
+        }
+        Update: {
+          duration_type?: string
+          id?: string
+          is_weekday?: boolean
+          package_type?: string
+          price_rands?: number
+        }
+        Relationships: []
+      }
+      promo_codes: {
+        Row: {
+          active: boolean | null
+          code: string | null
+          discount_percentage: number | null
+          id: number
+        }
+        Insert: {
+          active?: boolean | null
+          code?: string | null
+          discount_percentage?: number | null
+          id?: number
+        }
+        Update: {
+          active?: boolean | null
+          code?: string | null
+          discount_percentage?: number | null
+          id?: number
+        }
+        Relationships: []
+      }
+      site_content: {
+        Row: {
+          id: string
+          key: string
+          updated_at: string
+          value: string
+        }
+        Insert: {
+          id?: string
+          key: string
+          updated_at?: string
+          value: string
+        }
+        Update: {
+          id?: string
+          key?: string
+          updated_at?: string
+          value?: string
+        }
+        Relationships: []
+      }
+    }
+    Views: {
+      [_ in never]: never
+    }
+    Functions: {
+      [_ in never]: never
+    }
+    Enums: {
+      [_ in never]: never
+    }
+    CompositeTypes: {
+      [_ in never]: never
+    }
+  }
+}
+
+type DatabaseWithoutInternals = Omit<Database, "__InternalSupabase">
+
+type DefaultSchema = DatabaseWithoutInternals[Extract<keyof Database, "public">]
+
+export type Tables<
+  DefaultSchemaTableNameOrOptions extends
+    | keyof (DefaultSchema["Tables"] & DefaultSchema["Views"])
+    | { schema: keyof DatabaseWithoutInternals },
+  TableName extends DefaultSchemaTableNameOrOptions extends {
+    schema: keyof DatabaseWithoutInternals
+  }
+    ? keyof (DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"] &
+        DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Views"])
+    : never = never,
+> = DefaultSchemaTableNameOrOptions extends {
+  schema: keyof DatabaseWithoutInternals
+}
+  ? (DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"] &
+      DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Views"])[TableName] extends {
+      Row: infer R
+    }
+    ? R
+    : never
+  : DefaultSchemaTableNameOrOptions extends keyof (DefaultSchema["Tables"] &
+        DefaultSchema["Views"])
+    ? (DefaultSchema["Tables"] &
+        DefaultSchema["Views"])[DefaultSchemaTableNameOrOptions] extends {
+        Row: infer R
+      }
+      ? R
+      : never
+    : never
+
+export type TablesInsert<
+  DefaultSchemaTableNameOrOptions extends
+    | keyof DefaultSchema["Tables"]
+    | { schema: keyof DatabaseWithoutInternals },
+  TableName extends DefaultSchemaTableNameOrOptions extends {
+    schema: keyof DatabaseWithoutInternals
+  }
+    ? keyof DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"]
+    : never = never,
+> = DefaultSchemaTableNameOrOptions extends {
+  schema: keyof DatabaseWithoutInternals
+}
+  ? DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"][TableName] extends {
+      Insert: infer I
+    }
+    ? I
+    : never
+  : DefaultSchemaTableNameOrOptions extends keyof DefaultSchema["Tables"]
+    ? DefaultSchema["Tables"][DefaultSchemaTableNameOrOptions] extends {
+        Insert: infer I
+      }
+      ? I
+      : never
+    : never
+
+export type TablesUpdate<
+  DefaultSchemaTableNameOrOptions extends
+    | keyof DefaultSchema["Tables"]
+    | { schema: keyof DatabaseWithoutInternals },
+  TableName extends DefaultSchemaTableNameOrOptions extends {
+    schema: keyof DatabaseWithoutInternals
+  }
+    ? keyof DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"]
+    : never = never,
+> = DefaultSchemaTableNameOrOptions extends {
+  schema: keyof DatabaseWithoutInternals
+}
+  ? DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"][TableName] extends {
+      Update: infer U
+    }
+    ? U
+    : never
+  : DefaultSchemaTableNameOrOptions extends keyof DefaultSchema["Tables"]
+    ? DefaultSchema["Tables"][DefaultSchemaTableNameOrOptions] extends {
+        Update: infer U
+      }
+      ? U
+      : never
+    : never
+
+export type Enums<
+  DefaultSchemaEnumNameOrOptions extends
+    | keyof DefaultSchema["Enums"]
+    | { schema: keyof DatabaseWithoutInternals },
+  EnumName extends DefaultSchemaEnumNameOrOptions extends {
+    schema: keyof DatabaseWithoutInternals
+  }
+    ? keyof DatabaseWithoutInternals[DefaultSchemaEnumNameOrOptions["schema"]]["Enums"]
+    : never = never,
+> = DefaultSchemaEnumNameOrOptions extends {
+  schema: keyof DatabaseWithoutInternals
+}
+  ? DatabaseWithoutInternals[DefaultSchemaEnumNameOrOptions["schema"]]["Enums"][EnumName]
+  : DefaultSchemaEnumNameOrOptions extends keyof DefaultSchema["Enums"]
+    ? DefaultSchema["Enums"][DefaultSchemaEnumNameOrOptions]
+    : never
+
+export type CompositeTypes<
+  PublicCompositeTypeNameOrOptions extends
+    | keyof DefaultSchema["CompositeTypes"]
+    | { schema: keyof DatabaseWithoutInternals },
+  CompositeTypeName extends PublicCompositeTypeNameOrOptions extends {
+    schema: keyof DatabaseWithoutInternals
+  }
+    ? keyof DatabaseWithoutInternals[PublicCompositeTypeNameOrOptions["schema"]]["CompositeTypes"]
+    : never = never,
+> = PublicCompositeTypeNameOrOptions extends {
+  schema: keyof DatabaseWithoutInternals
+}
+  ? DatabaseWithoutInternals[PublicCompositeTypeNameOrOptions["schema"]]["CompositeTypes"][CompositeTypeName]
+  : PublicCompositeTypeNameOrOptions extends keyof DefaultSchema["CompositeTypes"]
+    ? DefaultSchema["CompositeTypes"][PublicCompositeTypeNameOrOptions]
+    : never
+
+export const Constants = {
+  public: {
+    Enums: {},
+  },
+} as const

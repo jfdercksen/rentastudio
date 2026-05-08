@@ -94,13 +94,36 @@ export async function POST(request: Request): Promise<NextResponse> {
   const subtotal = pricingRow.price_rands + addOnsSubtotal;
   const totalAmount = subtotal + DEPOSIT_AMOUNT;
 
+  // Validate promo code server-side (never trust client-provided discount value)
+  let promoCodeSaved: string | null = null;
+  let discountPercentageSaved: number | null = null;
+  let discountAmount = 0;
+  let finalTotal = totalAmount;
+
+  if (data.promoCode) {
+    const { data: promo } = await supabase
+      .from("promo_codes")
+      .select("discount_percentage, active")
+      .ilike("code", data.promoCode)
+      .single();
+
+    if (promo && promo.active === true) {
+      promoCodeSaved = data.promoCode.toUpperCase();
+      discountPercentageSaved = promo.discount_percentage as number;
+      discountAmount = parseFloat(
+        (totalAmount * discountPercentageSaved / 100).toFixed(2)
+      );
+      finalTotal = parseFloat((totalAmount - discountAmount).toFixed(2));
+    }
+  }
+
   // Upload ID document if provided
   let idDocumentUrl: string | null = null;
   if (data.idDocumentBase64 && data.idDocumentName) {
-    const bookingId = crypto.randomUUID();
+    const docId = crypto.randomUUID();
     const buffer = Buffer.from(data.idDocumentBase64, "base64");
     const fileName = data.idDocumentName.replace(/[^a-zA-Z0-9._-]/g, "_");
-    const path = `${bookingId}/${fileName}`;
+    const path = `${docId}/${fileName}`;
 
     const { error: uploadError } = await supabase.storage
       .from("id-documents")
@@ -114,8 +137,12 @@ export async function POST(request: Request): Promise<NextResponse> {
     }
   }
 
-  // Insert booking
+  // For 100% discount bookings there is no PayFast payment, so we confirm directly.
+  // The status guard in the ITN handler prevents this path from being abused by
+  // normal paid bookings — only server-validated zero-total bookings reach here.
+  const isFree = finalTotal === 0;
   const paymentId = crypto.randomUUID();
+
   const { data: booking, error: insertError } = await supabase
     .from("bookings")
     .insert({
@@ -133,8 +160,13 @@ export async function POST(request: Request): Promise<NextResponse> {
       subtotal,
       deposit_amount: DEPOSIT_AMOUNT,
       total_amount: totalAmount,
+      promo_code: promoCodeSaved,
+      discount_percentage: discountPercentageSaved,
+      discount_amount: discountAmount > 0 ? discountAmount : null,
+      final_total: finalTotal,
       payfast_payment_id: paymentId,
-      status: "pending",
+      status: isFree ? "confirmed" : "pending",
+      confirmed_at: isFree ? new Date().toISOString() : null,
       id_document_url: idDocumentUrl,
       bank_holder_name: data.bankHolderName,
       bank_name: data.bankName,
@@ -150,6 +182,11 @@ export async function POST(request: Request): Promise<NextResponse> {
       { error: "Failed to create booking" },
       { status: 500 }
     );
+  }
+
+  // Free booking (100% promo) — no PayFast redirect needed
+  if (isFree) {
+    return NextResponse.json({ bookingId: booking.id, free: true }, { status: 201 });
   }
 
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
@@ -174,30 +211,12 @@ export async function POST(request: Request): Promise<NextResponse> {
     ...(nameLast ? { name_last: nameLast } : {}),
     email_address: data.clientEmail,
     m_payment_id: paymentId,
-    amount: totalAmount.toFixed(2),
+    amount: finalTotal.toFixed(2),
     item_name: `Kyalami Studio - ${data.packageType} ${data.date}`,
   };
 
   const passphrase = process.env.PAYFAST_PASSPHRASE?.trim();
   const signature = buildPayFastSignature(payfastParams, passphrase);
-
-  // --- TEMPORARY DIAGNOSTIC LOGGING — remove once signature mismatch is resolved ---
-  const queryParts = Object.entries(payfastParams)
-    .filter(([, v]) => v !== "" && v != null)
-    .map(([k, v]) => `${k}=${v}`)
-    .join("&");
-  const passphraseLog = passphrase
-    ? `[SET — ${passphrase.length} chars, starts: ${passphrase.slice(0, 3)}...]`
-    : "[NOT SET]";
-  console.error("[PayFast] passphrase:", passphraseLog);
-  console.error("[PayFast] merchant_id:", process.env.PAYFAST_MERCHANT_ID?.slice(0, 4) + "...");
-  console.error("[PayFast] field order:", Object.keys(payfastParams).join(", "));
-  console.error("[PayFast] pre-encode query string:", queryParts);
-  console.error("[PayFast] generated signature:", signature);
-  // --- END TEMPORARY DIAGNOSTIC LOGGING ---
-
-  // Use the same params object (same field order) as the submitted payload.
-  // Rebuilding it in a different order causes signature mismatches on PayFast's side.
   const payfastPayload = { ...payfastParams, signature };
 
   return NextResponse.json(

@@ -57,6 +57,11 @@ export default function BookingForm({ pricing, addOns }: BookingFormProps) {
   const [slotsBlocked, setSlotsBlocked] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
+  const [promoCode, setPromoCode] = useState("");
+  const [promoApplied, setPromoApplied] = useState(false);
+  const [discountPercentage, setDiscountPercentage] = useState(0);
+  const [promoError, setPromoError] = useState<string | null>(null);
+  const [promoValidating, setPromoValidating] = useState(false);
 
   async function handleDateChange(date: string) {
     setForm((f) => ({
@@ -186,6 +191,7 @@ export default function BookingForm({ pricing, addOns }: BookingFormProps) {
         bankName: form.bankName,
         accountNumber: form.accountNumber,
         branchCode: form.branchCode,
+        promoCode: promoApplied ? promoCode : null,
       };
 
       const res = await fetch("/api/bookings", {
@@ -199,13 +205,19 @@ export default function BookingForm({ pricing, addOns }: BookingFormProps) {
         throw new Error(err.error ?? "Booking failed");
       }
 
-      const { payfastUrl, payfastPayload } = await res.json();
+      const json = await res.json();
+
+      // Free booking (100% promo) — skip PayFast, go straight to confirmation
+      if (json.free) {
+        window.location.href = "/booking/confirmed";
+        return;
+      }
 
       // Submit form to PayFast — causes full browser redirect
       const pfForm = document.createElement("form");
       pfForm.method = "POST";
-      pfForm.action = payfastUrl;
-      for (const [key, val] of Object.entries(payfastPayload as Record<string, string>)) {
+      pfForm.action = json.payfastUrl;
+      for (const [key, val] of Object.entries(json.payfastPayload as Record<string, string>)) {
         const input = document.createElement("input");
         input.type = "hidden";
         input.name = key;
@@ -220,8 +232,46 @@ export default function BookingForm({ pricing, addOns }: BookingFormProps) {
     }
   }
 
+  async function handleApplyPromo() {
+    if (promoValidating) return;
+    if (promoApplied) {
+      // Remove voucher
+      setPromoApplied(false);
+      setDiscountPercentage(0);
+      setPromoError(null);
+      return;
+    }
+    if (!promoCode.trim()) return;
+    setPromoValidating(true);
+    setPromoError(null);
+    try {
+      const res = await fetch("/api/validate-promo", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ code: promoCode.trim() }),
+      });
+      const data = await res.json();
+      if (data.valid) {
+        setDiscountPercentage(data.discountPercentage as number);
+        setPromoApplied(true);
+      } else {
+        setPromoError(data.message ?? "Invalid or inactive voucher code");
+        setPromoApplied(false);
+        setDiscountPercentage(0);
+      }
+    } catch {
+      setPromoError("Could not validate voucher. Please try again.");
+    } finally {
+      setPromoValidating(false);
+    }
+  }
+
   const packagePrice = getPackagePrice();
   const addOnsTotal = getAddOnsTotal();
+  const subtotalWithDeposit = packagePrice + addOnsTotal + DEPOSIT;
+  const discountAmount = promoApplied
+    ? parseFloat((subtotalWithDeposit * discountPercentage / 100).toFixed(2))
+    : 0;
 
   return (
     <div>
@@ -491,6 +541,13 @@ export default function BookingForm({ pricing, addOns }: BookingFormProps) {
           <PaymentSummary
             packagePrice={packagePrice}
             addOnsTotal={addOnsTotal}
+            promoCode={promoCode}
+            promoApplied={promoApplied}
+            discountAmount={discountAmount}
+            promoError={promoError}
+            promoValidating={promoValidating}
+            onPromoCodeChange={setPromoCode}
+            onPromoApply={handleApplyPromo}
             termsAccepted={form.termsAccepted}
             onTermsChange={(v) =>
               setForm((f) => ({ ...f, termsAccepted: v }))

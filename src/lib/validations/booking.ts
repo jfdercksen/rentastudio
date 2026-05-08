@@ -18,6 +18,7 @@ export const BookingSchema = z.object({
   bankName: z.string().min(2).max(100),
   accountNumber: z.string().regex(/^\d+$/, "Digits only").min(8).max(16),
   branchCode: z.string().min(2).max(20),
+  promoCode: z.string().min(1).max(50).optional().nullable(),
 });
 
 export type BookingInput = z.infer<typeof BookingSchema>;
