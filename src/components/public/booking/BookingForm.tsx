@@ -209,7 +209,7 @@ export default function BookingForm({ pricing, addOns }: BookingFormProps) {
 
       // Free booking (100% promo) — skip PayFast, go straight to confirmation
       if (json.free) {
-        window.location.href = "/booking/confirmed";
+        window.location.href = `/booking/confirmed?m_payment_id=${json.paymentId}`;
         return;
       }
 

@@ -186,7 +186,7 @@ export async function POST(request: Request): Promise<NextResponse> {
 
   // Free booking (100% promo) — no PayFast redirect needed
   if (isFree) {
-    return NextResponse.json({ bookingId: booking.id, free: true }, { status: 201 });
+    return NextResponse.json({ bookingId: booking.id, paymentId, free: true }, { status: 201 });
   }
 
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";

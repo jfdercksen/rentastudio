@@ -47,6 +47,7 @@ export default async function ConfirmedPage({ searchParams }: PageProps) {
     subtotal: number;
     deposit_amount: number;
     total_amount: number;
+    final_total: number | null;
     status: string;
   }
 
@@ -54,7 +55,7 @@ export default async function ConfirmedPage({ searchParams }: PageProps) {
   const { data: bookingRaw } = await supabase
     .from("bookings")
     .select(
-      "id, client_name, booking_date, start_time, end_time, package_type, duration_type, add_ons, subtotal, deposit_amount, total_amount, status"
+      "id, client_name, booking_date, start_time, end_time, package_type, duration_type, add_ons, subtotal, deposit_amount, total_amount, final_total, status"
     )
     .eq("payfast_payment_id", paymentId)
     .single();
@@ -305,7 +306,7 @@ export default async function ConfirmedPage({ searchParams }: PageProps) {
               >
                 <span>Total Paid</span>
                 <span style={{ color: "#a87d36" }}>
-                  R{(booking.total_amount as number).toFixed(2)}
+                  R{((booking.final_total ?? booking.total_amount) as number).toFixed(2)}
                 </span>
               </div>
             </div>
