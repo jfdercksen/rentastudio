@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import Nav from "@/components/public/Nav";
 import Footer from "@/components/public/Footer";
-import { createClient } from "@/lib/supabase/server";
+import { createAdminClient } from "@/lib/supabase/admin";
 
 export const metadata: Metadata = {
   title: "Booking Confirmed — Kyalami Studio",
@@ -51,7 +51,7 @@ export default async function ConfirmedPage({ searchParams }: PageProps) {
     status: string;
   }
 
-  const supabase = await createClient();
+  const supabase = createAdminClient();
   const { data: bookingRaw } = await supabase
     .from("bookings")
     .select(
