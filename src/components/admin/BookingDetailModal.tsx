@@ -16,6 +16,7 @@ interface BookingDetailModalProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   onStatusChange: (id: string, status: string) => void;
+  onDelete: (id: string) => void;
 }
 
 function formatPackage(p: string): string {
@@ -73,8 +74,10 @@ export default function BookingDetailModal({
   open,
   onOpenChange,
   onStatusChange,
+  onDelete,
 }: BookingDetailModalProps) {
   const [loadingSignedUrl, setLoadingSignedUrl] = useState(false);
+  const [deleting, setDeleting] = useState(false);
 
   if (!booking) return null;
 
@@ -97,6 +100,26 @@ export default function BookingDetailModal({
       alert("Failed to load ID document.");
     } finally {
       setLoadingSignedUrl(false);
+    }
+  }
+
+  async function handleDelete() {
+    if (!booking) return;
+    const confirmed = window.confirm(
+      `Permanently delete this booking for ${booking.client_name}? This cannot be undone.`
+    );
+    if (!confirmed) return;
+    setDeleting(true);
+    try {
+      const res = await fetch(`/api/admin/bookings/${booking.id}`, { method: "DELETE" });
+      if (res.ok) {
+        onDelete(booking.id);
+        onOpenChange(false);
+      } else {
+        alert("Failed to delete booking. Please try again.");
+      }
+    } finally {
+      setDeleting(false);
     }
   }
 
@@ -193,48 +216,68 @@ export default function BookingDetailModal({
         )}
 
         {/* Actions */}
-        {(booking.status === "confirmed" || booking.status === "pending") && (
-          <div
+        <div
+          style={{
+            display: "flex",
+            flexWrap: "wrap",
+            gap: 12,
+            marginTop: 24,
+            paddingTop: 20,
+            borderTop: "1px solid #e8e2d6",
+          }}
+        >
+          {(booking.status === "confirmed" || booking.status === "pending") && (
+            <>
+              <button
+                onClick={() => handleAction("no_show")}
+                style={{
+                  padding: "9px 18px",
+                  background: "#fef9c3",
+                  color: "#713f12",
+                  border: "1px solid #fde68a",
+                  borderRadius: 6,
+                  fontSize: 13,
+                  cursor: "pointer",
+                  fontWeight: 500,
+                }}
+              >
+                Mark No-show
+              </button>
+              <button
+                onClick={() => handleAction("cancelled")}
+                style={{
+                  padding: "9px 18px",
+                  background: "#fee2e2",
+                  color: "#7f1d1d",
+                  border: "1px solid #fca5a5",
+                  borderRadius: 6,
+                  fontSize: 13,
+                  cursor: "pointer",
+                  fontWeight: 500,
+                }}
+              >
+                Cancel Booking
+              </button>
+            </>
+          )}
+          <button
+            onClick={handleDelete}
+            disabled={deleting}
             style={{
-              display: "flex",
-              gap: 12,
-              marginTop: 24,
-              paddingTop: 20,
-              borderTop: "1px solid #e8e2d6",
+              marginLeft: "auto",
+              padding: "9px 18px",
+              background: deleting ? "#e8e2d6" : "#7f1d1d",
+              color: deleting ? "#8a857a" : "#fff",
+              border: "none",
+              borderRadius: 6,
+              fontSize: 13,
+              cursor: deleting ? "not-allowed" : "pointer",
+              fontWeight: 500,
             }}
           >
-            <button
-              onClick={() => handleAction("no_show")}
-              style={{
-                padding: "9px 18px",
-                background: "#fef9c3",
-                color: "#713f12",
-                border: "1px solid #fde68a",
-                borderRadius: 6,
-                fontSize: 13,
-                cursor: "pointer",
-                fontWeight: 500,
-              }}
-            >
-              Mark No-show
-            </button>
-            <button
-              onClick={() => handleAction("cancelled")}
-              style={{
-                padding: "9px 18px",
-                background: "#fee2e2",
-                color: "#7f1d1d",
-                border: "1px solid #fca5a5",
-                borderRadius: 6,
-                fontSize: 13,
-                cursor: "pointer",
-                fontWeight: 500,
-              }}
-            >
-              Cancel Booking
-            </button>
-          </div>
-        )}
+            {deleting ? "Deleting…" : "Delete Booking"}
+          </button>
+        </div>
       </DialogContent>
     </Dialog>
   );

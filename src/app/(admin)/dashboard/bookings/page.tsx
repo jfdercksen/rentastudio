@@ -106,6 +106,10 @@ export default function BookingsPage() {
         open={modalOpen}
         onOpenChange={setModalOpen}
         onStatusChange={handleStatusChange}
+        onDelete={(id) => {
+          setBookings((prev) => prev.filter((b) => b.id !== id));
+          setModalOpen(false);
+        }}
       />
     </div>
   );
