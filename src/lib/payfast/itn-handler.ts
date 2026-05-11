@@ -2,6 +2,7 @@ import { createAdminClient } from "@/lib/supabase/admin";
 import { ITNPayloadSchema } from "@/lib/validations/itn";
 import { buildPayFastSignature } from "@/lib/payfast/signature";
 import { sendConfirmationEmail } from "@/lib/resend/send-confirmation";
+import { sendAdminNotification } from "@/lib/resend/send-admin-notification";
 
 const PAYFAST_IP_WHITELIST = [
   "41.74.179.194",
@@ -69,7 +70,7 @@ export async function handleITN(request: Request): Promise<Response> {
   const { data: booking } = await supabase
     .from("bookings")
     .select(
-      "id, client_name, client_email, booking_date, start_time, end_time, package_type, duration_type, add_ons, subtotal, deposit_amount, total_amount, final_total, status"
+      "id, client_name, client_email, client_phone, shoot_type, booking_date, start_time, end_time, package_type, duration_type, add_ons, subtotal, deposit_amount, total_amount, final_total, promo_code, discount_amount, bank_holder_name, bank_name, account_number, branch_code, id_document_url, status"
     )
     .eq("payfast_payment_id", payload.m_payment_id)
     .eq("status", "pending")
@@ -111,7 +112,7 @@ export async function handleITN(request: Request): Promise<Response> {
     return OK;
   }
 
-  // Step 10: Send confirmation email — failure must NOT prevent returning 200
+  // Step 10: Send emails — failures must NOT prevent returning 200
   const addOns = Array.isArray(booking.add_ons)
     ? (booking.add_ons as string[])
     : [];
@@ -127,8 +128,36 @@ export async function handleITN(request: Request): Promise<Response> {
     addOns,
     subtotal: booking.subtotal as number,
     depositAmount: booking.deposit_amount as number,
+    finalTotal: booking.final_total as number | null,
   }).catch((e: unknown) => {
-    console.error("ITN: email send failed:", e);
+    console.error("ITN: confirmation email failed:", e);
+  });
+
+  sendAdminNotification({
+    bookingId: booking.id,
+    clientName: booking.client_name,
+    clientEmail: booking.client_email,
+    clientPhone: (booking.client_phone as string) ?? "",
+    shootType: (booking.shoot_type as string) ?? "",
+    bookingDate: booking.booking_date,
+    startTime: booking.start_time,
+    endTime: booking.end_time,
+    packageType: booking.package_type,
+    durationType: booking.duration_type,
+    addOns,
+    subtotal: booking.subtotal as number,
+    depositAmount: booking.deposit_amount as number,
+    totalAmount: booking.total_amount as number,
+    finalTotal: booking.final_total as number | null,
+    promoCode: booking.promo_code as string | null,
+    discountAmount: booking.discount_amount as number | null,
+    bankHolderName: booking.bank_holder_name as string | null,
+    bankName: booking.bank_name as string | null,
+    accountNumber: booking.account_number as string | null,
+    branchCode: booking.branch_code as string | null,
+    idDocumentUrl: booking.id_document_url as string | null,
+  }).catch((e: unknown) => {
+    console.error("ITN: admin notification failed:", e);
   });
 
   // Step 11: Always return 200

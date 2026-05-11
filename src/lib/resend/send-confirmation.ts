@@ -28,7 +28,7 @@ export async function sendConfirmationEmail(
 ): Promise<{ success: boolean; error?: string }> {
   try {
     const resend = new Resend(process.env.RESEND_API_KEY);
-    const total = input.subtotal + input.depositAmount;
+    const total = input.finalTotal != null ? input.finalTotal : input.subtotal + input.depositAmount;
 
     const addOnsHtml =
       input.addOns.length > 0
@@ -102,8 +102,9 @@ export async function sendConfirmationEmail(
 </body>
 </html>`;
 
+    const fromEmail = process.env.RESEND_FROM_EMAIL ?? "Kyalami Studio <bookings@kyalamistudio.co.za>";
     await resend.emails.send({
-      from: "Kyalami Studio <bookings@kyalamistudio.co.za>",
+      from: fromEmail,
       to: input.clientEmail,
       subject: `Booking Confirmed — ${input.bookingDate} at ${input.startTime}`,
       html,

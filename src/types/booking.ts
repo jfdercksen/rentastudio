@@ -53,4 +53,5 @@ export interface ConfirmationEmailInput {
   addOns: string[];
   subtotal: number;
   depositAmount: number;
+  finalTotal?: number | null;
 }

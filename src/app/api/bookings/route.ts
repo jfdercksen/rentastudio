@@ -2,6 +2,8 @@ import { NextResponse } from "next/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { BookingSchema } from "@/lib/validations/booking";
 import { buildPayFastSignature } from "@/lib/payfast/signature";
+import { sendConfirmationEmail } from "@/lib/resend/send-confirmation";
+import { sendAdminNotification } from "@/lib/resend/send-admin-notification";
 
 const DEPOSIT_AMOUNT = 750;
 
@@ -186,6 +188,49 @@ export async function POST(request: Request): Promise<NextResponse> {
 
   // Free booking (100% promo) — no PayFast redirect needed
   if (isFree) {
+    sendConfirmationEmail({
+      clientName: data.clientName,
+      clientEmail: data.clientEmail,
+      bookingDate: data.date,
+      startTime: data.startTime,
+      endTime: data.endTime,
+      packageType: data.packageType,
+      durationType: data.durationType,
+      addOns: addOnNames,
+      subtotal,
+      depositAmount: DEPOSIT_AMOUNT,
+      finalTotal: 0,
+    }).catch((e: unknown) => {
+      console.error("Free booking: confirmation email failed:", e);
+    });
+
+    sendAdminNotification({
+      bookingId: booking.id,
+      clientName: data.clientName,
+      clientEmail: data.clientEmail,
+      clientPhone: data.clientPhone,
+      shootType: data.shootType,
+      bookingDate: data.date,
+      startTime: data.startTime,
+      endTime: data.endTime,
+      packageType: data.packageType,
+      durationType: data.durationType,
+      addOns: addOnNames,
+      subtotal,
+      depositAmount: DEPOSIT_AMOUNT,
+      totalAmount,
+      finalTotal: 0,
+      promoCode: promoCodeSaved,
+      discountAmount: discountAmount > 0 ? discountAmount : null,
+      bankHolderName: data.bankHolderName,
+      bankName: data.bankName,
+      accountNumber: data.accountNumber,
+      branchCode: data.branchCode,
+      idDocumentUrl: idDocumentUrl,
+    }).catch((e: unknown) => {
+      console.error("Free booking: admin notification failed:", e);
+    });
+
     return NextResponse.json({ bookingId: booking.id, paymentId, free: true }, { status: 201 });
   }
 
