@@ -261,6 +261,12 @@ export default function BookingForm({ pricing, addOns }: BookingFormProps) {
 
   async function handleSubmit() {
     if (!form.termsAccepted || isSubmitting) return;
+
+    if (!form.timeSlot) {
+      setSubmitError("Your session is missing the time slot. Please go back to step 1 and select your date and time again.");
+      return;
+    }
+
     setIsSubmitting(true);
     setSubmitError(null);
 
