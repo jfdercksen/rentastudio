@@ -95,13 +95,18 @@ export default function BookingForm({ pricing, addOns }: BookingFormProps) {
 
     window.history.replaceState({}, "", "/booking");
 
-    function applyDraft(draft: BookingDraft) {
+    function applyDraft(draft: BookingDraft): boolean {
+      // Reject incomplete drafts — prevents a broken step 5 with null timeSlot/package
+      if (!draft.form?.timeSlot || !draft.form?.packageType || !draft.form?.durationType) {
+        return false;
+      }
       setForm({ ...draft.form, idDocumentFile: null });
       setPromoCode(draft.promoCode);
       setPromoApplied(draft.promoApplied);
       setDiscountPercentage(draft.discountPercentage);
       setRestoredIdBase64(draft.idDocBase64 ?? null);
       setRestoredIdName(draft.idDocName ?? null);
+      return true;
     }
 
     // Fast path: localStorage works when the link opens in any tab of the same browser
@@ -112,8 +117,7 @@ export default function BookingForm({ pricing, addOns }: BookingFormProps) {
         const draft = JSON.parse(raw) as BookingDraft;
         localStorage.removeItem(DRAFT_KEY);
         if (Date.now() - draft.savedAt > DRAFT_MAX_AGE_MS) return false;
-        applyDraft(draft);
-        return true;
+        return applyDraft(draft);
       } catch {
         localStorage.removeItem(DRAFT_KEY);
         return false;
@@ -154,12 +158,14 @@ export default function BookingForm({ pricing, addOns }: BookingFormProps) {
           .single();
 
         if (data?.draft) {
-          applyDraft(data.draft as unknown as BookingDraft);
+          const applied = applyDraft(data.draft as unknown as BookingDraft);
           // Clean up after reading — fire and forget
           supabase.from("booking_drafts").delete().eq("email", email).then(() => {});
-          setVerifyLoading(false);
-          setStep(5);
-          return;
+          if (applied) {
+            setVerifyLoading(false);
+            setStep(5);
+            return;
+          }
         }
       } catch {
         // fall through to the not-found message
@@ -266,6 +272,9 @@ export default function BookingForm({ pricing, addOns }: BookingFormProps) {
   function canAdvanceStep3(): boolean {
     const hasIdDoc = !!form.idDocumentFile || !!restoredIdBase64;
     return (
+      !!form.timeSlot &&
+      !!form.packageType &&
+      !!form.durationType &&
       form.clientName.trim().length >= 2 &&
       form.clientEmail.includes("@") &&
       form.clientPhone.trim().length >= 7 &&
