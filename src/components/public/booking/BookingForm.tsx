@@ -86,29 +86,46 @@ export default function BookingForm({ pricing, addOns }: BookingFormProps) {
   // On mount: detect return from magic link and restore draft
   useEffect(() => {
     const url = new URL(window.location.href);
-    if (url.searchParams.get("verified") !== "true") return;
+    const hasVerified = url.searchParams.get("verified") === "true";
+    const errorCode = url.searchParams.get("error_code");
+    const hasError = !!url.searchParams.get("error");
 
+    if (!hasVerified && !hasError) return;
+
+    // Always clean up the URL immediately
+    window.history.replaceState({}, "", "/booking");
+
+    // Try to restore form state from sessionStorage regardless of error
     const raw = sessionStorage.getItem(DRAFT_KEY);
-    if (!raw) return;
-
-    try {
-      const draft = JSON.parse(raw) as BookingDraft;
-      if (Date.now() - draft.savedAt > 60 * 60 * 1000) {
+    if (raw) {
+      try {
+        const draft = JSON.parse(raw) as BookingDraft;
+        if (Date.now() - draft.savedAt <= 60 * 60 * 1000) {
+          setForm({ ...draft.form, idDocumentFile: null });
+          setPromoCode(draft.promoCode);
+          setPromoApplied(draft.promoApplied);
+          setDiscountPercentage(draft.discountPercentage);
+          setRestoredIdBase64(draft.idDocBase64);
+          setRestoredIdName(draft.idDocName);
+        }
         sessionStorage.removeItem(DRAFT_KEY);
-        return;
+      } catch {
+        sessionStorage.removeItem(DRAFT_KEY);
       }
-      setForm({ ...draft.form, idDocumentFile: null });
-      setPromoCode(draft.promoCode);
-      setPromoApplied(draft.promoApplied);
-      setDiscountPercentage(draft.discountPercentage);
-      setRestoredIdBase64(draft.idDocBase64);
-      setRestoredIdName(draft.idDocName);
-      setStep(5);
-      sessionStorage.removeItem(DRAFT_KEY);
-      window.history.replaceState({}, "", "/booking");
-    } catch {
-      sessionStorage.removeItem(DRAFT_KEY);
     }
+
+    if (hasError) {
+      const msg =
+        errorCode === "otp_expired"
+          ? "Your verification link expired. Click 'try again' to get a new one."
+          : "Verification failed. Please try again.";
+      setVerifyError(msg);
+      setStep(4);
+      return;
+    }
+
+    // Success — advance to payment
+    setStep(5);
   }, []);
 
   async function handleDateChange(date: string) {
