@@ -1,7 +1,6 @@
 import { createAdminClient } from "@/lib/supabase/admin";
 import { ITNPayloadSchema } from "@/lib/validations/itn";
 import { buildPayFastSignature } from "@/lib/payfast/signature";
-import { sendConfirmationEmail } from "@/lib/resend/send-confirmation";
 import { sendAdminNotification } from "@/lib/resend/send-admin-notification";
 
 const PAYFAST_IP_WHITELIST = [
@@ -116,22 +115,6 @@ export async function handleITN(request: Request): Promise<Response> {
   const addOns = Array.isArray(booking.add_ons)
     ? (booking.add_ons as string[])
     : [];
-
-  sendConfirmationEmail({
-    clientName: booking.client_name,
-    clientEmail: booking.client_email,
-    bookingDate: booking.booking_date,
-    startTime: booking.start_time,
-    endTime: booking.end_time,
-    packageType: booking.package_type,
-    durationType: booking.duration_type,
-    addOns,
-    subtotal: booking.subtotal as number,
-    depositAmount: booking.deposit_amount as number,
-    finalTotal: booking.final_total as number | null,
-  }).catch((e: unknown) => {
-    console.error("ITN: confirmation email failed:", e);
-  });
 
   sendAdminNotification({
     bookingId: booking.id,

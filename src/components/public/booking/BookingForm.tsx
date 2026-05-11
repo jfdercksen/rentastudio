@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useCallback, useEffect } from "react";
+import { createClient } from "@/lib/supabase/client";
 import DatePicker from "./DatePicker";
 import TimePicker from "./TimePicker";
 import PackageSelector from "./PackageSelector";
@@ -20,12 +21,23 @@ interface BookingFormProps {
 }
 
 const DEPOSIT = 750;
-const STEPS = ["Date & Time", "Package", "Your Details", "Payment"];
+const STEPS = ["Date & Time", "Package", "Your Details", "Verify Email", "Payment"];
+const DRAFT_KEY = "ks_booking_draft";
+
+interface BookingDraft {
+  form: Omit<BookingFormState, "idDocumentFile">;
+  idDocBase64: string | null;
+  idDocName: string | null;
+  promoCode: string;
+  promoApplied: boolean;
+  discountPercentage: number;
+  savedAt: number;
+}
 
 function isWeekdayDate(dateStr: string): boolean {
   const d = new Date(dateStr + "T00:00:00");
-  const day = d.getDay(); // 0=Sun, 1=Mon...4=Thu, 5=Fri, 6=Sat
-  return day >= 1 && day <= 4; // Mon–Thu = weekday
+  const day = d.getDay();
+  return day >= 1 && day <= 4;
 }
 
 const EMPTY_STATE: BookingFormState = {
@@ -51,6 +63,7 @@ export default function BookingForm({ pricing, addOns }: BookingFormProps) {
   const [step, setStep] = useState(1);
   useEffect(() => { window.scrollTo(0, 0); }, [step]);
   function goToStep(n: number) { setStep(n); }
+
   const [form, setForm] = useState<BookingFormState>(EMPTY_STATE);
   const [slots, setSlots] = useState<TimeSlot[]>([]);
   const [loadingSlots, setLoadingSlots] = useState(false);
@@ -63,13 +76,43 @@ export default function BookingForm({ pricing, addOns }: BookingFormProps) {
   const [promoError, setPromoError] = useState<string | null>(null);
   const [promoValidating, setPromoValidating] = useState(false);
 
+  // Email verification state
+  const [verificationSent, setVerificationSent] = useState(false);
+  const [verifyLoading, setVerifyLoading] = useState(false);
+  const [verifyError, setVerifyError] = useState<string | null>(null);
+  const [restoredIdBase64, setRestoredIdBase64] = useState<string | null>(null);
+  const [restoredIdName, setRestoredIdName] = useState<string | null>(null);
+
+  // On mount: detect return from magic link and restore draft
+  useEffect(() => {
+    const url = new URL(window.location.href);
+    if (url.searchParams.get("verified") !== "true") return;
+
+    const raw = sessionStorage.getItem(DRAFT_KEY);
+    if (!raw) return;
+
+    try {
+      const draft = JSON.parse(raw) as BookingDraft;
+      if (Date.now() - draft.savedAt > 60 * 60 * 1000) {
+        sessionStorage.removeItem(DRAFT_KEY);
+        return;
+      }
+      setForm({ ...draft.form, idDocumentFile: null });
+      setPromoCode(draft.promoCode);
+      setPromoApplied(draft.promoApplied);
+      setDiscountPercentage(draft.discountPercentage);
+      setRestoredIdBase64(draft.idDocBase64);
+      setRestoredIdName(draft.idDocName);
+      setStep(5);
+      sessionStorage.removeItem(DRAFT_KEY);
+      window.history.replaceState({}, "", "/booking");
+    } catch {
+      sessionStorage.removeItem(DRAFT_KEY);
+    }
+  }, []);
+
   async function handleDateChange(date: string) {
-    setForm((f) => ({
-      ...f,
-      date,
-      timeSlot: null,
-      isWeekday: isWeekdayDate(date),
-    }));
+    setForm((f) => ({ ...f, date, timeSlot: null, isWeekday: isWeekdayDate(date) }));
     setLoadingSlots(true);
     setSlotsBlocked(false);
     try {
@@ -84,32 +127,26 @@ export default function BookingForm({ pricing, addOns }: BookingFormProps) {
     }
   }
 
-  const handleClientChange = useCallback(
-    (v: ClientDetails) => {
-      setForm((f) => ({
-        ...f,
-        clientName: v.clientName,
-        clientEmail: v.clientEmail,
-        clientPhone: v.clientPhone,
-        shootType: v.shootType,
-        idDocumentFile: v.idDocumentFile,
-      }));
-    },
-    []
-  );
+  const handleClientChange = useCallback((v: ClientDetails) => {
+    setForm((f) => ({
+      ...f,
+      clientName: v.clientName,
+      clientEmail: v.clientEmail,
+      clientPhone: v.clientPhone,
+      shootType: v.shootType,
+      idDocumentFile: v.idDocumentFile,
+    }));
+  }, []);
 
-  const handleBankingChange = useCallback(
-    (v: BankingDetails) => {
-      setForm((f) => ({
-        ...f,
-        bankHolderName: v.bankHolderName,
-        bankName: v.bankName,
-        accountNumber: v.accountNumber,
-        branchCode: v.branchCode,
-      }));
-    },
-    []
-  );
+  const handleBankingChange = useCallback((v: BankingDetails) => {
+    setForm((f) => ({
+      ...f,
+      bankHolderName: v.bankHolderName,
+      bankName: v.bankName,
+      accountNumber: v.accountNumber,
+      branchCode: v.branchCode,
+    }));
+  }, []);
 
   function getPackagePrice(): number {
     if (!form.packageType || !form.durationType) return 0;
@@ -137,17 +174,72 @@ export default function BookingForm({ pricing, addOns }: BookingFormProps) {
   }
 
   function canAdvanceStep3(): boolean {
+    const hasIdDoc = !!form.idDocumentFile || !!restoredIdBase64;
     return (
       form.clientName.trim().length >= 2 &&
       form.clientEmail.includes("@") &&
       form.clientPhone.trim().length >= 7 &&
       form.shootType.trim().length >= 2 &&
-      !!form.idDocumentFile &&
+      hasIdDoc &&
       form.bankHolderName.trim().length >= 2 &&
       form.bankName.trim().length >= 2 &&
       /^\d{8,16}$/.test(form.accountNumber) &&
       form.branchCode.trim().length >= 2
     );
+  }
+
+  async function handleSendVerification() {
+    if (verifyLoading) return;
+    setVerifyLoading(true);
+    setVerifyError(null);
+
+    // Convert ID document file to base64 so it survives the magic link redirect
+    let idDocBase64: string | null = restoredIdBase64;
+    let idDocName: string | null = restoredIdName;
+    if (form.idDocumentFile) {
+      idDocName = form.idDocumentFile.name;
+      idDocBase64 = await new Promise<string>((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => {
+          const result = reader.result as string;
+          resolve(result.split(",")[1] ?? result);
+        };
+        reader.onerror = reject;
+        reader.readAsDataURL(form.idDocumentFile!);
+      });
+    }
+
+    // Persist form state in sessionStorage before redirect
+    const draft: BookingDraft = {
+      form: (({ idDocumentFile: _f, ...rest }) => rest)(form),
+      idDocBase64,
+      idDocName,
+      promoCode,
+      promoApplied,
+      discountPercentage,
+      savedAt: Date.now(),
+    };
+    sessionStorage.setItem(DRAFT_KEY, JSON.stringify(draft));
+
+    // Send Supabase magic link
+    const supabase = createClient();
+    const { error } = await supabase.auth.signInWithOtp({
+      email: form.clientEmail,
+      options: {
+        shouldCreateUser: true,
+        emailRedirectTo: `${window.location.origin}/booking?verified=true`,
+      },
+    });
+
+    setVerifyLoading(false);
+
+    if (error) {
+      setVerifyError(error.message);
+      sessionStorage.removeItem(DRAFT_KEY);
+      return;
+    }
+
+    setVerificationSent(true);
   }
 
   async function handleSubmit() {
@@ -156,6 +248,7 @@ export default function BookingForm({ pricing, addOns }: BookingFormProps) {
     setSubmitError(null);
 
     try {
+      // Use restored base64 if the File object was lost across the magic link redirect
       let idDocumentBase64: string | null = null;
       let idDocumentName: string | null = null;
       if (form.idDocumentFile) {
@@ -164,13 +257,14 @@ export default function BookingForm({ pricing, addOns }: BookingFormProps) {
           const reader = new FileReader();
           reader.onload = () => {
             const result = reader.result as string;
-            // Strip data URL prefix (e.g. "data:image/jpeg;base64,")
-            const base64 = result.split(",")[1] ?? result;
-            resolve(base64);
+            resolve(result.split(",")[1] ?? result);
           };
           reader.onerror = reject;
           reader.readAsDataURL(form.idDocumentFile!);
         });
+      } else if (restoredIdBase64) {
+        idDocumentBase64 = restoredIdBase64;
+        idDocumentName = restoredIdName;
       }
 
       const payload = {
@@ -207,13 +301,11 @@ export default function BookingForm({ pricing, addOns }: BookingFormProps) {
 
       const json = await res.json();
 
-      // Free booking (100% promo) — skip PayFast, go straight to confirmation
       if (json.free) {
         window.location.href = `/booking/confirmed?m_payment_id=${json.paymentId}`;
         return;
       }
 
-      // Submit form to PayFast — causes full browser redirect
       const pfForm = document.createElement("form");
       pfForm.method = "POST";
       pfForm.action = json.payfastUrl;
@@ -235,7 +327,6 @@ export default function BookingForm({ pricing, addOns }: BookingFormProps) {
   async function handleApplyPromo() {
     if (promoValidating) return;
     if (promoApplied) {
-      // Remove voucher
       setPromoApplied(false);
       setDiscountPercentage(0);
       setPromoError(null);
@@ -423,16 +514,13 @@ export default function BookingForm({ pricing, addOns }: BookingFormProps) {
         <div>
           <h2 style={stepHeadingStyle}>Your details</h2>
 
-          {/* Add-ons — only shown for studio_only */}
           {form.packageType === "studio_only" && addOns.length > 0 && (
             <div style={{ marginBottom: 32 }}>
               <SectionTitle>Equipment Rental (optional)</SectionTitle>
               <AddOnSelector
                 addOns={addOns}
                 selectedIds={form.selectedAddOnIds}
-                onChange={(ids) =>
-                  setForm((f) => ({ ...f, selectedAddOnIds: ids }))
-                }
+                onChange={(ids) => setForm((f) => ({ ...f, selectedAddOnIds: ids }))}
               />
             </div>
           )}
@@ -469,22 +557,125 @@ export default function BookingForm({ pricing, addOns }: BookingFormProps) {
               ← Back
             </button>
             <button
-              onClick={() => goToStep(4)}
+              onClick={() => { goToStep(4); handleSendVerification(); }}
               disabled={!canAdvanceStep3()}
               style={nextBtnStyle(!canAdvanceStep3())}
             >
-              Next: Review & Pay →
+              Next: Verify Email →
             </button>
           </div>
         </div>
       )}
 
-      {/* Step 4: Payment */}
+      {/* Step 4: Verify Email */}
       {step === 4 && (
+        <div>
+          <h2 style={stepHeadingStyle}>Verify your email</h2>
+
+          {verifyLoading && (
+            <div style={infoBoxStyle}>
+              <p style={{ margin: 0, fontSize: 15, color: "#3a3a34" }}>
+                Sending verification email…
+              </p>
+            </div>
+          )}
+
+          {verifyError && (
+            <div
+              style={{
+                padding: "16px 20px",
+                background: "#fde8e2",
+                border: "1px solid #c75a3c",
+                borderRadius: 8,
+                marginBottom: 24,
+                fontSize: 14,
+                color: "#c75a3c",
+              }}
+            >
+              {verifyError} —{" "}
+              <button
+                onClick={handleSendVerification}
+                style={{ background: "none", border: "none", color: "#c75a3c", cursor: "pointer", textDecoration: "underline", padding: 0, fontSize: 14 }}
+              >
+                try again
+              </button>
+            </div>
+          )}
+
+          {verificationSent && !verifyError && (
+            <div>
+              <div
+                style={{
+                  width: 64,
+                  height: 64,
+                  background: "#f3e6cb",
+                  borderRadius: "50%",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  fontSize: 28,
+                  marginBottom: 24,
+                }}
+              >
+                ✉
+              </div>
+
+              <div style={infoBoxStyle}>
+                <p style={{ margin: "0 0 8px", fontSize: 15, color: "#3a3a34", fontWeight: 500 }}>
+                  Check your inbox
+                </p>
+                <p style={{ margin: 0, fontSize: 14, color: "#8a857a", lineHeight: 1.6 }}>
+                  We sent a confirmation link to{" "}
+                  <strong style={{ color: "#0e0d0b" }}>{form.clientEmail}</strong>.
+                  Click the link in that email to continue to payment.
+                </p>
+              </div>
+
+              <p style={{ fontSize: 13, color: "#8a857a", marginTop: 20 }}>
+                Didn&apos;t receive it?{" "}
+                <button
+                  onClick={handleSendVerification}
+                  style={{
+                    background: "none",
+                    border: "none",
+                    color: "#a87d36",
+                    cursor: "pointer",
+                    textDecoration: "underline",
+                    padding: 0,
+                    fontSize: 13,
+                  }}
+                >
+                  Resend email
+                </button>
+              </p>
+            </div>
+          )}
+
+          <button onClick={() => goToStep(3)} style={{ ...backBtnStyle, marginTop: 24 }}>
+            ← Back
+          </button>
+        </div>
+      )}
+
+      {/* Step 5: Payment */}
+      {step === 5 && (
         <div>
           <h2 style={stepHeadingStyle}>Review &amp; pay</h2>
 
-          {/* Booking summary */}
+          <div
+            style={{
+              padding: "12px 16px",
+              background: "#e8efea",
+              borderLeft: "3px solid #2f5f3f",
+              borderRadius: 4,
+              marginBottom: 24,
+              fontSize: 13,
+              color: "#2f5f3f",
+            }}
+          >
+            ✓ Email verified — {form.clientEmail}
+          </div>
+
           <div
             style={{
               padding: 20,
@@ -549,9 +740,7 @@ export default function BookingForm({ pricing, addOns }: BookingFormProps) {
             onPromoCodeChange={setPromoCode}
             onPromoApply={handleApplyPromo}
             termsAccepted={form.termsAccepted}
-            onTermsChange={(v) =>
-              setForm((f) => ({ ...f, termsAccepted: v }))
-            }
+            onTermsChange={(v) => setForm((f) => ({ ...f, termsAccepted: v }))}
             onSubmit={handleSubmit}
             isSubmitting={isSubmitting}
           />
@@ -580,15 +769,9 @@ function SectionTitle({ children }: { children: string }) {
         gap: 10,
       }}
     >
-      <span
-        style={{ flex: 1, height: 1, background: "#e8e2d6", display: "block" }}
-        aria-hidden
-      />
+      <span style={{ flex: 1, height: 1, background: "#e8e2d6", display: "block" }} aria-hidden />
       {children}
-      <span
-        style={{ flex: 1, height: 1, background: "#e8e2d6", display: "block" }}
-        aria-hidden
-      />
+      <span style={{ flex: 1, height: 1, background: "#e8e2d6", display: "block" }} aria-hidden />
     </h3>
   );
 }
@@ -599,6 +782,13 @@ const stepHeadingStyle: React.CSSProperties = {
   fontWeight: 400,
   marginBottom: 24,
   color: "#0e0d0b",
+};
+
+const infoBoxStyle: React.CSSProperties = {
+  padding: "20px 24px",
+  background: "#f5f0e8",
+  borderRadius: 8,
+  marginBottom: 16,
 };
 
 function nextBtnStyle(disabled: boolean): React.CSSProperties {
