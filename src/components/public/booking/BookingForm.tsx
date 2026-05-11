@@ -23,6 +23,7 @@ interface BookingFormProps {
 const DEPOSIT = 750;
 const STEPS = ["Date & Time", "Package", "Your Details", "Verify Email", "Payment"];
 const DRAFT_KEY = "ks_booking_draft";
+const DRAFT_MAX_AGE_MS = 2 * 60 * 60 * 1000; // 2 hours
 
 interface BookingDraft {
   form: Omit<BookingFormState, "idDocumentFile">;
@@ -95,22 +96,24 @@ export default function BookingForm({ pricing, addOns }: BookingFormProps) {
     // Always clean up the URL immediately
     window.history.replaceState({}, "", "/booking");
 
-    // Try to restore form state from sessionStorage regardless of error
-    const raw = sessionStorage.getItem(DRAFT_KEY);
+    // Try to restore form state from localStorage (shared across tabs, unlike sessionStorage)
+    const raw = localStorage.getItem(DRAFT_KEY);
+    let draftRestored = false;
     if (raw) {
       try {
         const draft = JSON.parse(raw) as BookingDraft;
-        if (Date.now() - draft.savedAt <= 60 * 60 * 1000) {
+        if (Date.now() - draft.savedAt <= DRAFT_MAX_AGE_MS) {
           setForm({ ...draft.form, idDocumentFile: null });
           setPromoCode(draft.promoCode);
           setPromoApplied(draft.promoApplied);
           setDiscountPercentage(draft.discountPercentage);
           setRestoredIdBase64(draft.idDocBase64);
           setRestoredIdName(draft.idDocName);
+          draftRestored = true;
         }
-        sessionStorage.removeItem(DRAFT_KEY);
+        localStorage.removeItem(DRAFT_KEY);
       } catch {
-        sessionStorage.removeItem(DRAFT_KEY);
+        localStorage.removeItem(DRAFT_KEY);
       }
     }
 
@@ -124,8 +127,16 @@ export default function BookingForm({ pricing, addOns }: BookingFormProps) {
       return;
     }
 
-    // Success — advance to payment
-    setStep(5);
+    // Success — advance to payment only if draft was restored
+    if (draftRestored) {
+      setStep(5);
+    } else {
+      // Draft missing (e.g. link opened in a different browser or expired)
+      setSubmitError(
+        "Your email was verified but your booking details were not found — this can happen if you opened the link in a different browser. Please fill in your details again."
+      );
+      setStep(1);
+    }
   }, []);
 
   async function handleDateChange(date: string) {
@@ -236,7 +247,7 @@ export default function BookingForm({ pricing, addOns }: BookingFormProps) {
       discountPercentage,
       savedAt: Date.now(),
     };
-    sessionStorage.setItem(DRAFT_KEY, JSON.stringify(draft));
+    localStorage.setItem(DRAFT_KEY, JSON.stringify(draft));
 
     // Send Supabase magic link
     const supabase = createClient();
@@ -252,7 +263,7 @@ export default function BookingForm({ pricing, addOns }: BookingFormProps) {
 
     if (error) {
       setVerifyError(error.message);
-      sessionStorage.removeItem(DRAFT_KEY);
+      localStorage.removeItem(DRAFT_KEY);
       return;
     }
 
@@ -444,6 +455,22 @@ export default function BookingForm({ pricing, addOns }: BookingFormProps) {
           >
             Pick your date
           </h2>
+
+          {submitError && (
+            <div
+              style={{
+                padding: "12px 16px",
+                background: "#fef3e2",
+                border: "1px solid #c8984a",
+                borderRadius: 6,
+                marginBottom: 20,
+                fontSize: 14,
+                color: "#7a5a1e",
+              }}
+            >
+              {submitError}
+            </div>
+          )}
           <div
             style={{
               display: "grid",
