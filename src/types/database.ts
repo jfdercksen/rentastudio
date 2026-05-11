@@ -68,6 +68,24 @@ export type Database = {
         }
         Relationships: []
       }
+      booking_drafts: {
+        Row: {
+          draft: Json
+          email: string
+          expires_at: string
+        }
+        Insert: {
+          draft: Json
+          email: string
+          expires_at?: string
+        }
+        Update: {
+          draft?: Json
+          email?: string
+          expires_at?: string
+        }
+        Relationships: []
+      }
       bookings: {
         Row: {
           account_number: string | null

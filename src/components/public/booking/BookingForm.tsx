@@ -93,31 +93,35 @@ export default function BookingForm({ pricing, addOns }: BookingFormProps) {
 
     if (!hasVerified && !hasError) return;
 
-    // Always clean up the URL immediately
     window.history.replaceState({}, "", "/booking");
 
-    // Try to restore form state from localStorage (shared across tabs, unlike sessionStorage)
-    const raw = localStorage.getItem(DRAFT_KEY);
-    let draftRestored = false;
-    if (raw) {
+    function applyDraft(draft: BookingDraft) {
+      setForm({ ...draft.form, idDocumentFile: null });
+      setPromoCode(draft.promoCode);
+      setPromoApplied(draft.promoApplied);
+      setDiscountPercentage(draft.discountPercentage);
+      setRestoredIdBase64(draft.idDocBase64 ?? null);
+      setRestoredIdName(draft.idDocName ?? null);
+    }
+
+    // Fast path: localStorage works when the link opens in any tab of the same browser
+    function tryLocalRestore(): boolean {
+      const raw = localStorage.getItem(DRAFT_KEY);
+      if (!raw) return false;
       try {
         const draft = JSON.parse(raw) as BookingDraft;
-        if (Date.now() - draft.savedAt <= DRAFT_MAX_AGE_MS) {
-          setForm({ ...draft.form, idDocumentFile: null });
-          setPromoCode(draft.promoCode);
-          setPromoApplied(draft.promoApplied);
-          setDiscountPercentage(draft.discountPercentage);
-          setRestoredIdBase64(draft.idDocBase64);
-          setRestoredIdName(draft.idDocName);
-          draftRestored = true;
-        }
         localStorage.removeItem(DRAFT_KEY);
+        if (Date.now() - draft.savedAt > DRAFT_MAX_AGE_MS) return false;
+        applyDraft(draft);
+        return true;
       } catch {
         localStorage.removeItem(DRAFT_KEY);
+        return false;
       }
     }
 
     if (hasError) {
+      tryLocalRestore();
       const msg =
         errorCode === "otp_expired"
           ? "Your verification link expired. Click 'try again' to get a new one."
@@ -127,16 +131,74 @@ export default function BookingForm({ pricing, addOns }: BookingFormProps) {
       return;
     }
 
-    // Success — advance to payment only if draft was restored
-    if (draftRestored) {
+    if (tryLocalRestore()) {
       setStep(5);
-    } else {
-      // Draft missing (e.g. link opened in a different browser or expired)
+      return;
+    }
+
+    // Slow path: different browser or device — wait for Supabase auth then fetch from server
+    setVerifyLoading(true);
+    const supabase = createClient();
+    let done = false;
+    let timeoutId: ReturnType<typeof setTimeout>;
+
+    async function tryServerRestore(email: string) {
+      if (done) return;
+      done = true;
+      try {
+        const { data } = await supabase
+          .from("booking_drafts")
+          .select("draft")
+          .eq("email", email)
+          .gt("expires_at", new Date().toISOString())
+          .single();
+
+        if (data?.draft) {
+          applyDraft(data.draft as unknown as BookingDraft);
+          // Clean up after reading — fire and forget
+          supabase.from("booking_drafts").delete().eq("email", email).then(() => {});
+          setVerifyLoading(false);
+          setStep(5);
+          return;
+        }
+      } catch {
+        // fall through to the not-found message
+      }
+      setVerifyLoading(false);
       setSubmitError(
-        "Your email was verified but your booking details were not found — this can happen if you opened the link in a different browser. Please fill in your details again."
+        "Your email was verified but your booking details were not found. Please fill in your details again."
       );
       setStep(1);
     }
+
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+      if (done) return;
+      if (
+        (event === "SIGNED_IN" || event === "INITIAL_SESSION") &&
+        session?.user?.email
+      ) {
+        clearTimeout(timeoutId);
+        subscription.unsubscribe();
+        tryServerRestore(session.user.email);
+      }
+    });
+
+    timeoutId = setTimeout(() => {
+      if (done) return;
+      done = true;
+      subscription.unsubscribe();
+      setVerifyLoading(false);
+      setSubmitError(
+        "Your email was verified but your booking details were not found. Please fill in your details again."
+      );
+      setStep(1);
+    }, 10000);
+
+    return () => {
+      done = true;
+      subscription.unsubscribe();
+      clearTimeout(timeoutId);
+    };
   }, []);
 
   async function handleDateChange(date: string) {
@@ -248,6 +310,14 @@ export default function BookingForm({ pricing, addOns }: BookingFormProps) {
       savedAt: Date.now(),
     };
     localStorage.setItem(DRAFT_KEY, JSON.stringify(draft));
+
+    // Also save to server (without the ID doc) so the draft survives a different browser/device
+    const serverDraft: BookingDraft = { ...draft, idDocBase64: null, idDocName: null };
+    fetch("/api/booking-draft", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email: form.clientEmail, draft: serverDraft }),
+    }).catch((e: unknown) => console.error("Server draft save failed:", e));
 
     // Send Supabase magic link
     const supabase = createClient();
