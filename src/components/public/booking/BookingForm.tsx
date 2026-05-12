@@ -332,13 +332,12 @@ export default function BookingForm({ pricing, addOns }: BookingFormProps) {
       body: JSON.stringify({ email: form.clientEmail, draft: serverDraft }),
     }).catch((e: unknown) => console.error("Server draft save failed:", e));
 
-    // Send Supabase magic link
+    // Send OTP code (no emailRedirectTo = Supabase sends 6-digit code, not magic link)
     const supabase = createClient();
     const { error } = await supabase.auth.signInWithOtp({
       email: form.clientEmail,
       options: {
         shouldCreateUser: true,
-        emailRedirectTo: `${window.location.origin}/booking?verified=true`,
       },
     });
 
