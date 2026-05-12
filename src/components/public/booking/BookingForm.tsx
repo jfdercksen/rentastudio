@@ -83,6 +83,10 @@ export default function BookingForm({ pricing, addOns }: BookingFormProps) {
   const [verifyError, setVerifyError] = useState<string | null>(null);
   const [restoredIdBase64, setRestoredIdBase64] = useState<string | null>(null);
   const [restoredIdName, setRestoredIdName] = useState<string | null>(null);
+  // OTP code entry (stays on page — no redirect)
+  const [otpCode, setOtpCode] = useState("");
+  const [otpVerifying, setOtpVerifying] = useState(false);
+  const [otpError, setOtpError] = useState<string | null>(null);
 
   // On mount: detect return from magic link and restore draft
   useEffect(() => {
@@ -347,6 +351,33 @@ export default function BookingForm({ pricing, addOns }: BookingFormProps) {
     }
 
     setVerificationSent(true);
+  }
+
+  async function handleVerifyOtp() {
+    if (otpVerifying || otpCode.length !== 6) return;
+    setOtpVerifying(true);
+    setOtpError(null);
+
+    const supabase = createClient();
+    const { error } = await supabase.auth.verifyOtp({
+      email: form.clientEmail,
+      token: otpCode,
+      type: "email",
+    });
+
+    setOtpVerifying(false);
+
+    if (error) {
+      setOtpError(
+        error.message.toLowerCase().includes("expired") || error.message.toLowerCase().includes("invalid")
+          ? "That code is incorrect or has expired. Check your email or click 'Resend' for a new one."
+          : error.message
+      );
+      return;
+    }
+
+    // Verified in-place — no redirect needed, form state is intact
+    setStep(5);
   }
 
   async function handleSubmit() {
@@ -754,16 +785,63 @@ export default function BookingForm({ pricing, addOns }: BookingFormProps) {
                   Check your inbox
                 </p>
                 <p style={{ margin: 0, fontSize: 14, color: "#8a857a", lineHeight: 1.6 }}>
-                  We sent a confirmation link to{" "}
+                  We sent a verification code to{" "}
                   <strong style={{ color: "#0e0d0b" }}>{form.clientEmail}</strong>.
-                  Click the link in that email to continue to payment.
+                  Enter the 6-digit code below to continue.
                 </p>
               </div>
 
-              <p style={{ fontSize: 13, color: "#8a857a", marginTop: 20 }}>
+              {/* OTP code input */}
+              <div style={{ marginTop: 24, marginBottom: 8 }}>
+                <input
+                  type="text"
+                  inputMode="numeric"
+                  maxLength={6}
+                  placeholder="000000"
+                  value={otpCode}
+                  onChange={(e) => {
+                    setOtpCode(e.target.value.replace(/\D/g, "").slice(0, 6));
+                    setOtpError(null);
+                  }}
+                  style={{
+                    width: "100%",
+                    padding: "16px 20px",
+                    fontSize: 28,
+                    fontFamily: "var(--font-ibm-plex-mono), monospace",
+                    letterSpacing: "0.3em",
+                    textAlign: "center",
+                    border: "1px solid #e8e2d6",
+                    borderRadius: 8,
+                    outline: "none",
+                    background: "#fff",
+                    color: "#0e0d0b",
+                    boxSizing: "border-box",
+                  }}
+                  autoComplete="one-time-code"
+                />
+                {otpError && (
+                  <p style={{ margin: "8px 0 0", fontSize: 13, color: "#c75a3c" }}>
+                    {otpError}
+                  </p>
+                )}
+              </div>
+
+              <button
+                onClick={handleVerifyOtp}
+                disabled={otpCode.length !== 6 || otpVerifying}
+                style={{ ...nextBtnStyle(otpCode.length !== 6 || otpVerifying), marginBottom: 16 }}
+              >
+                {otpVerifying ? "Verifying…" : "Verify & Continue →"}
+              </button>
+
+              <p style={{ fontSize: 12, color: "#8a857a", marginBottom: 20 }}>
+                You can also click the link in the email to continue directly.
+              </p>
+
+              <p style={{ fontSize: 13, color: "#8a857a" }}>
                 Didn&apos;t receive it?{" "}
                 <button
-                  onClick={handleSendVerification}
+                  onClick={() => { handleSendVerification(); setOtpCode(""); setOtpError(null); }}
                   style={{
                     background: "none",
                     border: "none",
