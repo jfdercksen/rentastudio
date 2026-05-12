@@ -353,7 +353,7 @@ export default function BookingForm({ pricing, addOns }: BookingFormProps) {
   }
 
   async function handleVerifyOtp() {
-    if (otpVerifying || otpCode.length !== 6) return;
+    if (otpVerifying || otpCode.length !== 8) return;
     setOtpVerifying(true);
     setOtpError(null);
 
@@ -795,11 +795,11 @@ export default function BookingForm({ pricing, addOns }: BookingFormProps) {
                 <input
                   type="text"
                   inputMode="numeric"
-                  maxLength={6}
-                  placeholder="000000"
+                  maxLength={8}
+                  placeholder="00000000"
                   value={otpCode}
                   onChange={(e) => {
-                    setOtpCode(e.target.value.replace(/\D/g, "").slice(0, 6));
+                    setOtpCode(e.target.value.replace(/\D/g, "").slice(0, 8));
                     setOtpError(null);
                   }}
                   style={{
@@ -827,8 +827,8 @@ export default function BookingForm({ pricing, addOns }: BookingFormProps) {
 
               <button
                 onClick={handleVerifyOtp}
-                disabled={otpCode.length !== 6 || otpVerifying}
-                style={{ ...nextBtnStyle(otpCode.length !== 6 || otpVerifying), marginBottom: 16 }}
+                disabled={otpCode.length !== 8 || otpVerifying}
+                style={{ ...nextBtnStyle(otpCode.length !== 8 || otpVerifying), marginBottom: 16 }}
               >
                 {otpVerifying ? "Verifying…" : "Verify & Continue →"}
               </button>
