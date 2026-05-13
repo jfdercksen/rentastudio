@@ -3,6 +3,7 @@ import { createAdminClient } from "@/lib/supabase/admin";
 import { BookingSchema } from "@/lib/validations/booking";
 import { buildPayFastSignature } from "@/lib/payfast/signature";
 import { sendAdminNotification } from "@/lib/resend/send-admin-notification";
+import { sendConfirmationEmail } from "@/lib/resend/send-confirmation";
 
 const DEPOSIT_AMOUNT = 750;
 
@@ -212,6 +213,22 @@ export async function POST(request: Request): Promise<NextResponse> {
       idDocumentUrl: idDocumentUrl,
     }).catch((e: unknown) => {
       console.error("Free booking: admin notification failed:", e);
+    });
+
+    sendConfirmationEmail({
+      clientName: data.clientName,
+      clientEmail: data.clientEmail,
+      bookingDate: data.date,
+      startTime: data.startTime,
+      endTime: data.endTime,
+      packageType: data.packageType,
+      durationType: data.durationType,
+      addOns: addOnNames,
+      subtotal,
+      depositAmount: DEPOSIT_AMOUNT,
+      finalTotal: 0,
+    }).catch((e: unknown) => {
+      console.error("Free booking: client confirmation email failed:", e);
     });
 
     return NextResponse.json({ bookingId: booking.id, paymentId, free: true }, { status: 201 });
