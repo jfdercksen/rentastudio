@@ -188,48 +188,45 @@ export async function POST(request: Request): Promise<NextResponse> {
 
   // Free booking (100% promo) — no PayFast redirect needed
   if (isFree) {
-    sendAdminNotification({
-      bookingId: booking.id,
-      clientName: data.clientName,
-      clientEmail: data.clientEmail,
-      clientPhone: data.clientPhone,
-      shootType: data.shootType,
-      bookingDate: data.date,
-      startTime: data.startTime,
-      endTime: data.endTime,
-      packageType: data.packageType,
-      durationType: data.durationType,
-      addOns: addOnNames,
-      subtotal,
-      depositAmount: DEPOSIT_AMOUNT,
-      totalAmount,
-      finalTotal: 0,
-      promoCode: promoCodeSaved,
-      discountAmount: discountAmount > 0 ? discountAmount : null,
-      bankHolderName: data.bankHolderName,
-      bankName: data.bankName,
-      accountNumber: data.accountNumber,
-      branchCode: data.branchCode,
-      idDocumentUrl: idDocumentUrl,
-    }).catch((e: unknown) => {
-      console.error("Free booking: admin notification failed:", e);
-    });
-
-    sendConfirmationEmail({
-      clientName: data.clientName,
-      clientEmail: data.clientEmail,
-      bookingDate: data.date,
-      startTime: data.startTime,
-      endTime: data.endTime,
-      packageType: data.packageType,
-      durationType: data.durationType,
-      addOns: addOnNames,
-      subtotal,
-      depositAmount: DEPOSIT_AMOUNT,
-      finalTotal: 0,
-    }).catch((e: unknown) => {
-      console.error("Free booking: client confirmation email failed:", e);
-    });
+    await Promise.allSettled([
+      sendConfirmationEmail({
+        clientName: data.clientName,
+        clientEmail: data.clientEmail,
+        bookingDate: data.date,
+        startTime: data.startTime,
+        endTime: data.endTime,
+        packageType: data.packageType,
+        durationType: data.durationType,
+        addOns: addOnNames,
+        subtotal,
+        depositAmount: DEPOSIT_AMOUNT,
+        finalTotal: 0,
+      }),
+      sendAdminNotification({
+        bookingId: booking.id,
+        clientName: data.clientName,
+        clientEmail: data.clientEmail,
+        clientPhone: data.clientPhone,
+        shootType: data.shootType,
+        bookingDate: data.date,
+        startTime: data.startTime,
+        endTime: data.endTime,
+        packageType: data.packageType,
+        durationType: data.durationType,
+        addOns: addOnNames,
+        subtotal,
+        depositAmount: DEPOSIT_AMOUNT,
+        totalAmount,
+        finalTotal: 0,
+        promoCode: promoCodeSaved,
+        discountAmount: discountAmount > 0 ? discountAmount : null,
+        bankHolderName: data.bankHolderName,
+        bankName: data.bankName,
+        accountNumber: data.accountNumber,
+        branchCode: data.branchCode,
+        idDocumentUrl: idDocumentUrl,
+      }),
+    ]);
 
     return NextResponse.json({ bookingId: booking.id, paymentId, free: true }, { status: 201 });
   }

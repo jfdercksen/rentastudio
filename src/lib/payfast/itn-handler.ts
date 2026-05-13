@@ -117,48 +117,45 @@ export async function handleITN(request: Request): Promise<Response> {
     ? (booking.add_ons as string[])
     : [];
 
-  sendConfirmationEmail({
-    clientName: booking.client_name,
-    clientEmail: booking.client_email,
-    bookingDate: booking.booking_date,
-    startTime: booking.start_time,
-    endTime: booking.end_time,
-    packageType: booking.package_type,
-    durationType: booking.duration_type,
-    addOns,
-    subtotal: booking.subtotal as number,
-    depositAmount: booking.deposit_amount as number,
-    finalTotal: booking.final_total as number | null,
-  }).catch((e: unknown) => {
-    console.error("ITN: client confirmation email failed:", e);
-  });
-
-  sendAdminNotification({
-    bookingId: booking.id,
-    clientName: booking.client_name,
-    clientEmail: booking.client_email,
-    clientPhone: (booking.client_phone as string) ?? "",
-    shootType: (booking.shoot_type as string) ?? "",
-    bookingDate: booking.booking_date,
-    startTime: booking.start_time,
-    endTime: booking.end_time,
-    packageType: booking.package_type,
-    durationType: booking.duration_type,
-    addOns,
-    subtotal: booking.subtotal as number,
-    depositAmount: booking.deposit_amount as number,
-    totalAmount: booking.total_amount as number,
-    finalTotal: booking.final_total as number | null,
-    promoCode: booking.promo_code as string | null,
-    discountAmount: booking.discount_amount as number | null,
-    bankHolderName: booking.bank_holder_name as string | null,
-    bankName: booking.bank_name as string | null,
-    accountNumber: booking.account_number as string | null,
-    branchCode: booking.branch_code as string | null,
-    idDocumentUrl: booking.id_document_url as string | null,
-  }).catch((e: unknown) => {
-    console.error("ITN: admin notification failed:", e);
-  });
+  await Promise.allSettled([
+    sendConfirmationEmail({
+      clientName: booking.client_name,
+      clientEmail: booking.client_email,
+      bookingDate: booking.booking_date,
+      startTime: booking.start_time,
+      endTime: booking.end_time,
+      packageType: booking.package_type,
+      durationType: booking.duration_type,
+      addOns,
+      subtotal: booking.subtotal as number,
+      depositAmount: booking.deposit_amount as number,
+      finalTotal: booking.final_total as number | null,
+    }),
+    sendAdminNotification({
+      bookingId: booking.id,
+      clientName: booking.client_name,
+      clientEmail: booking.client_email,
+      clientPhone: (booking.client_phone as string) ?? "",
+      shootType: (booking.shoot_type as string) ?? "",
+      bookingDate: booking.booking_date,
+      startTime: booking.start_time,
+      endTime: booking.end_time,
+      packageType: booking.package_type,
+      durationType: booking.duration_type,
+      addOns,
+      subtotal: booking.subtotal as number,
+      depositAmount: booking.deposit_amount as number,
+      totalAmount: booking.total_amount as number,
+      finalTotal: booking.final_total as number | null,
+      promoCode: booking.promo_code as string | null,
+      discountAmount: booking.discount_amount as number | null,
+      bankHolderName: booking.bank_holder_name as string | null,
+      bankName: booking.bank_name as string | null,
+      accountNumber: booking.account_number as string | null,
+      branchCode: booking.branch_code as string | null,
+      idDocumentUrl: booking.id_document_url as string | null,
+    }),
+  ]);
 
   // Step 11: Always return 200
   return OK;
