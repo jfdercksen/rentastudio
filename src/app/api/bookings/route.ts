@@ -188,7 +188,7 @@ export async function POST(request: Request): Promise<NextResponse> {
 
   // Free booking (100% promo) — no PayFast redirect needed
   if (isFree) {
-    await Promise.allSettled([
+    const emailResults = await Promise.allSettled([
       sendConfirmationEmail({
         clientName: data.clientName,
         clientEmail: data.clientEmail,
@@ -228,6 +228,7 @@ export async function POST(request: Request): Promise<NextResponse> {
       }),
     ]);
 
+    console.error("Free booking email results:", JSON.stringify(emailResults));
     return NextResponse.json({ bookingId: booking.id, paymentId, free: true }, { status: 201 });
   }
 
