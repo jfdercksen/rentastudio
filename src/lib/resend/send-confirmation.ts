@@ -103,12 +103,17 @@ export async function sendConfirmationEmail(
 </html>`;
 
     const fromEmail = process.env.RESEND_FROM_EMAIL ?? "Kyalami Studio <bookings@kyalamistudio.co.za>";
-    await resend.emails.send({
+    const { error } = await resend.emails.send({
       from: fromEmail,
       to: input.clientEmail,
       subject: `Booking Confirmed — ${input.bookingDate} at ${input.startTime}`,
       html,
     });
+
+    if (error) {
+      console.error("sendConfirmationEmail failed:", error.message);
+      return { success: false, error: error.message };
+    }
 
     return { success: true };
   } catch (err) {

@@ -170,12 +170,17 @@ export async function sendAdminNotification(
 </body>
 </html>`;
 
-    await resend.emails.send({
+    const { error } = await resend.emails.send({
       from: fromEmail,
       to: adminEmails,
       subject: `New Booking — ${input.clientName} · ${input.bookingDate} at ${input.startTime}`,
       html,
     });
+
+    if (error) {
+      console.error("sendAdminNotification failed:", error.message);
+      return { success: false, error: error.message };
+    }
 
     return { success: true };
   } catch (err) {
