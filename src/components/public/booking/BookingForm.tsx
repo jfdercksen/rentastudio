@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback, useEffect } from "react";
+import { useState, useCallback, useEffect, useRef } from "react";
 import { createClient } from "@/lib/supabase/client";
 import DatePicker from "./DatePicker";
 import TimePicker from "./TimePicker";
@@ -87,6 +87,33 @@ export default function BookingForm({ pricing, addOns }: BookingFormProps) {
   const [otpCode, setOtpCode] = useState("");
   const [otpVerifying, setOtpVerifying] = useState(false);
   const [otpError, setOtpError] = useState<string | null>(null);
+
+  // When duration changes, recalculate the selected slot's end time or clear it if it no
+  // longer fits (e.g. user picked 07:00 before selecting "Full Day", but 09:00–13:00 is taken).
+  const slotsRef = useRef(slots);
+  useEffect(() => { slotsRef.current = slots; }, [slots]);
+  useEffect(() => {
+    setForm((f) => {
+      if (!f.timeSlot || !f.durationType) return f;
+      const HOURS: Record<string, number> = { hourly: 1, half_day: 4, full_day: 8 };
+      const dh = HOURS[f.durationType];
+      const [sh, sm] = f.timeSlot.start.split(":").map(Number);
+      const startMins = sh * 60 + sm;
+      const endMins = startMins + dh * 60;
+      if (endMins > 21 * 60) return { ...f, timeSlot: null };
+      const currentSlots = slotsRef.current;
+      const isValid = currentSlots
+        .filter((s) => {
+          const [hh, mm] = s.start.split(":").map(Number);
+          const sm2 = hh * 60 + mm;
+          return sm2 >= startMins && sm2 < endMins;
+        })
+        .every((s) => s.available);
+      if (!isValid) return { ...f, timeSlot: null };
+      const newEnd = `${String(Math.floor(endMins / 60)).padStart(2, "0")}:${String(endMins % 60).padStart(2, "0")}`;
+      return { ...f, timeSlot: { ...f.timeSlot, end: newEnd } };
+    });
+  }, [form.durationType]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // On mount: detect return from magic link and restore draft
   useEffect(() => {

@@ -7,9 +7,21 @@ import { sendConfirmationEmail } from "@/lib/resend/send-confirmation";
 
 const DEPOSIT_AMOUNT = 750;
 
+const DURATION_HOURS: Record<string, number> = {
+  hourly: 1,
+  half_day: 4,
+  full_day: 8,
+};
+
 function timeToMinutes(time: string): number {
   const [h, m] = time.split(":").map(Number);
   return h * 60 + m;
+}
+
+function minutesToTime(minutes: number): string {
+  const h = Math.floor(minutes / 60);
+  const m = minutes % 60;
+  return `${String(h).padStart(2, "0")}:${String(m).padStart(2, "0")}`;
 }
 
 function slotsOverlap(
@@ -44,6 +56,13 @@ export async function POST(request: Request): Promise<NextResponse> {
   const data = parsed.data;
   const supabase = createAdminClient();
 
+  // Derive authoritative end time from duration — never trust the client-provided value.
+  // The client calculates end time before the duration is selected (Step 1 before Step 2),
+  // so it can be wrong (e.g. 07:00 + 1h when the actual booking is a full day 07:00–15:00).
+  const bookingEndTime = minutesToTime(
+    timeToMinutes(data.startTime) + DURATION_HOURS[data.durationType] * 60
+  );
+
   // Re-verify slot availability
   const { data: conflictsRaw } = await supabase
     .from("bookings")
@@ -55,7 +74,7 @@ export async function POST(request: Request): Promise<NextResponse> {
 
   {
     const hasConflict = conflicts.some((b) =>
-      slotsOverlap(data.startTime, data.endTime, b.start_time, b.end_time)
+      slotsOverlap(data.startTime, bookingEndTime, b.start_time, b.end_time)
     );
     if (hasConflict) {
       return NextResponse.json(
@@ -153,7 +172,7 @@ export async function POST(request: Request): Promise<NextResponse> {
       client_phone: data.clientPhone,
       booking_date: data.date,
       start_time: data.startTime,
-      end_time: data.endTime,
+      end_time: bookingEndTime,
       package_type: data.packageType,
       duration_type: data.durationType,
       is_weekday: data.isWeekday,
@@ -194,7 +213,7 @@ export async function POST(request: Request): Promise<NextResponse> {
         clientEmail: data.clientEmail,
         bookingDate: data.date,
         startTime: data.startTime,
-        endTime: data.endTime,
+        endTime: bookingEndTime,
         packageType: data.packageType,
         durationType: data.durationType,
         addOns: addOnNames,
@@ -210,7 +229,7 @@ export async function POST(request: Request): Promise<NextResponse> {
         shootType: data.shootType,
         bookingDate: data.date,
         startTime: data.startTime,
-        endTime: data.endTime,
+        endTime: bookingEndTime,
         packageType: data.packageType,
         durationType: data.durationType,
         addOns: addOnNames,
