@@ -52,3 +52,11 @@ When you find a bug or bad pattern, add it immediately:
 **What went wrong:** `PAYFAST_PASSPHRASE` set in Vercel env but the PayFast merchant account has a different passphrase (or no passphrase at all), or vice versa. Both sides hash a different string, so signatures never match. This produces an identical 400 error to every other signature bug, making it hard to distinguish.
 **Correct pattern:** Log into PayFast merchant dashboard → Settings → Merchant Account Information and verify the passphrase matches the Vercel env var exactly (case-sensitive, no trailing whitespace). If PayFast has no passphrase configured, `PAYFAST_PASSPHRASE` must be absent or empty in Vercel.
 **Date added:** May 2026
+
+---
+
+### Availability API using anon client against RLS-protected bookings table
+**Found in:** `src/app/api/availability/route.ts`
+**What went wrong:** Used `createClient()` (server anon key) to query the `bookings` table. The `bookings` table has RLS enabled with SELECT only permitted for `service_role`. Anon queries return 0 rows, so every time slot appears available — users can select taken slots and only hit a conflict at final form submission.
+**Correct pattern:** Use `createAdminClient()` (service role) in all server-side API routes that need to read the `bookings` table. The admin client is safe in server-only route handlers because it never reaches the browser.
+**Date added:** May 2026
