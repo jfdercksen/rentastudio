@@ -22,7 +22,7 @@ function formatPackage(packageType: string): string {
 function formatDuration(durationType: string): string {
   if (durationType === "hourly") return "Hourly";
   if (durationType === "half_day") return "Half Day (4 hours)";
-  if (durationType === "full_day") return "Full Day (8 hours)";
+  if (durationType === "full_day") return "Full Day (13 hours)";
   return durationType;
 }
 

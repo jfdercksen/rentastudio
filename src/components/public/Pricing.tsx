@@ -43,7 +43,7 @@ const STUDIO_WEEKDAY = {
     {
       label: "— Best Value",
       title: "Full Day",
-      duration: "8 hours",
+      duration: "13 hours",
       amount: "R4,250",
       amountSuffix: "/8hr",
       per: "Save R150 vs half-day",
@@ -97,7 +97,7 @@ const STUDIO_WEEKEND = {
     {
       label: "— Best Value",
       title: "Full Day",
-      duration: "8 hours",
+      duration: "13 hours",
       amount: "R4,350",
       amountSuffix: "/8hr",
       per: "Save R1,650 vs hourly",
@@ -151,7 +151,7 @@ const INCLUSIVE_WEEKDAY = {
     {
       label: "— Best Value",
       title: "Full Day",
-      duration: "8 hours",
+      duration: "13 hours",
       amount: "R5,800",
       amountSuffix: "/8hr",
       per: "Save R3,000 vs hourly",
@@ -205,7 +205,7 @@ const INCLUSIVE_WEEKEND = {
     {
       label: "— Best Value",
       title: "Full Day",
-      duration: "8 hours",
+      duration: "13 hours",
       amount: "R6,200",
       amountSuffix: "/8hr",
       per: "Save R4,200 vs hourly",

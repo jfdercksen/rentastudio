@@ -20,7 +20,7 @@ const DURATION_ORDER = ["hourly", "half_day", "full_day"];
 const DURATION_LABELS: Record<string, string> = {
   hourly: "Hourly",
   half_day: "Half Day (4 hrs)",
-  full_day: "Full Day (8 hrs)",
+  full_day: "Full Day (13 hrs)",
 };
 
 interface EditingCell {

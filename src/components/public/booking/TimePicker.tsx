@@ -12,7 +12,7 @@ interface TimePickerProps {
 const DURATION_HOURS: Record<DurationType, number> = {
   hourly: 1,
   half_day: 4,
-  full_day: 8,
+  full_day: 13,
 };
 
 function timeToMinutes(time: string): number {

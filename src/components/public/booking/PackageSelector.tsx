@@ -30,7 +30,7 @@ const PACKAGES: { value: PackageType; label: string; desc: string }[] = [
 const DURATIONS: { value: DurationType; label: string; sub: string }[] = [
   { value: "hourly", label: "Hourly", sub: "Min. 1 hour" },
   { value: "half_day", label: "Half Day", sub: "4 hours" },
-  { value: "full_day", label: "Full Day", sub: "8 hours" },
+  { value: "full_day", label: "Full Day", sub: "13 hours" },
 ];
 
 export default function PackageSelector({

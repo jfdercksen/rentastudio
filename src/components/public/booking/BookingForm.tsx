@@ -95,7 +95,7 @@ export default function BookingForm({ pricing, addOns }: BookingFormProps) {
   useEffect(() => {
     setForm((f) => {
       if (!f.timeSlot || !f.durationType) return f;
-      const HOURS: Record<string, number> = { hourly: 1, half_day: 4, full_day: 8 };
+      const HOURS: Record<string, number> = { hourly: 1, half_day: 4, full_day: 13 };
       const dh = HOURS[f.durationType];
       const [sh, sm] = f.timeSlot.start.split(":").map(Number);
       const startMins = sh * 60 + sm;

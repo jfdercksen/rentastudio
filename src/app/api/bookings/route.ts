@@ -10,7 +10,7 @@ const DEPOSIT_AMOUNT = 750;
 const DURATION_HOURS: Record<string, number> = {
   hourly: 1,
   half_day: 4,
-  full_day: 8,
+  full_day: 13,
 };
 
 function timeToMinutes(time: string): number {

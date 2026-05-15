@@ -28,7 +28,7 @@ function formatPackage(p: string): string {
 function formatDuration(d: string): string {
   if (d === "hourly") return "Hourly";
   if (d === "half_day") return "Half Day (4 hrs)";
-  if (d === "full_day") return "Full Day (8 hrs)";
+  if (d === "full_day") return "Full Day (13 hrs)";
   return d;
 }
 
