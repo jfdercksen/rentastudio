@@ -384,12 +384,12 @@ export default function BookingForm({ pricing, addOns }: BookingFormProps) {
       body: JSON.stringify({ email: form.clientEmail, draft: serverDraft }),
     }).catch((e: unknown) => console.error("Server draft save failed:", e));
 
-    // Send OTP code (no emailRedirectTo = Supabase sends 6-digit code, not magic link)
     const supabase = createClient();
     const { error } = await supabase.auth.signInWithOtp({
       email: form.clientEmail,
       options: {
         shouldCreateUser: true,
+        emailRedirectTo: `${window.location.origin}/booking?verified=true`,
       },
     });
 
@@ -405,7 +405,7 @@ export default function BookingForm({ pricing, addOns }: BookingFormProps) {
   }
 
   async function handleVerifyOtp() {
-    if (otpVerifying || otpCode.length !== 8) return;
+    if (otpVerifying || otpCode.length !== 6) return;
     setOtpVerifying(true);
     setOtpError(null);
 
@@ -847,11 +847,11 @@ export default function BookingForm({ pricing, addOns }: BookingFormProps) {
                 <input
                   type="text"
                   inputMode="numeric"
-                  maxLength={8}
-                  placeholder="00000000"
+                  maxLength={6}
+                  placeholder="000000"
                   value={otpCode}
                   onChange={(e) => {
-                    setOtpCode(e.target.value.replace(/\D/g, "").slice(0, 8));
+                    setOtpCode(e.target.value.replace(/\D/g, "").slice(0, 6));
                     setOtpError(null);
                   }}
                   style={{
@@ -879,7 +879,7 @@ export default function BookingForm({ pricing, addOns }: BookingFormProps) {
 
               <button
                 onClick={handleVerifyOtp}
-                disabled={otpCode.length !== 8 || otpVerifying}
+                disabled={otpCode.length !== 6 || otpVerifying}
                 style={{ ...nextBtnStyle(otpCode.length !== 8 || otpVerifying), marginBottom: 16 }}
               >
                 {otpVerifying ? "Verifying…" : "Verify & Continue →"}
