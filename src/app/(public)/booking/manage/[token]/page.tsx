@@ -572,7 +572,7 @@ export default function ManageBookingPage() {
                   </div>
                   <div style={{ display: "flex", justifyContent: "space-between", fontWeight: 700, fontSize: 16, color: "#0e0d0b", borderTop: "1px solid #e8e2d6", paddingTop: 10, marginTop: 4 }}>
                     <span>New Total</span>
-                    <span>R{(addOnTotal + portalData.booking.depositAmount).toFixed(2)}</span>
+                    <span>R{(portalData.booking.subtotal + addOnTotal + portalData.booking.depositAmount).toFixed(2)}</span>
                   </div>
                 </div>
               </>
