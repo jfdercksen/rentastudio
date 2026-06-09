@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { randomBytes } from "crypto";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { BookingSchema } from "@/lib/validations/booking";
 import { buildPayFastSignature } from "@/lib/payfast/signature";
@@ -207,6 +208,23 @@ export async function POST(request: Request): Promise<NextResponse> {
 
   // Free booking (100% promo) — no PayFast redirect needed
   if (isFree) {
+    // Generate access token for customer portal
+    const freeToken = randomBytes(32).toString("hex");
+    await supabase.from("booking_access_tokens").insert({
+      booking_id: booking.id,
+      token: freeToken,
+    });
+
+    // Mark any abandoned booking as recovered
+    await supabase
+      .from("abandoned_bookings")
+      .update({ is_recovered: true, recovered_at: new Date().toISOString() })
+      .eq("client_email", data.clientEmail)
+      .eq("is_recovered", false);
+
+    const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
+    const manageUrl = `${siteUrl}/booking/manage/${freeToken}`;
+
     const emailResults = await Promise.allSettled([
       sendConfirmationEmail({
         clientName: data.clientName,
@@ -220,6 +238,7 @@ export async function POST(request: Request): Promise<NextResponse> {
         subtotal,
         depositAmount: DEPOSIT_AMOUNT,
         finalTotal: 0,
+        manageUrl,
       }),
       sendAdminNotification({
         bookingId: booking.id,

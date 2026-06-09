@@ -1,3 +1,4 @@
+import { randomBytes } from "crypto";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { ITNPayloadSchema } from "@/lib/validations/itn";
 import { buildPayFastSignature } from "@/lib/payfast/signature";
@@ -112,10 +113,28 @@ export async function handleITN(request: Request): Promise<Response> {
     return OK;
   }
 
-  // Step 10: Send emails — failures must NOT prevent returning 200
+  // Step 10: Generate a secure access token for the customer booking portal
+  const token = randomBytes(32).toString("hex");
+  const { error: tokenError } = await supabase
+    .from("booking_access_tokens")
+    .insert({ booking_id: booking.id, token });
+  if (tokenError) console.error("ITN: failed to insert access token:", tokenError.message);
+
+  // Mark any abandoned booking as recovered
+  const { error: abandonError } = await supabase
+    .from("abandoned_bookings")
+    .update({ is_recovered: true, recovered_at: new Date().toISOString() })
+    .eq("client_email", booking.client_email)
+    .eq("is_recovered", false);
+  if (abandonError) console.error("ITN: failed to mark abandonment recovered:", abandonError.message);
+
+  // Step 11: Send emails — failures must NOT prevent returning 200
   const addOns = Array.isArray(booking.add_ons)
     ? (booking.add_ons as string[])
     : [];
+
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
+  const manageUrl = `${siteUrl}/booking/manage/${token}`;
 
   await Promise.allSettled([
     sendConfirmationEmail({
@@ -130,6 +149,7 @@ export async function handleITN(request: Request): Promise<Response> {
       subtotal: booking.subtotal as number,
       depositAmount: booking.deposit_amount as number,
       finalTotal: booking.final_total as number | null,
+      manageUrl,
     }),
     sendAdminNotification({
       bookingId: booking.id,

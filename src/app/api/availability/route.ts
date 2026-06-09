@@ -48,27 +48,36 @@ export async function GET(request: Request): Promise<NextResponse> {
 
   const supabase = createAdminClient();
 
-  const { data: blocked } = await supabase
-    .from("blocked_dates")
-    .select("start_date, end_date")
-    .lte("start_date", date)
-    .gte("end_date", date);
+  const [{ data: blockedDates }, { data: blockedSlots }, { data: bookingsRaw }] =
+    await Promise.all([
+      supabase
+        .from("blocked_dates")
+        .select("start_date, end_date")
+        .lte("start_date", date)
+        .gte("end_date", date),
+      supabase
+        .from("blocked_time_slots")
+        .select("start_time, end_time")
+        .eq("slot_date", date),
+      supabase
+        .from("bookings")
+        .select("start_time, end_time")
+        .eq("booking_date", date)
+        .in("status", ["confirmed", "pending"]),
+    ]);
 
-  if (blocked && blocked.length > 0) {
+  if (blockedDates && blockedDates.length > 0) {
     return NextResponse.json({ slots: [], blocked: true });
   }
 
-  const { data: bookingsRaw } = await supabase
-    .from("bookings")
-    .select("start_time, end_time")
-    .eq("booking_date", date)
-    .in("status", ["confirmed", "pending"]);
-
   const bookings = (bookingsRaw ?? []) as { start_time: string; end_time: string }[];
+  const adminBlocks = (blockedSlots ?? []) as { start_time: string; end_time: string }[];
+
+  const allBlocks = [...bookings, ...adminBlocks];
 
   const slots = generateSlots().map((slot) => {
-    if (bookings.length === 0) return slot;
-    const isTaken = bookings.some((b) =>
+    if (allBlocks.length === 0) return slot;
+    const isTaken = allBlocks.some((b) =>
       slotsOverlap(slot.start, slot.end, b.start_time, b.end_time)
     );
     return { ...slot, available: !isTaken };

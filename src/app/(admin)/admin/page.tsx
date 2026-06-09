@@ -38,6 +38,8 @@ function formatPackage(p: string): string {
 
 const QUICK_LINKS = [
   { href: "/admin/bookings", label: "Bookings", desc: "View and manage all bookings" },
+  { href: "/admin/availability", label: "Availability", desc: "Block dates and time slots" },
+  { href: "/admin/abandoned", label: "Abandoned", desc: "Track incomplete bookings" },
   { href: "/admin/pricing", label: "Pricing", desc: "Edit package and add-on prices" },
   { href: "/admin/gallery", label: "Gallery", desc: "Upload and manage gallery images" },
   { href: "/admin/content", label: "Content", desc: "Edit FAQ, T&C, and footer" },
@@ -51,6 +53,10 @@ export default async function DashboardPage() {
     { data: todayRows },
     { data: monthRows },
     { data: upcomingRows },
+    { data: modificationsRows },
+    { data: blockedDatesRows },
+    { data: blockedSlotsRows },
+    { data: abandonedRows },
   ] = await Promise.all([
     supabase
       .from("bookings")
@@ -70,6 +76,29 @@ export default async function DashboardPage() {
       .lte("booking_date", sevenDaysLater)
       .eq("status", "confirmed")
       .order("booking_date"),
+    supabase
+      .from("booking_modifications")
+      .select("booking_id, modification_type, created_at, new_values")
+      .order("created_at", { ascending: false })
+      .limit(5),
+    supabase
+      .from("blocked_dates")
+      .select("start_date, end_date, reason")
+      .gte("end_date", today)
+      .order("start_date")
+      .limit(5),
+    supabase
+      .from("blocked_time_slots")
+      .select("slot_date, start_time, end_time, reason")
+      .gte("slot_date", today)
+      .order("slot_date")
+      .order("start_time")
+      .limit(5),
+    supabase
+      .from("abandoned_bookings")
+      .select("id, is_recovered, email_1_sent_at, email_2_sent_at, email_3_sent_at, recovered_at")
+      .order("created_at", { ascending: false })
+      .limit(100),
   ]);
 
   const todayCount = todayRows?.length ?? 0;
@@ -80,6 +109,16 @@ export default async function DashboardPage() {
   );
 
   const upcoming = upcomingRows ?? [];
+  const modifications = modificationsRows ?? [];
+  const blockedDates = blockedDatesRows ?? [];
+  const blockedSlots = blockedSlotsRows ?? [];
+
+  const abandoned = abandonedRows ?? [];
+  const abandonedActive = abandoned.filter((r) => !(r.is_recovered as boolean)).length;
+  const abandonedRecovered = abandoned.filter((r) => r.is_recovered as boolean).length;
+  const abandonedWithEmail = abandoned.filter(
+    (r) => !(r.is_recovered as boolean) && (r.email_1_sent_at || r.email_2_sent_at || r.email_3_sent_at)
+  ).length;
 
   return (
     <div>
@@ -238,6 +277,131 @@ export default async function DashboardPage() {
         )}
       </div>
 
+      {/* ── Booking Modifications ─────────────────────────────────────────── */}
+      <div
+        style={{
+          background: "#fff",
+          border: "1px solid #e8e2d6",
+          borderRadius: 10,
+          overflow: "hidden",
+          marginBottom: 40,
+        }}
+      >
+        <div style={{ padding: "20px 28px", borderBottom: "1px solid #e8e2d6", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+          <h2 style={{ fontSize: 16, fontWeight: 600, color: "#0e0d0b", margin: 0 }}>Recent Booking Modifications</h2>
+          <Link href="/admin/bookings" style={{ fontSize: 13, color: "#a87d36", textDecoration: "none" }}>View bookings →</Link>
+        </div>
+        {modifications.length === 0 ? (
+          <div style={{ padding: "32px 28px", textAlign: "center", color: "#8a857a", fontSize: 14 }}>No modifications yet.</div>
+        ) : (
+          <table style={{ width: "100%", borderCollapse: "collapse" }}>
+            <thead>
+              <tr style={{ borderBottom: "1px solid #f5f0e8" }}>
+                {["Type", "New Date", "New Time", "Modified"].map((h) => (
+                  <th key={h} style={{ padding: "12px 28px", textAlign: "left", fontSize: 11, fontWeight: 600, letterSpacing: "0.08em", textTransform: "uppercase", color: "#8a857a" }}>{h}</th>
+                ))}
+              </tr>
+            </thead>
+            <tbody>
+              {modifications.map((m, i) => {
+                const nv = (m.new_values as Record<string, string>) ?? {};
+                const typeLabel =
+                  m.modification_type === "reschedule" ? "Reschedule" :
+                  m.modification_type === "add_ons" ? "Add-ons" :
+                  m.modification_type === "duration_change" ? "Duration" : "Mixed";
+                return (
+                  <tr key={i} style={{ borderBottom: "1px solid #f5f0e8" }}>
+                    <td style={{ padding: "12px 28px", fontSize: 13 }}>
+                      <span style={{ background: "#f5f0e8", padding: "3px 8px", borderRadius: 4, fontSize: 11, fontFamily: "monospace", letterSpacing: "0.06em", textTransform: "uppercase", color: "#8a857a" }}>{typeLabel}</span>
+                    </td>
+                    <td style={{ padding: "12px 28px", fontSize: 14, color: "#0e0d0b" }}>{nv.booking_date ? formatDate(nv.booking_date) : "—"}</td>
+                    <td style={{ padding: "12px 28px", fontSize: 14, color: "#3a3a34" }}>{nv.start_time ?? "—"}</td>
+                    <td style={{ padding: "12px 28px", fontSize: 13, color: "#8a857a" }}>{formatDate((m.created_at as string).split("T")[0])}</td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+        )}
+      </div>
+
+      {/* ── Availability Overview ─────────────────────────────────────────── */}
+      <div
+        style={{
+          background: "#fff",
+          border: "1px solid #e8e2d6",
+          borderRadius: 10,
+          overflow: "hidden",
+          marginBottom: 40,
+        }}
+      >
+        <div style={{ padding: "20px 28px", borderBottom: "1px solid #e8e2d6", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+          <h2 style={{ fontSize: 16, fontWeight: 600, color: "#0e0d0b", margin: 0 }}>Availability Overview</h2>
+          <Link href="/admin/availability" style={{ fontSize: 13, color: "#a87d36", textDecoration: "none" }}>Manage →</Link>
+        </div>
+        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 0 }}>
+          {/* Blocked dates */}
+          <div style={{ padding: "20px 28px", borderRight: "1px solid #f5f0e8" }}>
+            <div style={{ fontSize: 12, color: "#8a857a", marginBottom: 10, fontFamily: "monospace", letterSpacing: "0.06em", textTransform: "uppercase" }}>Upcoming Blocked Dates</div>
+            {blockedDates.length === 0 ? (
+              <p style={{ fontSize: 14, color: "#8a857a", margin: 0 }}>None</p>
+            ) : (
+              blockedDates.map((b, i) => (
+                <div key={i} style={{ fontSize: 13, color: "#b84040", marginBottom: 6, display: "flex", gap: 8 }}>
+                  <span style={{ fontWeight: 500 }}>
+                    {b.start_date === b.end_date ? formatDate(b.start_date as string) : `${formatDate(b.start_date as string)} – ${formatDate(b.end_date as string)}`}
+                  </span>
+                  {b.reason && <span style={{ color: "#8a857a" }}>{b.reason as string}</span>}
+                </div>
+              ))
+            )}
+          </div>
+          {/* Blocked slots */}
+          <div style={{ padding: "20px 28px" }}>
+            <div style={{ fontSize: 12, color: "#8a857a", marginBottom: 10, fontFamily: "monospace", letterSpacing: "0.06em", textTransform: "uppercase" }}>Upcoming Blocked Slots</div>
+            {blockedSlots.length === 0 ? (
+              <p style={{ fontSize: 14, color: "#8a857a", margin: 0 }}>None</p>
+            ) : (
+              blockedSlots.map((s, i) => (
+                <div key={i} style={{ fontSize: 13, color: "#a87d36", marginBottom: 6, display: "flex", gap: 8 }}>
+                  <span style={{ fontWeight: 500 }}>{formatDate(s.slot_date as string)}</span>
+                  <span>{s.start_time as string}–{s.end_time as string}</span>
+                  {s.reason && <span style={{ color: "#8a857a" }}>{s.reason as string}</span>}
+                </div>
+              ))
+            )}
+          </div>
+        </div>
+      </div>
+
+      {/* ── Abandoned Bookings Overview ───────────────────────────────────── */}
+      <div
+        style={{
+          background: "#fff",
+          border: "1px solid #e8e2d6",
+          borderRadius: 10,
+          overflow: "hidden",
+          marginBottom: 40,
+        }}
+      >
+        <div style={{ padding: "20px 28px", borderBottom: "1px solid #e8e2d6", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+          <h2 style={{ fontSize: 16, fontWeight: 600, color: "#0e0d0b", margin: 0 }}>Abandoned Bookings</h2>
+          <Link href="/admin/abandoned" style={{ fontSize: 13, color: "#a87d36", textDecoration: "none" }}>View all →</Link>
+        </div>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 0 }}>
+          {[
+            { label: "Active (unrecovered)", value: abandonedActive, color: "#b84040" },
+            { label: "Recovery emails sent", value: abandonedWithEmail, color: "#a87d36" },
+            { label: "Recovered", value: abandonedRecovered, color: "#2f5f3f" },
+          ].map(({ label, value, color }) => (
+            <div key={label} style={{ padding: "20px 28px", borderRight: "1px solid #f5f0e8" }}>
+              <div style={{ fontSize: 12, color: "#8a857a", marginBottom: 8, fontFamily: "monospace", letterSpacing: "0.06em", textTransform: "uppercase" }}>{label}</div>
+              <div style={{ fontFamily: "var(--font-fraunces), serif", fontSize: 36, fontWeight: 300, color, lineHeight: 1 }}>{value}</div>
+            </div>
+          ))}
+        </div>
+      </div>
+
       {/* Quick links */}
       <h2
         style={{
@@ -252,7 +416,7 @@ export default async function DashboardPage() {
       <div
         style={{
           display: "grid",
-          gridTemplateColumns: "repeat(4, 1fr)",
+          gridTemplateColumns: "repeat(3, 1fr)",
           gap: 16,
         }}
       >

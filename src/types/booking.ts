@@ -54,4 +54,5 @@ export interface ConfirmationEmailInput {
   subtotal: number;
   depositAmount: number;
   finalTotal?: number | null;
+  manageUrl?: string;
 }

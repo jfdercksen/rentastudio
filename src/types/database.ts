@@ -44,6 +44,54 @@ export type Database = {
         }
         Relationships: []
       }
+      abandoned_bookings: {
+        Row: {
+          booking_details: Json
+          client_email: string
+          client_name: string
+          client_phone: string | null
+          created_at: string
+          email_1_sent_at: string | null
+          email_2_sent_at: string | null
+          email_3_sent_at: string | null
+          id: string
+          is_recovered: boolean
+          recovered_at: string | null
+          step_reached: string
+          updated_at: string
+        }
+        Insert: {
+          booking_details?: Json
+          client_email: string
+          client_name: string
+          client_phone?: string | null
+          created_at?: string
+          email_1_sent_at?: string | null
+          email_2_sent_at?: string | null
+          email_3_sent_at?: string | null
+          id?: string
+          is_recovered?: boolean
+          recovered_at?: string | null
+          step_reached?: string
+          updated_at?: string
+        }
+        Update: {
+          booking_details?: Json
+          client_email?: string
+          client_name?: string
+          client_phone?: string | null
+          created_at?: string
+          email_1_sent_at?: string | null
+          email_2_sent_at?: string | null
+          email_3_sent_at?: string | null
+          id?: string
+          is_recovered?: boolean
+          recovered_at?: string | null
+          step_reached?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       blocked_dates: {
         Row: {
           created_at: string
@@ -65,6 +113,87 @@ export type Database = {
           id?: string
           reason?: string | null
           start_date?: string
+        }
+        Relationships: []
+      }
+      blocked_time_slots: {
+        Row: {
+          created_at: string
+          end_time: string
+          id: string
+          reason: string | null
+          slot_date: string
+          start_time: string
+        }
+        Insert: {
+          created_at?: string
+          end_time: string
+          id?: string
+          reason?: string | null
+          slot_date: string
+          start_time: string
+        }
+        Update: {
+          created_at?: string
+          end_time?: string
+          id?: string
+          reason?: string | null
+          slot_date?: string
+          start_time?: string
+        }
+        Relationships: []
+      }
+      booking_access_tokens: {
+        Row: {
+          booking_id: string
+          created_at: string
+          expires_at: string
+          id: string
+          token: string
+        }
+        Insert: {
+          booking_id: string
+          created_at?: string
+          expires_at?: string
+          id?: string
+          token: string
+        }
+        Update: {
+          booking_id?: string
+          created_at?: string
+          expires_at?: string
+          id?: string
+          token?: string
+        }
+        Relationships: []
+      }
+      booking_modifications: {
+        Row: {
+          booking_id: string
+          created_at: string
+          id: string
+          modification_type: string
+          modified_by: string
+          new_values: Json
+          old_values: Json
+        }
+        Insert: {
+          booking_id: string
+          created_at?: string
+          id?: string
+          modification_type: string
+          modified_by?: string
+          new_values?: Json
+          old_values?: Json
+        }
+        Update: {
+          booking_id?: string
+          created_at?: string
+          id?: string
+          modification_type?: string
+          modified_by?: string
+          new_values?: Json
+          old_values?: Json
         }
         Relationships: []
       }

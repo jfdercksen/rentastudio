@@ -65,6 +65,31 @@ export default function BookingForm({ pricing, addOns }: BookingFormProps) {
   useEffect(() => { window.scrollTo(0, 0); }, [step]);
   function goToStep(n: number) { setStep(n); }
 
+  // Capture abandonment when user reaches email verification or payment step
+  // without completing the booking. Fire-and-forget — never blocks the form.
+  useEffect(() => {
+    if ((step === 4 || step === 5) && form.clientEmail.includes("@") && form.clientName.trim()) {
+      const stepLabel = step === 5 ? "payment" : "verification";
+      fetch("/api/booking-abandonment", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          clientName: form.clientName,
+          clientEmail: form.clientEmail,
+          clientPhone: form.clientPhone || undefined,
+          bookingDetails: {
+            date: form.date || undefined,
+            startTime: form.timeSlot?.start,
+            packageType: form.packageType ?? undefined,
+            durationType: form.durationType ?? undefined,
+          },
+          stepReached: stepLabel,
+        }),
+      }).catch(() => { /* abandonment capture is best-effort */ });
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [step]);
+
   const [form, setForm] = useState<BookingFormState>(EMPTY_STATE);
   const [slots, setSlots] = useState<TimeSlot[]>([]);
   const [loadingSlots, setLoadingSlots] = useState(false);
