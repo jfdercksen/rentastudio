@@ -389,7 +389,6 @@ export default function BookingForm({ pricing, addOns }: BookingFormProps) {
       email: form.clientEmail,
       options: {
         shouldCreateUser: true,
-        emailRedirectTo: `${window.location.origin}/booking?verified=true`,
       },
     });
 
@@ -884,10 +883,6 @@ export default function BookingForm({ pricing, addOns }: BookingFormProps) {
               >
                 {otpVerifying ? "Verifying…" : "Verify & Continue →"}
               </button>
-
-              <p style={{ fontSize: 12, color: "#8a857a", marginBottom: 20 }}>
-                You can also click the link in the email to continue directly.
-              </p>
 
               <p style={{ fontSize: 13, color: "#8a857a" }}>
                 Didn&apos;t receive it?{" "}
