@@ -34,7 +34,7 @@ interface PortalData {
   isPast: boolean;
 }
 
-type View = "details" | "reschedule" | "addons" | "success";
+type View = "details" | "reschedule" | "addons" | "success" | "topup_processing" | "topup_cancelled";
 
 function formatDate(dateStr: string): string {
   const d = new Date(dateStr + "T00:00:00");
@@ -166,6 +166,19 @@ export default function ManageBookingPage() {
 
   useEffect(() => { fetchPortal(); }, [fetchPortal]);
 
+  // Handle return from PayFast top-up payment
+  useEffect(() => {
+    const url = new URL(window.location.href);
+    const topup = url.searchParams.get("topup");
+    if (topup === "success") {
+      window.history.replaceState({}, "", window.location.pathname);
+      setView("topup_processing");
+    } else if (topup === "cancelled") {
+      window.history.replaceState({}, "", window.location.pathname);
+      setView("topup_cancelled");
+    }
+  }, []);
+
   async function fetchSlots(date: string) {
     if (!date) return;
     setLoadingSlots(true);
@@ -229,6 +242,22 @@ export default function ManageBookingPage() {
       const data = await res.json();
       if (!res.ok) {
         setSubmitError(data.error ?? "Failed to update add-ons.");
+        return;
+      }
+      // Payment required — redirect to PayFast for the difference
+      if (data.requiresPayment) {
+        const pfForm = document.createElement("form");
+        pfForm.method = "POST";
+        pfForm.action = data.payfastUrl as string;
+        for (const [key, val] of Object.entries(data.payfastPayload as Record<string, string>)) {
+          const input = document.createElement("input");
+          input.type = "hidden";
+          input.name = key;
+          input.value = val;
+          pfForm.appendChild(input);
+        }
+        document.body.appendChild(pfForm);
+        pfForm.submit();
         return;
       }
       await fetchPortal();
@@ -598,6 +627,40 @@ export default function ManageBookingPage() {
             </div>
           </div>
         )}
+        {/* Top-up payment processing */}
+        {!loading && view === "topup_processing" && (
+          <div style={CARD}>
+            <div style={{ textAlign: "center", padding: "16px 0 8px" }}>
+              <div style={{ fontSize: 40, marginBottom: 16 }}>✓</div>
+              <h2 style={{ fontFamily: "var(--font-fraunces, Georgia), serif", fontSize: 26, fontWeight: 300, color: "#2f5f3f", margin: "0 0 12px" }}>
+                Payment Received
+              </h2>
+              <p style={{ fontSize: 15, color: "#3a3a34", lineHeight: 1.6, marginBottom: 28 }}>
+                Your payment was successful. Your extras are being added to your booking and you will receive a confirmation email shortly.
+              </p>
+              <button style={BTN_PRIMARY} onClick={() => { fetchPortal(); setView("details"); }}>
+                View My Booking
+              </button>
+            </div>
+          </div>
+        )}
+
+        {/* Top-up payment cancelled */}
+        {!loading && view === "topup_cancelled" && (
+          <div style={CARD}>
+            <h2 style={{ fontFamily: "var(--font-fraunces, Georgia), serif", fontSize: 22, fontWeight: 300, color: "#0e0d0b", margin: "0 0 12px" }}>
+              Payment Cancelled
+            </h2>
+            <p style={{ fontSize: 15, color: "#8a857a", lineHeight: 1.6, marginBottom: 24 }}>
+              Your payment was cancelled. No changes have been made to your booking.
+            </p>
+            <div style={{ display: "flex", gap: 12 }}>
+              <button style={BTN_PRIMARY} onClick={() => setView("addons")}>Try Again</button>
+              <button style={BTN_SECONDARY} onClick={() => setView("details")}>Back to Booking</button>
+            </div>
+          </div>
+        )}
+
       </main>
     </div>
   );

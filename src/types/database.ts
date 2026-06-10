@@ -176,6 +176,9 @@ export type Database = {
           modified_by: string
           new_values: Json
           old_values: Json
+          payfast_payment_id: string | null
+          status: string
+          top_up_amount: number | null
         }
         Insert: {
           booking_id: string
@@ -185,6 +188,9 @@ export type Database = {
           modified_by?: string
           new_values?: Json
           old_values?: Json
+          payfast_payment_id?: string | null
+          status?: string
+          top_up_amount?: number | null
         }
         Update: {
           booking_id?: string
@@ -194,6 +200,9 @@ export type Database = {
           modified_by?: string
           new_values?: Json
           old_values?: Json
+          payfast_payment_id?: string | null
+          status?: string
+          top_up_amount?: number | null
         }
         Relationships: []
       }

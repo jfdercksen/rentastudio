@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 import { createAdminClient } from "@/lib/supabase/admin";
+import { buildPayFastSignature } from "@/lib/payfast/signature";
 import { sendModificationEmail } from "@/lib/resend/send-modification-email";
 
 const DURATION_HOURS: Record<string, number> = {
@@ -297,7 +298,69 @@ export async function PATCH(
       total_amount: newTotal,
     };
 
-    // Apply the update
+    // If only add-ons changed and new total is higher — require PayFast top-up payment
+    const currentPaidTotal = parseFloat(((booking.final_total ?? booking.total_amount) as number).toFixed(2));
+    const topUpAmount = parseFloat((newTotal - currentPaidTotal).toFixed(2));
+
+    if (!dateOrTimeChanged && changes.addOnIds !== undefined && topUpAmount > 0) {
+      // Insert pending modification — will be applied by ITN handler after payment
+      const { data: modRow, error: modInsertError } = await supabase
+        .from("booking_modifications")
+        .insert({
+          booking_id: booking.id,
+          modification_type: "add_ons",
+          old_values: oldValues,
+          new_values: newValues,
+          modified_by: "customer",
+          status: "pending_payment",
+          top_up_amount: topUpAmount,
+        })
+        .select("id")
+        .single();
+
+      if (modInsertError || !modRow) {
+        console.error("[booking/manage/PATCH] mod insert error:", modInsertError?.message);
+        return NextResponse.json({ error: "Failed to create modification", code: "INTERNAL_ERROR" }, { status: 500 });
+      }
+
+      const mPaymentId = `mod_${modRow.id}`;
+      const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
+      const isSandbox = process.env.PAYFAST_SANDBOX !== "false";
+      const payfastUrl = isSandbox
+        ? "https://sandbox.payfast.co.za/eng/process"
+        : "https://www.payfast.co.za/eng/process";
+
+      const nameParts = (booking.client_name as string).split(" ");
+      const nameFirst = nameParts[0] ?? (booking.client_name as string);
+      const nameLast = nameParts.slice(1).join(" ");
+
+      const payfastParams: Record<string, string> = {
+        merchant_id: process.env.PAYFAST_MERCHANT_ID ?? "",
+        merchant_key: process.env.PAYFAST_MERCHANT_KEY ?? "",
+        return_url: `${siteUrl}/booking/manage/${token}?topup=success`,
+        cancel_url: `${siteUrl}/booking/manage/${token}?topup=cancelled`,
+        notify_url: `${siteUrl}/api/payfast/itn`,
+        name_first: nameFirst,
+        ...(nameLast ? { name_last: nameLast } : {}),
+        email_address: booking.client_email as string,
+        m_payment_id: mPaymentId,
+        amount: topUpAmount.toFixed(2),
+        item_name: "Kyalami Studio — Booking Extras",
+      };
+
+      await supabase
+        .from("booking_modifications")
+        .update({ payfast_payment_id: mPaymentId })
+        .eq("id", modRow.id);
+
+      const passphrase = process.env.PAYFAST_PASSPHRASE?.trim();
+      const signature = buildPayFastSignature(payfastParams, passphrase);
+      const payfastPayload = { ...payfastParams, signature };
+
+      return NextResponse.json({ requiresPayment: true, payfastUrl, payfastPayload, topUpAmount });
+    }
+
+    // Apply the update immediately (rescheduling, duration change, or removing extras)
     const { error: updateError } = await supabase
       .from("bookings")
       .update({

@@ -4,6 +4,7 @@ import { ITNPayloadSchema } from "@/lib/validations/itn";
 import { buildPayFastSignature } from "@/lib/payfast/signature";
 import { sendAdminNotification } from "@/lib/resend/send-admin-notification";
 import { sendConfirmationEmail } from "@/lib/resend/send-confirmation";
+import { sendModificationEmail } from "@/lib/resend/send-modification-email";
 
 const PAYFAST_IP_WHITELIST = [
   "41.74.179.194",
@@ -66,6 +67,101 @@ export async function handleITN(request: Request): Promise<Response> {
   }
 
   const supabase = createAdminClient();
+
+  // Handle modification top-up payments (extras added via customer portal)
+  if (payload.m_payment_id.startsWith("mod_")) {
+    const { data: mod } = await supabase
+      .from("booking_modifications")
+      .select("id, booking_id, new_values, top_up_amount, status")
+      .eq("payfast_payment_id", payload.m_payment_id)
+      .eq("status", "pending_payment")
+      .single();
+
+    if (!mod) {
+      console.error("ITN: no pending modification found for", payload.m_payment_id);
+      return OK;
+    }
+
+    const receivedAmount = parseFloat(payload.amount_gross).toFixed(2);
+    const expectedAmount = (mod.top_up_amount as number).toFixed(2);
+    if (receivedAmount !== expectedAmount) {
+      console.error("ITN mod: amount mismatch — received", receivedAmount, "expected", expectedAmount);
+      return OK;
+    }
+
+    const newVals = mod.new_values as {
+      booking_date: string;
+      start_time: string;
+      end_time: string;
+      duration_type: string;
+      add_ons: string[];
+      subtotal: number;
+      total_amount: number;
+    };
+
+    const { data: modBooking } = await supabase
+      .from("bookings")
+      .select("client_name, client_email, package_type, deposit_amount")
+      .eq("id", mod.booking_id)
+      .single();
+
+    if (!modBooking) {
+      console.error("ITN mod: booking not found for modification", mod.id);
+      return OK;
+    }
+
+    // Apply modification — WHERE status='confirmed' makes this idempotent
+    const { error: applyError } = await supabase
+      .from("bookings")
+      .update({
+        add_ons: newVals.add_ons,
+        subtotal: newVals.subtotal,
+        total_amount: newVals.total_amount,
+        final_total: newVals.total_amount,
+      })
+      .eq("id", mod.booking_id)
+      .eq("status", "confirmed");
+
+    if (applyError) {
+      console.error("ITN mod: apply error:", applyError.message);
+      return OK;
+    }
+
+    await supabase
+      .from("booking_modifications")
+      .update({ status: "applied" })
+      .eq("id", mod.id);
+
+    // Look up access token for the manage URL
+    const { data: tokenRow } = await supabase
+      .from("booking_access_tokens")
+      .select("token")
+      .eq("booking_id", mod.booking_id)
+      .order("created_at", { ascending: false })
+      .limit(1)
+      .single();
+
+    const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
+    const manageUrl = tokenRow ? `${siteUrl}/booking/manage/${tokenRow.token}` : siteUrl;
+
+    await sendModificationEmail({
+      clientName: modBooking.client_name as string,
+      clientEmail: modBooking.client_email as string,
+      bookingDate: newVals.booking_date,
+      startTime: newVals.start_time,
+      endTime: newVals.end_time,
+      packageType: modBooking.package_type as string,
+      durationType: newVals.duration_type,
+      addOns: newVals.add_ons,
+      subtotal: newVals.subtotal,
+      depositAmount: modBooking.deposit_amount as number,
+      totalAmount: newVals.total_amount,
+      manageUrl,
+      modificationType: "add_ons",
+    }).catch((e: unknown) => console.error("ITN mod: email error:", e));
+
+    return OK;
+  }
 
   // Step 7: Find matching pending booking
   const { data: booking } = await supabase
