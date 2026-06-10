@@ -404,7 +404,7 @@ export default function BookingForm({ pricing, addOns }: BookingFormProps) {
   }
 
   async function handleVerifyOtp() {
-    if (otpVerifying || otpCode.length !== 6) return;
+    if (otpVerifying || otpCode.length !== 8) return;
     setOtpVerifying(true);
     setOtpError(null);
 
@@ -837,7 +837,7 @@ export default function BookingForm({ pricing, addOns }: BookingFormProps) {
                 <p style={{ margin: 0, fontSize: 14, color: "#8a857a", lineHeight: 1.6 }}>
                   We sent a verification code to{" "}
                   <strong style={{ color: "#0e0d0b" }}>{form.clientEmail}</strong>.
-                  Enter the 6-digit code below to continue.
+                  Enter the 8-digit code below to continue.
                 </p>
               </div>
 
@@ -846,11 +846,11 @@ export default function BookingForm({ pricing, addOns }: BookingFormProps) {
                 <input
                   type="text"
                   inputMode="numeric"
-                  maxLength={6}
-                  placeholder="000000"
+                  maxLength={8}
+                  placeholder="00000000"
                   value={otpCode}
                   onChange={(e) => {
-                    setOtpCode(e.target.value.replace(/\D/g, "").slice(0, 6));
+                    setOtpCode(e.target.value.replace(/\D/g, "").slice(0, 8));
                     setOtpError(null);
                   }}
                   style={{
@@ -878,7 +878,7 @@ export default function BookingForm({ pricing, addOns }: BookingFormProps) {
 
               <button
                 onClick={handleVerifyOtp}
-                disabled={otpCode.length !== 6 || otpVerifying}
+                disabled={otpCode.length !== 8 || otpVerifying}
                 style={{ ...nextBtnStyle(otpCode.length !== 8 || otpVerifying), marginBottom: 16 }}
               >
                 {otpVerifying ? "Verifying…" : "Verify & Continue →"}
