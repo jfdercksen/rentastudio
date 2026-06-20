@@ -131,8 +131,9 @@ export default function ManageBookingPage() {
   const [selectedSlot, setSelectedSlot] = useState<string>("");
   const [newDuration, setNewDuration] = useState<string>("");
 
-  // Add-ons state
+  // Add-ons state — originalAddOnIds are locked (cannot be removed)
   const [selectedAddOnIds, setSelectedAddOnIds] = useState<string[]>([]);
+  const [originalAddOnIds, setOriginalAddOnIds] = useState<string[]>([]);
 
   // Submission state
   const [submitting, setSubmitting] = useState(false);
@@ -156,6 +157,7 @@ export default function ManageBookingPage() {
         .filter((a) => currentAddOnNames.includes(a.name))
         .map((a) => a.id);
       setSelectedAddOnIds(matchedIds);
+      setOriginalAddOnIds(matchedIds);
       setNewDuration(data.booking.durationType);
     } catch {
       setError("Failed to load booking details.");
@@ -271,10 +273,10 @@ export default function ManageBookingPage() {
 
   const today = new Date().toISOString().split("T")[0];
 
-  // Calculate live add-on pricing
-  const addOnTotal = portalData
+  // Only count newly added extras (not ones already on the booking)
+  const newlyAddedTotal = portalData
     ? portalData.availableAddOns
-        .filter((a) => selectedAddOnIds.includes(a.id))
+        .filter((a) => selectedAddOnIds.includes(a.id) && !originalAddOnIds.includes(a.id))
         .reduce((sum, a) => sum + a.price_rands, 0)
     : 0;
 
@@ -416,7 +418,7 @@ export default function ManageBookingPage() {
                     Change Date / Time
                   </button>
                   <button style={BTN_SECONDARY} onClick={() => setView("addons")}>
-                    Manage Extras
+                    Add Extras
                   </button>
                 </div>
                 <p style={{ fontSize: 12, color: "#8a857a", marginTop: 14, lineHeight: 1.5 }}>
@@ -536,14 +538,18 @@ export default function ManageBookingPage() {
         {/* Add-ons view */}
         {!loading && portalData && view === "addons" && (
           <div style={CARD}>
-            <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 28 }}>
+            <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 12 }}>
               <button style={{ ...BTN_SECONDARY, padding: "8px 14px" }} onClick={() => { setView("details"); setSubmitError(null); }}>
                 ← Back
               </button>
               <h2 style={{ fontFamily: "var(--font-fraunces, Georgia), serif", fontSize: 22, fontWeight: 300, color: "#0e0d0b", margin: 0 }}>
-                Manage Extras
+                Add Extras
               </h2>
             </div>
+
+            <p style={{ fontSize: 13, color: "#8a857a", marginBottom: 24, lineHeight: 1.5 }}>
+              You can add extras to your booking. Already-included items cannot be removed.
+            </p>
 
             {portalData.availableAddOns.length === 0 ? (
               <p style={{ fontSize: 15, color: "#8a857a" }}>No extras currently available.</p>
@@ -551,6 +557,7 @@ export default function ManageBookingPage() {
               <>
                 <div style={{ marginBottom: 24 }}>
                   {portalData.availableAddOns.map((addon) => {
+                    const isOriginal = originalAddOnIds.includes(addon.id);
                     const checked = selectedAddOnIds.includes(addon.id);
                     return (
                       <label
@@ -560,17 +567,24 @@ export default function ManageBookingPage() {
                           alignItems: "flex-start",
                           gap: 14,
                           padding: "14px 16px",
-                          border: checked ? "1.5px solid #c8984a" : "1px solid #e8e2d6",
+                          border: isOriginal
+                            ? "1.5px solid #2f5f3f"
+                            : checked
+                            ? "1.5px solid #c8984a"
+                            : "1px solid #e8e2d6",
                           borderRadius: 8,
                           marginBottom: 10,
-                          cursor: "pointer",
-                          background: checked ? "#fdf5e8" : "#fff",
+                          cursor: isOriginal ? "default" : "pointer",
+                          background: isOriginal ? "#f0faf4" : checked ? "#fdf5e8" : "#fff",
+                          opacity: isOriginal ? 0.9 : 1,
                         }}
                       >
                         <input
                           type="checkbox"
                           checked={checked}
+                          disabled={isOriginal}
                           onChange={() => {
+                            if (isOriginal) return;
                             setSelectedAddOnIds((prev) =>
                               checked ? prev.filter((id) => id !== addon.id) : [...prev, addon.id]
                             );
@@ -578,10 +592,26 @@ export default function ManageBookingPage() {
                           style={{ marginTop: 2, accentColor: "#c8984a", width: 16, height: 16, flexShrink: 0 }}
                         />
                         <div style={{ flex: 1 }}>
-                          <div style={{ fontSize: 14, fontWeight: 600, color: "#0e0d0b" }}>{addon.name}</div>
+                          <div style={{ fontSize: 14, fontWeight: 600, color: "#0e0d0b", display: "flex", alignItems: "center", gap: 8 }}>
+                            {addon.name}
+                            {isOriginal && (
+                              <span style={{
+                                fontSize: 10,
+                                fontFamily: "monospace",
+                                letterSpacing: "0.08em",
+                                textTransform: "uppercase",
+                                color: "#2f5f3f",
+                                background: "#d4ede0",
+                                padding: "2px 7px",
+                                borderRadius: 4,
+                              }}>
+                                Included
+                              </span>
+                            )}
+                          </div>
                           {addon.description && <div style={{ fontSize: 13, color: "#8a857a", marginTop: 2 }}>{addon.description}</div>}
                         </div>
-                        <div style={{ fontSize: 14, fontWeight: 600, color: "#a87d36", whiteSpace: "nowrap" }}>
+                        <div style={{ fontSize: 14, fontWeight: 600, color: isOriginal ? "#2f5f3f" : "#a87d36", whiteSpace: "nowrap" }}>
                           R{addon.price_rands.toFixed(2)}
                         </div>
                       </label>
@@ -589,21 +619,28 @@ export default function ManageBookingPage() {
                   })}
                 </div>
 
-                {/* Updated total preview */}
-                <div style={{ background: "#f5f0e8", borderRadius: 8, padding: "16px 20px", marginBottom: 24, fontSize: 14 }}>
-                  <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 8, color: "#8a857a" }}>
-                    <span>Extras total</span>
-                    <span>R{addOnTotal.toFixed(2)}</span>
+                {/* Additional charge preview — only shown when new items are selected */}
+                {newlyAddedTotal > 0 && (
+                  <div style={{ background: "#f5f0e8", borderRadius: 8, padding: "16px 20px", marginBottom: 24, fontSize: 14 }}>
+                    <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 8, color: "#8a857a" }}>
+                      <span>New extras</span>
+                      <span>R{newlyAddedTotal.toFixed(2)}</span>
+                    </div>
+                    <div style={{ display: "flex", justifyContent: "space-between", fontWeight: 700, fontSize: 15, color: "#0e0d0b", borderTop: "1px solid #e8e2d6", paddingTop: 10, marginTop: 4 }}>
+                      <span>Additional charge</span>
+                      <span style={{ color: "#a87d36" }}>R{newlyAddedTotal.toFixed(2)}</span>
+                    </div>
+                    <p style={{ margin: "10px 0 0", fontSize: 12, color: "#8a857a", lineHeight: 1.5 }}>
+                      You will be redirected to PayFast to complete this payment.
+                    </p>
                   </div>
-                  <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 8, color: "#8a857a" }}>
-                    <span>Deposit (refundable)</span>
-                    <span>R{portalData.booking.depositAmount.toFixed(2)}</span>
-                  </div>
-                  <div style={{ display: "flex", justifyContent: "space-between", fontWeight: 700, fontSize: 16, color: "#0e0d0b", borderTop: "1px solid #e8e2d6", paddingTop: 10, marginTop: 4 }}>
-                    <span>New Total</span>
-                    <span>R{(portalData.booking.subtotal + addOnTotal + portalData.booking.depositAmount).toFixed(2)}</span>
-                  </div>
-                </div>
+                )}
+
+                {newlyAddedTotal === 0 && (
+                  <p style={{ fontSize: 13, color: "#8a857a", marginBottom: 24 }}>
+                    Select additional extras above to add them to your booking.
+                  </p>
+                )}
               </>
             )}
 
@@ -615,11 +652,11 @@ export default function ManageBookingPage() {
 
             <div style={{ display: "flex", gap: 12 }}>
               <button
-                style={{ ...BTN_PRIMARY, opacity: submitting ? 0.6 : 1 }}
-                disabled={submitting}
+                style={{ ...BTN_PRIMARY, opacity: submitting || newlyAddedTotal === 0 ? 0.5 : 1, cursor: newlyAddedTotal === 0 ? "not-allowed" : "pointer" }}
+                disabled={submitting || newlyAddedTotal === 0}
                 onClick={handleUpdateAddOns}
               >
-                {submitting ? "Saving…" : "Save Extras"}
+                {submitting ? "Saving…" : "Add to Booking →"}
               </button>
               <button style={BTN_SECONDARY} onClick={() => { setView("details"); setSubmitError(null); }}>
                 Cancel

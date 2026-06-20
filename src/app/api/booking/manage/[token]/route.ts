@@ -228,6 +228,24 @@ export async function PATCH(
     let addOnsSubtotal = 0;
 
     if (changes.addOnIds !== undefined) {
+      // Enforce add-only: existing add-ons cannot be removed via this portal
+      const existingAddOnNames = (booking.add_ons as string[]) ?? [];
+      if (existingAddOnNames.length > 0) {
+        const { data: existingRows } = await supabase
+          .from("add_ons")
+          .select("id")
+          .in("name", existingAddOnNames)
+          .eq("is_active", true);
+        const existingIds = (existingRows ?? []).map((r) => r.id);
+        const removedIds = existingIds.filter((id) => !changes.addOnIds!.includes(id));
+        if (removedIds.length > 0) {
+          return NextResponse.json(
+            { error: "Existing extras cannot be removed via this portal", code: "VALIDATION_ERROR" },
+            { status: 400 }
+          );
+        }
+      }
+
       if (changes.addOnIds.length > 0) {
         const { data: addOnRows } = await supabase
           .from("add_ons")
