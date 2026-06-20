@@ -190,6 +190,8 @@ export default function Footer() {
             display: "flex",
             justifyContent: "space-between",
             alignItems: "center",
+            flexWrap: "wrap",
+            gap: 12,
             fontFamily: "var(--font-ibm-plex-mono), monospace",
             fontSize: 11,
             letterSpacing: "0.1em",
@@ -198,15 +200,27 @@ export default function Footer() {
           }}
         >
           <span>© {new Date().getFullYear()} Kyalami Studio</span>
-          <a
-            href="/privacy"
-            style={{
-              color: "rgba(255,255,255,0.45)",
-              textDecoration: "none",
-            }}
-          >
-            Privacy Policy
-          </a>
+          <div style={{ display: "flex", gap: 24, alignItems: "center" }}>
+            <a
+              href="/privacy"
+              style={{
+                color: "rgba(255,255,255,0.45)",
+                textDecoration: "none",
+              }}
+            >
+              Privacy Policy
+            </a>
+            <span style={{ opacity: 0.3 }}>·</span>
+            <a
+              href="/terms"
+              style={{
+                color: "rgba(255,255,255,0.45)",
+                textDecoration: "none",
+              }}
+            >
+              Terms &amp; Conditions
+            </a>
+          </div>
         </div>
       </div>
     </footer>

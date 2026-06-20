@@ -1,5 +1,7 @@
 "use client";
 
+import Link from "next/link";
+
 const DEPOSIT = 750;
 
 interface PaymentSummaryProps {
@@ -211,7 +213,22 @@ export default function PaymentSummary({
         />
         <div style={{ fontSize: 13, lineHeight: 1.6, color: "#3a3a34" }}>
           <strong style={{ color: "#0e0d0b" }}>
-            I agree to the Terms &amp; Conditions
+            I have read and agree to the{" "}
+            <Link
+              href="/terms"
+              target="_blank"
+              style={{ color: "#a87d36", textDecoration: "underline" }}
+            >
+              Terms &amp; Conditions
+            </Link>
+            {" "}and{" "}
+            <Link
+              href="/privacy"
+              target="_blank"
+              style={{ color: "#a87d36", textDecoration: "underline" }}
+            >
+              Privacy Policy
+            </Link>
           </strong>
           <br />
           By checking this box, you confirm you have read and accepted the
