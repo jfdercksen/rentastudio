@@ -3,7 +3,6 @@
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { useEffect } from "react";
 import type { BankingDetails } from "@/types/booking";
 
 const BankingSchema = z.object({
@@ -81,7 +80,7 @@ export default function BankingDetailsForm({
 }: BankingDetailsFormProps) {
   const {
     register,
-    watch,
+    getValues,
     formState: { errors },
   } = useForm<BankingFormValues>({
     resolver: zodResolver(BankingSchema),
@@ -94,16 +93,16 @@ export default function BankingDetailsForm({
     mode: "onChange",
   });
 
-  const watched = watch();
-  useEffect(() => {
+  function pushToParent(patch: Partial<BankingFormValues>) {
+    const current = getValues();
     onChange({
-      bankHolderName: watched.bankHolderName ?? "",
-      bankName: watched.bankName ?? "",
-      accountNumber: watched.accountNumber ?? "",
-      branchCode: watched.branchCode ?? "",
+      bankHolderName: current.bankHolderName ?? "",
+      bankName: current.bankName ?? "",
+      accountNumber: current.accountNumber ?? "",
+      branchCode: current.branchCode ?? "",
+      ...patch,
     });
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [watched.bankHolderName, watched.bankName, watched.accountNumber, watched.branchCode]);
+  }
 
   return (
     <div>
@@ -129,7 +128,9 @@ export default function BankingDetailsForm({
           <div>
             <FieldLabel required>Account Holder Name</FieldLabel>
             <input
-              {...register("bankHolderName")}
+              {...register("bankHolderName", {
+                onChange: (e) => pushToParent({ bankHolderName: e.target.value }),
+              })}
               placeholder="As per ID"
               style={fieldStyle}
             />
@@ -139,7 +140,12 @@ export default function BankingDetailsForm({
           </div>
           <div>
             <FieldLabel required>Bank</FieldLabel>
-            <select {...register("bankName")} style={fieldStyle}>
+            <select
+              {...register("bankName", {
+                onChange: (e) => pushToParent({ bankName: e.target.value }),
+              })}
+              style={fieldStyle}
+            >
               <option value="">Select bank...</option>
               {BANKS.map((b) => (
                 <option key={b} value={b}>
@@ -157,7 +163,9 @@ export default function BankingDetailsForm({
           <div>
             <FieldLabel required>Account Number</FieldLabel>
             <input
-              {...register("accountNumber")}
+              {...register("accountNumber", {
+                onChange: (e) => pushToParent({ accountNumber: e.target.value }),
+              })}
               placeholder="Digits only"
               inputMode="numeric"
               style={fieldStyle}
@@ -169,7 +177,9 @@ export default function BankingDetailsForm({
           <div>
             <FieldLabel required>Branch Code / Account Type</FieldLabel>
             <input
-              {...register("branchCode")}
+              {...register("branchCode", {
+                onChange: (e) => pushToParent({ branchCode: e.target.value }),
+              })}
               placeholder="e.g. Cheque / 250655"
               style={fieldStyle}
             />

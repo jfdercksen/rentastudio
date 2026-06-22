@@ -3,7 +3,7 @@
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import type { ClientDetails } from "@/types/booking";
 
 const ClientSchema = z.object({
@@ -70,7 +70,7 @@ export default function ClientDetailsForm({
   const [fileError, setFileError] = useState<string | null>(null);
   const {
     register,
-    watch,
+    getValues,
     formState: { errors },
   } = useForm<ClientFormValues>({
     resolver: zodResolver(ClientSchema),
@@ -83,24 +83,26 @@ export default function ClientDetailsForm({
     mode: "onChange",
   });
 
-  const watched = watch();
-  useEffect(() => {
+  function pushToParent(patch: Partial<ClientFormValues>) {
+    const current = getValues();
     onChange({
-      clientName: watched.clientName ?? "",
-      clientEmail: watched.clientEmail ?? "",
-      clientPhone: watched.clientPhone ?? "",
-      shootType: watched.shootType ?? "",
+      clientName: current.clientName ?? "",
+      clientEmail: current.clientEmail ?? "",
+      clientPhone: current.clientPhone ?? "",
+      shootType: current.shootType ?? "",
       idDocumentFile: value.idDocumentFile,
+      ...patch,
     });
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [watched.clientName, watched.clientEmail, watched.clientPhone, watched.shootType]);
+  }
 
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
       <div>
         <FieldLabel required>Full Name</FieldLabel>
         <input
-          {...register("clientName")}
+          {...register("clientName", {
+            onChange: (e) => pushToParent({ clientName: e.target.value }),
+          })}
           placeholder="John Doe"
           style={fieldStyle}
         />
@@ -113,7 +115,9 @@ export default function ClientDetailsForm({
         <div>
           <FieldLabel required>Email</FieldLabel>
           <input
-            {...register("clientEmail")}
+            {...register("clientEmail", {
+              onChange: (e) => pushToParent({ clientEmail: e.target.value }),
+            })}
             type="email"
             placeholder="you@example.com"
             style={fieldStyle}
@@ -125,7 +129,9 @@ export default function ClientDetailsForm({
         <div>
           <FieldLabel required>Phone</FieldLabel>
           <input
-            {...register("clientPhone")}
+            {...register("clientPhone", {
+              onChange: (e) => pushToParent({ clientPhone: e.target.value }),
+            })}
             type="tel"
             placeholder="082 000 0000"
             style={fieldStyle}
@@ -139,7 +145,9 @@ export default function ClientDetailsForm({
       <div>
         <FieldLabel required>Type of Shoot / Project Description</FieldLabel>
         <textarea
-          {...register("shootType")}
+          {...register("shootType", {
+            onChange: (e) => pushToParent({ shootType: e.target.value }),
+          })}
           placeholder="e.g. YouTube interview series, corporate video, product photography..."
           rows={3}
           style={{ ...fieldStyle, resize: "vertical" }}
