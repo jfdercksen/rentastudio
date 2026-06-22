@@ -1,21 +1,7 @@
 "use client";
 
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { z } from "zod";
+import { useState } from "react";
 import type { BankingDetails } from "@/types/booking";
-
-const BankingSchema = z.object({
-  bankHolderName: z.string().min(2, "Enter account holder name"),
-  bankName: z.string().min(2, "Select a bank"),
-  accountNumber: z
-    .string()
-    .regex(/^\d+$/, "Digits only")
-    .min(8, "Enter a valid account number"),
-  branchCode: z.string().min(2, "Enter branch code or account type"),
-});
-
-type BankingFormValues = z.infer<typeof BankingSchema>;
 
 interface BankingDetailsFormProps {
   value: BankingDetails;
@@ -74,34 +60,34 @@ const BANKS = [
   "Other",
 ];
 
+function validateField(field: string, val: string): string {
+  if (field === "bankHolderName" && val.trim().length < 2) return "Enter account holder name";
+  if (field === "bankName" && val.trim().length < 2) return "Select a bank";
+  if (field === "accountNumber" && !/^\d{8,16}$/.test(val.trim())) return "Enter a valid account number (8–16 digits)";
+  if (field === "branchCode" && val.trim().length < 2) return "Enter branch code or account type";
+  return "";
+}
+
 export default function BankingDetailsForm({
   value,
   onChange,
 }: BankingDetailsFormProps) {
-  const {
-    register,
-    getValues,
-    formState: { errors },
-  } = useForm<BankingFormValues>({
-    resolver: zodResolver(BankingSchema),
-    defaultValues: {
-      bankHolderName: value.bankHolderName,
-      bankName: value.bankName,
-      accountNumber: value.accountNumber,
-      branchCode: value.branchCode,
-    },
-    mode: "onChange",
-  });
+  const [errors, setErrors] = useState<Record<string, string>>({});
+  const [touched, setTouched] = useState<Record<string, boolean>>({});
 
-  function pushToParent(patch: Partial<BankingFormValues>) {
-    const current = getValues();
-    onChange({
-      bankHolderName: current.bankHolderName ?? "",
-      bankName: current.bankName ?? "",
-      accountNumber: current.accountNumber ?? "",
-      branchCode: current.branchCode ?? "",
-      ...patch,
-    });
+  function handle(field: keyof BankingDetails, val: string) {
+    onChange({ ...value, [field]: val });
+    if (touched[field]) {
+      setErrors((e) => ({ ...e, [field]: validateField(field, val) }));
+    }
+  }
+
+  function blur(field: keyof BankingDetails) {
+    setTouched((t) => ({ ...t, [field]: true }));
+    setErrors((e) => ({
+      ...e,
+      [field]: validateField(field, String(value[field] ?? "")),
+    }));
   }
 
   return (
@@ -128,22 +114,22 @@ export default function BankingDetailsForm({
           <div>
             <FieldLabel required>Account Holder Name</FieldLabel>
             <input
-              {...register("bankHolderName", {
-                onChange: (e) => pushToParent({ bankHolderName: e.target.value }),
-              })}
+              value={value.bankHolderName}
+              onChange={(e) => handle("bankHolderName", e.target.value)}
+              onBlur={() => blur("bankHolderName")}
               placeholder="As per ID"
               style={fieldStyle}
             />
-            {errors.bankHolderName && (
-              <p style={errorStyle}>{errors.bankHolderName.message}</p>
+            {touched.bankHolderName && errors.bankHolderName && (
+              <p style={errorStyle}>{errors.bankHolderName}</p>
             )}
           </div>
           <div>
             <FieldLabel required>Bank</FieldLabel>
             <select
-              {...register("bankName", {
-                onChange: (e) => pushToParent({ bankName: e.target.value }),
-              })}
+              value={value.bankName}
+              onChange={(e) => handle("bankName", e.target.value)}
+              onBlur={() => blur("bankName")}
               style={fieldStyle}
             >
               <option value="">Select bank...</option>
@@ -153,8 +139,8 @@ export default function BankingDetailsForm({
                 </option>
               ))}
             </select>
-            {errors.bankName && (
-              <p style={errorStyle}>{errors.bankName.message}</p>
+            {touched.bankName && errors.bankName && (
+              <p style={errorStyle}>{errors.bankName}</p>
             )}
           </div>
         </div>
@@ -163,28 +149,28 @@ export default function BankingDetailsForm({
           <div>
             <FieldLabel required>Account Number</FieldLabel>
             <input
-              {...register("accountNumber", {
-                onChange: (e) => pushToParent({ accountNumber: e.target.value }),
-              })}
+              value={value.accountNumber}
+              onChange={(e) => handle("accountNumber", e.target.value)}
+              onBlur={() => blur("accountNumber")}
               placeholder="Digits only"
               inputMode="numeric"
               style={fieldStyle}
             />
-            {errors.accountNumber && (
-              <p style={errorStyle}>{errors.accountNumber.message}</p>
+            {touched.accountNumber && errors.accountNumber && (
+              <p style={errorStyle}>{errors.accountNumber}</p>
             )}
           </div>
           <div>
             <FieldLabel required>Branch Code / Account Type</FieldLabel>
             <input
-              {...register("branchCode", {
-                onChange: (e) => pushToParent({ branchCode: e.target.value }),
-              })}
+              value={value.branchCode}
+              onChange={(e) => handle("branchCode", e.target.value)}
+              onBlur={() => blur("branchCode")}
               placeholder="e.g. Cheque / 250655"
               style={fieldStyle}
             />
-            {errors.branchCode && (
-              <p style={errorStyle}>{errors.branchCode.message}</p>
+            {touched.branchCode && errors.branchCode && (
+              <p style={errorStyle}>{errors.branchCode}</p>
             )}
           </div>
         </div>

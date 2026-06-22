@@ -1,19 +1,7 @@
 "use client";
 
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { z } from "zod";
 import { useState } from "react";
 import type { ClientDetails } from "@/types/booking";
-
-const ClientSchema = z.object({
-  clientName: z.string().min(2, "Enter your full name"),
-  clientEmail: z.string().email("Enter a valid email"),
-  clientPhone: z.string().min(7, "Enter a valid phone number"),
-  shootType: z.string().min(2, "Describe your shoot"),
-});
-
-type ClientFormValues = z.infer<typeof ClientSchema>;
 
 interface ClientDetailsFormProps {
   value: ClientDetails;
@@ -61,38 +49,37 @@ const errorStyle: React.CSSProperties = {
   marginTop: 4,
 };
 
-const MAX_FILE_BYTES = 2 * 1024 * 1024; // 2MB — base64 overhead keeps total under Vercel's 4.5MB body limit
+const MAX_FILE_BYTES = 2 * 1024 * 1024;
+
+function validateField(field: string, val: string): string {
+  if (field === "clientName" && val.trim().length < 2) return "Enter your full name";
+  if (field === "clientEmail" && !val.includes("@")) return "Enter a valid email";
+  if (field === "clientPhone" && val.trim().length < 7) return "Enter a valid phone number";
+  if (field === "shootType" && val.trim().length < 2) return "Describe your shoot";
+  return "";
+}
 
 export default function ClientDetailsForm({
   value,
   onChange,
 }: ClientDetailsFormProps) {
+  const [errors, setErrors] = useState<Record<string, string>>({});
+  const [touched, setTouched] = useState<Record<string, boolean>>({});
   const [fileError, setFileError] = useState<string | null>(null);
-  const {
-    register,
-    getValues,
-    formState: { errors },
-  } = useForm<ClientFormValues>({
-    resolver: zodResolver(ClientSchema),
-    defaultValues: {
-      clientName: value.clientName,
-      clientEmail: value.clientEmail,
-      clientPhone: value.clientPhone,
-      shootType: value.shootType,
-    },
-    mode: "onChange",
-  });
 
-  function pushToParent(patch: Partial<ClientFormValues>) {
-    const current = getValues();
-    onChange({
-      clientName: current.clientName ?? "",
-      clientEmail: current.clientEmail ?? "",
-      clientPhone: current.clientPhone ?? "",
-      shootType: current.shootType ?? "",
-      idDocumentFile: value.idDocumentFile,
-      ...patch,
-    });
+  function handle(field: "clientName" | "clientEmail" | "clientPhone" | "shootType", val: string) {
+    onChange({ ...value, [field]: val });
+    if (touched[field]) {
+      setErrors((e) => ({ ...e, [field]: validateField(field, val) }));
+    }
+  }
+
+  function blur(field: "clientName" | "clientEmail" | "clientPhone" | "shootType") {
+    setTouched((t) => ({ ...t, [field]: true }));
+    setErrors((e) => ({
+      ...e,
+      [field]: validateField(field, String(value[field] ?? "")),
+    }));
   }
 
   return (
@@ -100,14 +87,14 @@ export default function ClientDetailsForm({
       <div>
         <FieldLabel required>Full Name</FieldLabel>
         <input
-          {...register("clientName", {
-            onChange: (e) => pushToParent({ clientName: e.target.value }),
-          })}
+          value={value.clientName}
+          onChange={(e) => handle("clientName", e.target.value)}
+          onBlur={() => blur("clientName")}
           placeholder="John Doe"
           style={fieldStyle}
         />
-        {errors.clientName && (
-          <p style={errorStyle}>{errors.clientName.message}</p>
+        {touched.clientName && errors.clientName && (
+          <p style={errorStyle}>{errors.clientName}</p>
         )}
       </div>
 
@@ -115,29 +102,29 @@ export default function ClientDetailsForm({
         <div>
           <FieldLabel required>Email</FieldLabel>
           <input
-            {...register("clientEmail", {
-              onChange: (e) => pushToParent({ clientEmail: e.target.value }),
-            })}
+            value={value.clientEmail}
+            onChange={(e) => handle("clientEmail", e.target.value)}
+            onBlur={() => blur("clientEmail")}
             type="email"
             placeholder="you@example.com"
             style={fieldStyle}
           />
-          {errors.clientEmail && (
-            <p style={errorStyle}>{errors.clientEmail.message}</p>
+          {touched.clientEmail && errors.clientEmail && (
+            <p style={errorStyle}>{errors.clientEmail}</p>
           )}
         </div>
         <div>
           <FieldLabel required>Phone</FieldLabel>
           <input
-            {...register("clientPhone", {
-              onChange: (e) => pushToParent({ clientPhone: e.target.value }),
-            })}
+            value={value.clientPhone}
+            onChange={(e) => handle("clientPhone", e.target.value)}
+            onBlur={() => blur("clientPhone")}
             type="tel"
             placeholder="082 000 0000"
             style={fieldStyle}
           />
-          {errors.clientPhone && (
-            <p style={errorStyle}>{errors.clientPhone.message}</p>
+          {touched.clientPhone && errors.clientPhone && (
+            <p style={errorStyle}>{errors.clientPhone}</p>
           )}
         </div>
       </div>
@@ -145,15 +132,15 @@ export default function ClientDetailsForm({
       <div>
         <FieldLabel required>Type of Shoot / Project Description</FieldLabel>
         <textarea
-          {...register("shootType", {
-            onChange: (e) => pushToParent({ shootType: e.target.value }),
-          })}
+          value={value.shootType}
+          onChange={(e) => handle("shootType", e.target.value)}
+          onBlur={() => blur("shootType")}
           placeholder="e.g. YouTube interview series, corporate video, product photography..."
           rows={3}
           style={{ ...fieldStyle, resize: "vertical" }}
         />
-        {errors.shootType && (
-          <p style={errorStyle}>{errors.shootType.message}</p>
+        {touched.shootType && errors.shootType && (
+          <p style={errorStyle}>{errors.shootType}</p>
         )}
       </div>
 
