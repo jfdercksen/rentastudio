@@ -661,7 +661,7 @@ export default function TermsPage() {
               <section id="force-majeure">
                 <SectionHeading number="22" title="Force Majeure" />
                 <p style={bodyStyle}>
-                  Rent a Studio shall not be liable for any failure to perform, delay in performance, or
+                  StudioBooking.co.za shall not be liable for any failure to perform, delay in performance, or
                   disruption of services caused by circumstances beyond its reasonable control, including but
                   not limited to:
                 </p>
@@ -673,7 +673,7 @@ export default function TermsPage() {
                   <li>Internet or telecommunications outages affecting platform access.</li>
                 </ul>
                 <p style={bodyStyle}>
-                  In the event of a force majeure that prevents a confirmed booking from proceeding, Rent a Studio
+                  In the event of a force majeure that prevents a confirmed booking from proceeding, StudioBooking.co.za
                   will make reasonable efforts to reschedule the session at no additional cost, or offer a credit
                   towards a future booking. Refunds in force majeure situations will be assessed on a case-by-case basis.
                 </p>
@@ -690,14 +690,14 @@ export default function TermsPage() {
                     <strong>Content created during sessions belongs to the client.</strong> You retain full ownership of all images, footage, and creative works produced during your booked session.
                   </li>
                   <li>
-                    <strong>Rent a Studio may use session images for marketing purposes</strong> — including on our website, social media channels, and promotional materials — unless the client submits a written opt-out request to{" "}
+                    <strong>StudioBooking.co.za may use session images for marketing purposes</strong> — including on our website, social media channels, and promotional materials — unless the client submits a written opt-out request to{" "}
                     <a href="mailto:bookings@kyalamistudio.co.za" style={linkStyle}>
                       bookings@kyalamistudio.co.za
                     </a>{" "}
                     before or at the time of their session.
                   </li>
                   <li>
-                    <strong>Clients are responsible for obtaining all necessary permissions</strong> for any third-party intellectual property used during their session, including licensed music, branded products, artwork, or trademarked materials appearing in their content. Rent a Studio accepts no liability for third-party IP infringement by clients.
+                    <strong>Clients are responsible for obtaining all necessary permissions</strong> for any third-party intellectual property used during their session, including licensed music, branded products, artwork, or trademarked materials appearing in their content. StudioBooking.co.za accepts no liability for third-party IP infringement by clients.
                   </li>
                 </ul>
                 <InfoBox>
