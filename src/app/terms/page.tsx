@@ -25,6 +25,14 @@ const SECTIONS = [
   { id: "availability", label: "Service Availability" },
   { id: "amendments", label: "Amendments" },
   { id: "governing-law", label: "Governing Law" },
+  { id: "arrival-rules", label: "Arrival & Session Time" },
+  { id: "rescheduling", label: "Rescheduling & Cancellation" },
+  { id: "studio-rules", label: "Studio Rules" },
+  { id: "damage-liability", label: "Damage Liability" },
+  { id: "cleaning-fees", label: "Cleaning Fees" },
+  { id: "equipment-rules", label: "Equipment & Property" },
+  { id: "force-majeure", label: "Force Majeure" },
+  { id: "content-ownership", label: "Content Ownership" },
   { id: "contact", label: "Contact Information" },
 ];
 
@@ -499,9 +507,208 @@ export default function TermsPage() {
                 </p>
               </section>
 
-              {/* 16. Contact Information */}
+              {/* 16. Arrival & Session Time Rules */}
+              <section id="arrival-rules">
+                <SectionHeading number="16" title="Arrival & Session Time Rules" />
+                <p style={bodyStyle}>
+                  To ensure your session starts on time and runs smoothly, please observe the following:
+                </p>
+                <ul style={listStyle}>
+                  <li>
+                    <strong>Arrive 15 minutes early.</strong> This allows time for setup, equipment handover, and orientation before your session begins.
+                  </li>
+                  <li>
+                    <strong>Late arrivals reduce your session time.</strong> Your session will still end at the original booked time — we cannot extend into the next client&apos;s slot.
+                  </li>
+                  <li>
+                    <strong>Overtime charges apply</strong> if you run over your booked end time, at a rate of <strong>R247 per 15 minutes</strong>, subject to studio availability. Overtime is not guaranteed.
+                  </li>
+                  <li>
+                    <strong>Arriving after your session end time</strong> constitutes a no-show and the booking will be forfeited in full.
+                  </li>
+                </ul>
+                <InfoBox>
+                  Your booked session time includes setup and pack-down. Please plan your shoot accordingly.
+                </InfoBox>
+              </section>
+
+              {/* 17. Rescheduling & Cancellation Policy */}
+              <section id="rescheduling">
+                <SectionHeading number="17" title="Rescheduling & Cancellation Policy" />
+                <p style={bodyStyle}>
+                  The following rescheduling and cancellation rules apply to all bookings:
+                </p>
+                <ul style={listStyle}>
+                  <li>
+                    <strong>Rescheduling is permitted</strong> up to <strong>7 working days (Monday–Friday)</strong> before your booking date, subject to studio availability.
+                  </li>
+                  <li>
+                    <strong>Changes requested within 7 working days</strong> of the booking may incur an administrative or rescheduling fee.
+                  </li>
+                  <li>
+                    <strong>Same-day rescheduling is not permitted</strong> under any circumstances.
+                  </li>
+                  <li>
+                    <strong>No-show bookings are forfeited in full.</strong> If you fail to attend without prior notice, no refund or credit will be issued.
+                  </li>
+                </ul>
+                <p style={bodyStyle}>
+                  All rescheduling requests must be submitted in writing to{" "}
+                  <a href="mailto:bookings@kyalamistudio.co.za" style={linkStyle}>
+                    bookings@kyalamistudio.co.za
+                  </a>
+                  . Verbal or social media requests will not be accepted.
+                </p>
+              </section>
+
+              {/* 18. Studio Rules */}
+              <section id="studio-rules">
+                <SectionHeading number="18" title="Studio Rules" />
+                <p style={bodyStyle}>
+                  All clients and their guests must comply with the following studio rules during their session:
+                </p>
+                <ul style={listStyle}>
+                  <li>
+                    <strong>Children must be supervised at all times.</strong> A parent or legal guardian must be present on the premises for any minors attending a session.
+                  </li>
+                  <li>
+                    <strong>Screens, backdrops, and set elements may not be moved</strong> by clients without express permission from studio staff.
+                  </li>
+                  <li>
+                    <strong>Studio equipment is not to be used as props</strong> or repurposed beyond its intended function. This includes lighting stands, camera mounts, and audio equipment.
+                  </li>
+                  <li>
+                    Smoking, vaping, and the consumption of alcohol or illegal substances are strictly prohibited in the studio.
+                  </li>
+                  <li>
+                    Food and beverages are only permitted in designated areas unless specifically approved as part of the shoot concept (see Cleaning Fees).
+                  </li>
+                </ul>
+                <p style={bodyStyle}>
+                  Failure to comply with studio rules may result in immediate termination of the session without refund.
+                </p>
+              </section>
+
+              {/* 19. Damage Liability */}
+              <section id="damage-liability">
+                <SectionHeading number="19" title="Damage Liability" />
+                <p style={bodyStyle}>
+                  Clients are fully responsible for any damage to studio property, equipment, or furnishings that
+                  occurs during their session or as a result of their guests&apos; actions.
+                </p>
+                <ul style={listStyle}>
+                  <li>
+                    <strong>The R750 breakage deposit</strong> is held against potential damage and will be deducted in whole or in part to cover repair or replacement costs.
+                  </li>
+                  <li>
+                    <strong>Charges exceeding the deposit</strong> will be invoiced directly to the client and must be settled within 5 working days of the invoice date.
+                  </li>
+                  <li>
+                    <strong>Session deliverables</strong> (including any edited images or footage produced by the studio, if applicable) will be withheld until all outstanding damage charges have been paid in full.
+                  </li>
+                  <li>
+                    <strong>Clients are responsible for the conduct of their guests.</strong> Any damage caused by guests attending the session is the client&apos;s liability.
+                  </li>
+                </ul>
+                <p style={bodyStyle}>
+                  Damage assessments will be conducted by studio staff at the end of each session. Clients will be
+                  notified of any damage findings and associated costs before charges are applied.
+                </p>
+              </section>
+
+              {/* 20. Cleaning Fees */}
+              <section id="cleaning-fees">
+                <SectionHeading number="20" title="Cleaning Fees" />
+                <p style={bodyStyle}>
+                  Standard cleaning is included in your session fee. However, additional cleaning fees will apply
+                  where sessions result in significant mess or require specialised cleaning beyond normal standards.
+                  This includes, but is not limited to:
+                </p>
+                <ul style={listStyle}>
+                  <li>Sand or outdoor material brought into the studio.</li>
+                  <li>Wet floors resulting from water, beverages, or liquids used during the shoot.</li>
+                  <li>Cake smash sessions or any food-based photography involving messy substances.</li>
+                  <li>Glitter, oils, body paint, or special effects products.</li>
+                  <li>Any other excessive mess that requires additional time or resources to clean.</li>
+                </ul>
+                <InfoBox>
+                  If your shoot concept involves any of the above, please disclose this at the time of booking.
+                  We&apos;re happy to accommodate — we just need to plan accordingly.
+                </InfoBox>
+              </section>
+
+              {/* 21. Equipment & Property Rules */}
+              <section id="equipment-rules">
+                <SectionHeading number="21" title="Equipment & Property Rules" />
+                <ul style={listStyle}>
+                  <li>
+                    <strong>A valid South African ID or passport must be uploaded at checkout.</strong> This is required for identity verification and is stored securely in accordance with our{" "}
+                    <Link href="/privacy" style={linkStyle}>Privacy Policy</Link>.
+                  </li>
+                  <li>
+                    <strong>Equipment availability is not guaranteed.</strong> While we make every effort to ensure listed equipment is available, specific items may occasionally be under maintenance or unavailable. We will notify you of any significant changes before your session.
+                  </li>
+                  <li>
+                    <strong>All equipment must be returned in its original condition</strong> at the end of the session. Missing accessories, damaged components, or improperly stored equipment will be treated as damage and charged accordingly.
+                  </li>
+                  <li>
+                    Clients may not remove any studio equipment or property from the premises under any circumstances.
+                  </li>
+                </ul>
+              </section>
+
+              {/* 22. Force Majeure */}
+              <section id="force-majeure">
+                <SectionHeading number="22" title="Force Majeure" />
+                <p style={bodyStyle}>
+                  Rent a Studio shall not be liable for any failure to perform, delay in performance, or
+                  disruption of services caused by circumstances beyond its reasonable control, including but
+                  not limited to:
+                </p>
+                <ul style={listStyle}>
+                  <li>Electrical load shedding or power grid failures.</li>
+                  <li>Floods, fires, storms, or other natural disasters.</li>
+                  <li>Industrial action, strikes, or labour disputes.</li>
+                  <li>Government-mandated closures, public health emergencies, or civil unrest.</li>
+                  <li>Internet or telecommunications outages affecting platform access.</li>
+                </ul>
+                <p style={bodyStyle}>
+                  In the event of a force majeure that prevents a confirmed booking from proceeding, Rent a Studio
+                  will make reasonable efforts to reschedule the session at no additional cost, or offer a credit
+                  towards a future booking. Refunds in force majeure situations will be assessed on a case-by-case basis.
+                </p>
+              </section>
+
+              {/* 23. Intellectual Property & Content Ownership */}
+              <section id="content-ownership">
+                <SectionHeading number="23" title="Intellectual Property & Content Ownership" />
+                <p style={bodyStyle}>
+                  The following terms govern ownership and use of content created during studio sessions:
+                </p>
+                <ul style={listStyle}>
+                  <li>
+                    <strong>Content created during sessions belongs to the client.</strong> You retain full ownership of all images, footage, and creative works produced during your booked session.
+                  </li>
+                  <li>
+                    <strong>Rent a Studio may use session images for marketing purposes</strong> — including on our website, social media channels, and promotional materials — unless the client submits a written opt-out request to{" "}
+                    <a href="mailto:bookings@kyalamistudio.co.za" style={linkStyle}>
+                      bookings@kyalamistudio.co.za
+                    </a>{" "}
+                    before or at the time of their session.
+                  </li>
+                  <li>
+                    <strong>Clients are responsible for obtaining all necessary permissions</strong> for any third-party intellectual property used during their session, including licensed music, branded products, artwork, or trademarked materials appearing in their content. Rent a Studio accepts no liability for third-party IP infringement by clients.
+                  </li>
+                </ul>
+                <InfoBox>
+                  To opt out of marketing use of your session images, email us before your booking date with
+                  your booking reference and the subject line &quot;Marketing Opt-Out&quot;.
+                </InfoBox>
+              </section>
+
+              {/* 24. Contact Information */}
               <section id="contact">
-                <SectionHeading number="16" title="Contact Information" />
+                <SectionHeading number="24" title="Contact Information" />
                 <p style={bodyStyle}>
                   If you have any questions, concerns, or requests regarding these Terms and Conditions, please
                   contact us using the details below:
