@@ -43,11 +43,7 @@ export default function Nav() {
             color: "#0e0d0b",
           }}
         >
-          Rent{" "}
-          <em style={{ fontStyle: "italic", fontWeight: 300, color: "#c8984a" }}>
-            a
-          </em>{" "}
-          Studio
+          StudioBooking.co.za
         </span>
       </Link>
 

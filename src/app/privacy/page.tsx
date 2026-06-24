@@ -450,9 +450,7 @@ export default function PrivacyPage() {
                       marginBottom: 20,
                     }}
                   >
-                    Rent{" "}
-                    <em style={{ fontStyle: "italic", color: "#c8984a" }}>a</em>{" "}
-                    Studio — Kyalami
+                    StudioBooking.co.za — Kyalami
                   </div>
                   <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
                     {[

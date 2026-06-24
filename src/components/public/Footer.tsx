@@ -45,9 +45,7 @@ export default function Footer() {
                 lineHeight: 1.1,
               }}
             >
-              Rent{" "}
-              <em style={{ fontStyle: "italic", color: "#c8984a" }}>a</em>{" "}
-              Studio
+              StudioBooking.co.za
             </h3>
             <p
               style={{
