@@ -788,6 +788,9 @@ export default function BookingForm({ pricing, addOns }: BookingFormProps) {
               </p>
               {(
                 [
+                  { label: "Date & time slot selected (Step 1)", ok: !!form.timeSlot },
+                  { label: "Package selected (Step 2)", ok: !!form.packageType },
+                  { label: "Duration selected (Step 2)", ok: !!form.durationType },
                   { label: "Full name (min 2 chars)", ok: form.clientName.trim().length >= 2 },
                   { label: "Email address", ok: form.clientEmail.includes("@") },
                   { label: "Phone number (min 7 digits)", ok: form.clientPhone.trim().length >= 7 },
