@@ -62,7 +62,7 @@ export async function sendAdminNotification(
     }
 
     const resend = new Resend(process.env.RESEND_API_KEY);
-    const fromEmail = process.env.RESEND_FROM_EMAIL ?? "Kyalami Studio <bookings@kyalamistudio.co.za>";
+    const fromEmail = process.env.RESEND_FROM_EMAIL ?? "StudioBooking.co.za <bookings@kyalamistudio.co.za>";
     const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
     const paidTotal = input.finalTotal ?? input.totalAmount;
 
@@ -109,7 +109,7 @@ export async function sendAdminNotification(
 
     <div style="background:#0e0d0b;padding:28px 32px;position:relative;">
       <div style="position:absolute;top:0;left:0;right:0;height:3px;background:#c8984a;"></div>
-      <p style="margin:0 0 4px;font-family:monospace;font-size:11px;letter-spacing:0.12em;text-transform:uppercase;color:#c8984a;">Kyalami Studio — Admin Alert</p>
+      <p style="margin:0 0 4px;font-family:monospace;font-size:11px;letter-spacing:0.12em;text-transform:uppercase;color:#c8984a;">StudioBooking.co.za — Admin Alert</p>
       <h1 style="margin:0;font-family:Georgia,serif;font-size:24px;font-weight:300;color:#faf7f2;letter-spacing:-0.01em;">New Booking Confirmed</h1>
     </div>
 

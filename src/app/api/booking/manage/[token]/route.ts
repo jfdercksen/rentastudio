@@ -363,7 +363,7 @@ export async function PATCH(
         email_address: booking.client_email as string,
         m_payment_id: mPaymentId,
         amount: topUpAmount.toFixed(2),
-        item_name: "Kyalami Studio — Booking Extras",
+        item_name: "StudioBooking.co.za — Booking Extras",
       };
 
       await supabase

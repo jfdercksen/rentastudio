@@ -293,7 +293,7 @@ export async function POST(request: Request): Promise<NextResponse> {
     email_address: data.clientEmail,
     m_payment_id: paymentId,
     amount: finalTotal.toFixed(2),
-    item_name: `Kyalami Studio - ${data.packageType} ${data.date}`,
+    item_name: `StudioBooking.co.za - ${data.packageType} ${data.date}`,
   };
 
   const passphrase = process.env.PAYFAST_PASSPHRASE?.trim();

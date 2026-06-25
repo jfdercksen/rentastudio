@@ -69,7 +69,7 @@ export async function sendModificationEmail(
         Booking ${escapeHtml(modLabel)}
       </h1>
       <p style="margin:8px 0 0;font-size:12px;letter-spacing:0.12em;text-transform:uppercase;color:#c8984a;font-family:monospace;">
-        Kyalami Studio
+        StudioBooking.co.za
       </p>
     </div>
 
@@ -117,14 +117,14 @@ export async function sendModificationEmail(
 
     <div style="background:#f5f0e8;padding:20px 32px;border-top:1px solid #e8e2d6;text-align:center;">
       <p style="margin:0;font-size:11px;color:#8a857a;font-family:monospace;letter-spacing:0.08em;text-transform:uppercase;">
-        Kyalami Studio · Kyalami Estates, Johannesburg
+        StudioBooking.co.za · Kyalami Estates, Johannesburg
       </p>
     </div>
   </div>
 </body>
 </html>`;
 
-    const fromEmail = process.env.RESEND_FROM_EMAIL ?? "Kyalami Studio <bookings@kyalamistudio.co.za>";
+    const fromEmail = process.env.RESEND_FROM_EMAIL ?? "StudioBooking.co.za <bookings@kyalamistudio.co.za>";
     const { error } = await resend.emails.send({
       from: fromEmail,
       to: input.clientEmail,

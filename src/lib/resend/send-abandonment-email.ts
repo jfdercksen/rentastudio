@@ -73,7 +73,7 @@ function buildEmail1(name: string, details: AbandonmentEmailInput["bookingDetail
         Complete Your Booking
       </h1>
       <p style="margin:8px 0 0;font-size:12px;letter-spacing:0.12em;text-transform:uppercase;color:#c8984a;font-family:monospace;">
-        Kyalami Studio
+        StudioBooking.co.za
       </p>
     </div>
     <div style="padding:40px 32px;">
@@ -96,7 +96,7 @@ function buildEmail1(name: string, details: AbandonmentEmailInput["bookingDetail
     </div>
     <div style="background:#f5f0e8;padding:20px 32px;border-top:1px solid #e8e2d6;text-align:center;">
       <p style="margin:0;font-size:11px;color:#8a857a;font-family:monospace;letter-spacing:0.08em;text-transform:uppercase;">
-        Kyalami Studio · Kyalami Estates, Johannesburg
+        StudioBooking.co.za · Kyalami Estates, Johannesburg
       </p>
     </div>
   </div>
@@ -124,13 +124,13 @@ function buildEmail2(name: string, details: AbandonmentEmailInput["bookingDetail
         Your Booking Is Still Waiting
       </h1>
       <p style="margin:8px 0 0;font-size:12px;letter-spacing:0.12em;text-transform:uppercase;color:#c8984a;font-family:monospace;">
-        Kyalami Studio
+        StudioBooking.co.za
       </p>
     </div>
     <div style="padding:40px 32px;">
       <p style="font-size:16px;color:#3a3a34;margin:0 0 16px;">Hi ${escapeHtml(name)},</p>
       <p style="font-size:15px;color:#3a3a34;line-height:1.6;margin:0 0 4px;">
-        Just a friendly reminder — your Kyalami Studio booking is still incomplete.
+        Just a friendly reminder — your StudioBooking.co.za booking is still incomplete.
       </p>
       ${urgencyNote}
       <p style="font-size:14px;color:#3a3a34;line-height:1.6;margin:0 0 28px;">
@@ -147,7 +147,7 @@ function buildEmail2(name: string, details: AbandonmentEmailInput["bookingDetail
     </div>
     <div style="background:#f5f0e8;padding:20px 32px;border-top:1px solid #e8e2d6;text-align:center;">
       <p style="margin:0;font-size:11px;color:#8a857a;font-family:monospace;letter-spacing:0.08em;text-transform:uppercase;">
-        Kyalami Studio · Kyalami Estates, Johannesburg
+        StudioBooking.co.za · Kyalami Estates, Johannesburg
       </p>
     </div>
   </div>
@@ -166,7 +166,7 @@ function buildEmail3(name: string, bookingUrl: string): string {
         Need Help Completing Your Booking?
       </h1>
       <p style="margin:8px 0 0;font-size:12px;letter-spacing:0.12em;text-transform:uppercase;color:#c8984a;font-family:monospace;">
-        Kyalami Studio
+        StudioBooking.co.za
       </p>
     </div>
     <div style="padding:40px 32px;">
@@ -202,7 +202,7 @@ function buildEmail3(name: string, bookingUrl: string): string {
     </div>
     <div style="background:#f5f0e8;padding:20px 32px;border-top:1px solid #e8e2d6;text-align:center;">
       <p style="margin:0;font-size:11px;color:#8a857a;font-family:monospace;letter-spacing:0.08em;text-transform:uppercase;">
-        Kyalami Studio · Kyalami Estates, Johannesburg
+        StudioBooking.co.za · Kyalami Estates, Johannesburg
       </p>
     </div>
   </div>
@@ -226,7 +226,7 @@ export async function sendAbandonmentEmail(
       html = buildEmail3(input.clientName, input.bookingUrl);
     }
 
-    const fromEmail = process.env.RESEND_FROM_EMAIL ?? "Kyalami Studio <bookings@kyalamistudio.co.za>";
+    const fromEmail = process.env.RESEND_FROM_EMAIL ?? "StudioBooking.co.za <bookings@kyalamistudio.co.za>";
     const { error } = await resend.emails.send({
       from: fromEmail,
       to: input.clientEmail,
