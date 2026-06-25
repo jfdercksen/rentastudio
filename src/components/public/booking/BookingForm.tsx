@@ -343,20 +343,6 @@ export default function BookingForm({ pricing, addOns }: BookingFormProps) {
     );
   }
 
-  function getStep3Missing(): string[] {
-    const missing: string[] = [];
-    if (form.clientName.trim().length < 2) missing.push("Full name");
-    if (!form.clientEmail.includes("@")) missing.push("Valid email");
-    if (form.clientPhone.trim().length < 7) missing.push("Phone number");
-    if (form.shootType.trim().length < 2) missing.push("Shoot description");
-    if (!form.idDocumentFile && !restoredIdBase64) missing.push("ID / Passport upload");
-    if (form.bankHolderName.trim().length < 2) missing.push("Account holder name");
-    if (form.bankName.trim().length < 2) missing.push("Bank");
-    if (!/^\d{8,16}$/.test(form.accountNumber.trim())) missing.push("Account number (8–16 digits, no spaces)");
-    if (form.branchCode.trim().length < 2) missing.push("Branch code");
-    return missing;
-  }
-
   async function handleSendVerification() {
     if (verifyLoading) return;
     setVerifyLoading(true);
@@ -776,6 +762,79 @@ export default function BookingForm({ pricing, addOns }: BookingFormProps) {
             />
           </div>
 
+          {/* Real-time validation checklist — visible whenever any field is incomplete */}
+          {!canAdvanceStep3() && (
+            <div
+              style={{
+                border: "1px solid #e8e2d6",
+                borderRadius: 8,
+                padding: "16px 20px",
+                marginBottom: 20,
+                background: "#faf7f2",
+              }}
+            >
+              <p
+                style={{
+                  fontFamily: "var(--font-ibm-plex-mono), monospace",
+                  fontSize: 10,
+                  letterSpacing: "0.14em",
+                  textTransform: "uppercase",
+                  color: "#8a857a",
+                  margin: "0 0 12px",
+                  fontWeight: 500,
+                }}
+              >
+                Form checklist
+              </p>
+              {(
+                [
+                  { label: "Full name (min 2 chars)", ok: form.clientName.trim().length >= 2 },
+                  { label: "Email address", ok: form.clientEmail.includes("@") },
+                  { label: "Phone number (min 7 digits)", ok: form.clientPhone.trim().length >= 7 },
+                  { label: "Shoot description", ok: form.shootType.trim().length >= 2 },
+                  { label: "ID / Passport file uploaded", ok: !!form.idDocumentFile || !!restoredIdBase64 },
+                  { label: "Account holder name", ok: form.bankHolderName.trim().length >= 2 },
+                  { label: "Bank selected", ok: form.bankName.trim().length >= 2 },
+                  { label: "Account number (8–16 digits, no spaces)", ok: /^\d{8,16}$/.test(form.accountNumber.trim()) },
+                  { label: "Branch code / account type", ok: form.branchCode.trim().length >= 2 },
+                ] as { label: string; ok: boolean }[]
+              ).map(({ label, ok }) => (
+                <div
+                  key={label}
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: 10,
+                    paddingBottom: 6,
+                    marginBottom: 6,
+                    borderBottom: "1px solid #f0ece4",
+                    fontSize: 13,
+                    color: ok ? "#8a857a" : "#0e0d0b",
+                  }}
+                >
+                  <span
+                    style={{
+                      flexShrink: 0,
+                      width: 18,
+                      height: 18,
+                      borderRadius: "50%",
+                      background: ok ? "#2f5f3f" : "#e8e2d6",
+                      color: ok ? "#fff" : "#8a857a",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      fontSize: 11,
+                      fontWeight: 700,
+                    }}
+                  >
+                    {ok ? "✓" : "○"}
+                  </span>
+                  {label}
+                </div>
+              ))}
+            </div>
+          )}
+
           <div style={{ display: "flex", gap: 12 }}>
             <button onClick={() => goToStep(2)} style={backBtnStyle}>
               ← Back
@@ -788,15 +847,6 @@ export default function BookingForm({ pricing, addOns }: BookingFormProps) {
               Next: Verify Email →
             </button>
           </div>
-          {!canAdvanceStep3() && (() => {
-            const missing = getStep3Missing();
-            return missing.length > 0 ? (
-              <p style={{ fontSize: 12, color: "#8a857a", marginTop: 10, lineHeight: 1.6 }}>
-                <span style={{ color: "#c75a3c", fontWeight: 500 }}>Still required: </span>
-                {missing.join(" · ")}
-              </p>
-            ) : null;
-          })()}
         </div>
       )}
 
