@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback, useEffect, useRef } from "react";
+import { useState, useCallback, useEffect } from "react";
 import { createClient } from "@/lib/supabase/client";
 import DatePicker from "./DatePicker";
 import TimePicker from "./TimePicker";
@@ -113,29 +113,20 @@ export default function BookingForm({ pricing, addOns }: BookingFormProps) {
   const [otpVerifying, setOtpVerifying] = useState(false);
   const [otpError, setOtpError] = useState<string | null>(null);
 
-  // When duration changes, recalculate the selected slot's end time or clear it if it no
-  // longer fits (e.g. user picked 07:00 before selecting "Full Day", but 09:00–13:00 is taken).
-  const slotsRef = useRef(slots);
-  useEffect(() => { slotsRef.current = slots; }, [slots]);
+  // When duration changes, recalculate the selected slot's end time.
+  // Only clears the slot if the new end time exceeds the 21:00 studio close.
+  // Availability conflicts are intentionally NOT checked here — slotsRef data
+  // can be stale and the booking API re-validates server-side on submit.
   useEffect(() => {
     setForm((f) => {
       if (!f.timeSlot || !f.durationType) return f;
       const HOURS: Record<string, number> = { hourly: 1, half_day: 4, full_day: 13 };
       const dh = HOURS[f.durationType];
-      const [sh, sm] = f.timeSlot.start.split(":").map(Number);
-      const startMins = sh * 60 + sm;
+      const [sh] = f.timeSlot.start.split(":").map(Number);
+      const startMins = sh * 60;
       const endMins = startMins + dh * 60;
       if (endMins > 21 * 60) return { ...f, timeSlot: null };
-      const currentSlots = slotsRef.current;
-      const isValid = currentSlots
-        .filter((s) => {
-          const [hh, mm] = s.start.split(":").map(Number);
-          const sm2 = hh * 60 + mm;
-          return sm2 >= startMins && sm2 < endMins;
-        })
-        .every((s) => s.available);
-      if (!isValid) return { ...f, timeSlot: null };
-      const newEnd = `${String(Math.floor(endMins / 60)).padStart(2, "0")}:${String(endMins % 60).padStart(2, "0")}`;
+      const newEnd = `${String(Math.floor(endMins / 60)).padStart(2, "0")}:00`;
       return { ...f, timeSlot: { ...f.timeSlot, end: newEnd } };
     });
   }, [form.durationType]); // eslint-disable-line react-hooks/exhaustive-deps
@@ -322,7 +313,7 @@ export default function BookingForm({ pricing, addOns }: BookingFormProps) {
   }
 
   function canAdvanceStep2(): boolean {
-    return !!form.packageType && !!form.durationType;
+    return !!form.packageType && !!form.durationType && !!form.timeSlot;
   }
 
   function canAdvanceStep3(): boolean {
@@ -704,7 +695,26 @@ export default function BookingForm({ pricing, addOns }: BookingFormProps) {
             onPackageChange={(pkg) => setForm((f) => ({ ...f, packageType: pkg }))}
             onDurationChange={(dur) => setForm((f) => ({ ...f, durationType: dur }))}
           />
-          <div style={{ display: "flex", gap: 12, marginTop: 32 }}>
+          {!!form.durationType && !form.timeSlot && (
+            <div
+              style={{
+                padding: "14px 18px",
+                background: "#fef3e2",
+                border: "1px solid #c8984a",
+                borderRadius: 8,
+                marginTop: 24,
+                fontSize: 14,
+                color: "#7a5a1e",
+                lineHeight: 1.5,
+              }}
+            >
+              Your selected start time doesn&apos;t fit within the studio&apos;s 21:00 closing
+              time for this duration. Please go back and choose a later start time or a
+              shorter duration.
+            </div>
+          )}
+
+          <div style={{ display: "flex", gap: 12, marginTop: 24 }}>
             <button onClick={() => goToStep(1)} style={backBtnStyle}>
               ← Back
             </button>
