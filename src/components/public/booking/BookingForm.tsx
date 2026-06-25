@@ -338,9 +338,23 @@ export default function BookingForm({ pricing, addOns }: BookingFormProps) {
       hasIdDoc &&
       form.bankHolderName.trim().length >= 2 &&
       form.bankName.trim().length >= 2 &&
-      /^\d{8,16}$/.test(form.accountNumber) &&
+      /^\d{8,16}$/.test(form.accountNumber.trim()) &&
       form.branchCode.trim().length >= 2
     );
+  }
+
+  function getStep3Missing(): string[] {
+    const missing: string[] = [];
+    if (form.clientName.trim().length < 2) missing.push("Full name");
+    if (!form.clientEmail.includes("@")) missing.push("Valid email");
+    if (form.clientPhone.trim().length < 7) missing.push("Phone number");
+    if (form.shootType.trim().length < 2) missing.push("Shoot description");
+    if (!form.idDocumentFile && !restoredIdBase64) missing.push("ID / Passport upload");
+    if (form.bankHolderName.trim().length < 2) missing.push("Account holder name");
+    if (form.bankName.trim().length < 2) missing.push("Bank");
+    if (!/^\d{8,16}$/.test(form.accountNumber.trim())) missing.push("Account number (8–16 digits, no spaces)");
+    if (form.branchCode.trim().length < 2) missing.push("Branch code");
+    return missing;
   }
 
   async function handleSendVerification() {
@@ -774,6 +788,15 @@ export default function BookingForm({ pricing, addOns }: BookingFormProps) {
               Next: Verify Email →
             </button>
           </div>
+          {!canAdvanceStep3() && (() => {
+            const missing = getStep3Missing();
+            return missing.length > 0 ? (
+              <p style={{ fontSize: 12, color: "#8a857a", marginTop: 10, lineHeight: 1.6 }}>
+                <span style={{ color: "#c75a3c", fontWeight: 500 }}>Still required: </span>
+                {missing.join(" · ")}
+              </p>
+            ) : null;
+          })()}
         </div>
       )}
 

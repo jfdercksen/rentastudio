@@ -49,7 +49,7 @@ const errorStyle: React.CSSProperties = {
   marginTop: 4,
 };
 
-const MAX_FILE_BYTES = 2 * 1024 * 1024;
+const MAX_FILE_BYTES = 5 * 1024 * 1024;
 
 function validateField(field: string, val: string): string {
   if (field === "clientName" && val.trim().length < 2) return "Enter your full name";
@@ -147,7 +147,7 @@ export default function ClientDetailsForm({
       <div>
         <FieldLabel required>Passport or ID Document</FieldLabel>
         <p style={{ fontSize: 12, color: "#8a857a", marginBottom: 8, lineHeight: 1.5 }}>
-          Required for identity verification. Securely stored, used only for booking confirmation. Max 2MB.
+          Required for identity verification. Securely stored, used only for booking confirmation. Max 5MB.
         </p>
         <input
           type="file"
@@ -155,7 +155,7 @@ export default function ClientDetailsForm({
           onChange={(e) => {
             const file = e.target.files?.[0] ?? null;
             if (file && file.size > MAX_FILE_BYTES) {
-              setFileError("File is too large. Please upload an image or PDF under 2MB.");
+              setFileError("File is too large. Please upload an image or PDF under 5MB.");
               e.target.value = "";
               onChange({ ...value, idDocumentFile: null });
               return;
