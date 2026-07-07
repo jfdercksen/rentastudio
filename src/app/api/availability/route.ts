@@ -46,6 +46,13 @@ export async function GET(request: Request): Promise<NextResponse> {
     return NextResponse.json({ error: "Date is in the past" }, { status: 400 });
   }
 
+  // Determine current time in SAST (UTC+2, no DST) to block past slots when today is selected
+  const nowSAST = new Date(Date.now() + 2 * 60 * 60 * 1000);
+  const todaySAST = `${nowSAST.getUTCFullYear()}-${String(nowSAST.getUTCMonth() + 1).padStart(2, "0")}-${String(nowSAST.getUTCDate()).padStart(2, "0")}`;
+  const currentMinutesSAST = date === todaySAST
+    ? nowSAST.getUTCHours() * 60 + nowSAST.getUTCMinutes()
+    : null;
+
   const supabase = createAdminClient();
 
   const [{ data: blockedDates }, { data: blockedSlots }, { data: bookingsRaw }] =
@@ -76,6 +83,9 @@ export async function GET(request: Request): Promise<NextResponse> {
   const allBlocks = [...bookings, ...adminBlocks];
 
   const slots = generateSlots().map((slot) => {
+    if (currentMinutesSAST !== null && timeToMinutes(slot.start) <= currentMinutesSAST) {
+      return { ...slot, available: false };
+    }
     if (allBlocks.length === 0) return slot;
     const isTaken = allBlocks.some((b) =>
       slotsOverlap(slot.start, slot.end, b.start_time, b.end_time)
